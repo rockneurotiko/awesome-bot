@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Error","Telegram-Bot Error: Anything that may fail (HTTP, JSON, ...)"]],"type":[["Result","Telegram-Bot Result"]]});

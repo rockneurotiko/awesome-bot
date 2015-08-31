@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SendBuilder` struct in crate `awesome_bot`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SendBuilder">
+
+    <title>awesome_bot::SendBuilder - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>awesome_bot</a></p><script>window.sidebarCurrent = {name: 'SendBuilder', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>awesome_bot</a>::<wbr><a class='struct' href=''>SendBuilder</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-24' class='srclink' href='../src/awesome_bot/send.rs.html#11-14' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct SendBuilder {
+    // some fields omitted
+}</pre><div class='docblock'><p>SendBuilder it&#39;s a builder struct that allows you to construct answers in a beauty way, you will use it transparently with the <code>send</code> and <code>answer</code> methods of <code>AwesomeBot</code></p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../awesome_bot/struct.SendBuilder.html' title='awesome_bot::SendBuilder'>SendBuilder</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(id: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>, bot: <a class='struct' href='../telegram_bot/struct.Api.html' title='telegram_bot::Api'>Api</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendBuilder.html' title='awesome_bot::SendBuilder'>SendBuilder</a></code></h4>
+<div class='docblock'><p>Create a new SendBuilder, you shouldn&#39;t use it, use the <code>send</code> and <code>answer</code> methods of <code>AwesomeBot</code> :)</p>
+</div><h4 id='method.text' class='method'><code>fn <a href='#method.text' class='fnname'>text</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Start a text constructor to send.</p>
+</div><h4 id='method.photo' class='method'><code>fn <a href='#method.photo' class='fnname'>photo</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendPhoto.html' title='awesome_bot::SendPhoto'>SendPhoto</a></code></h4>
+<div class='docblock'><p>Start a photo constructor to send.</p>
+</div><h4 id='method.audio' class='method'><code>fn <a href='#method.audio' class='fnname'>audio</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendAudio.html' title='awesome_bot::SendAudio'>SendAudio</a></code></h4>
+<div class='docblock'><p>Start an audio constructor to send.</p>
+</div><h4 id='method.voice' class='method'><code>fn <a href='#method.voice' class='fnname'>voice</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
+<div class='docblock'><p>Start a voice constructor to send.</p>
+</div><h4 id='method.document' class='method'><code>fn <a href='#method.document' class='fnname'>document</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendDocument.html' title='awesome_bot::SendDocument'>SendDocument</a></code></h4>
+<div class='docblock'><p>Start a document constructor to send.</p>
+</div><h4 id='method.sticker' class='method'><code>fn <a href='#method.sticker' class='fnname'>sticker</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendSticker.html' title='awesome_bot::SendSticker'>SendSticker</a></code></h4>
+<div class='docblock'><p>Start a sticker constructor to send.</p>
+</div><h4 id='method.video' class='method'><code>fn <a href='#method.video' class='fnname'>video</a>(self, t: &amp;<a href='http://doc.rust-lang.org/nightly/std/primitive.str.html'>str</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendVideo.html' title='awesome_bot::SendVideo'>SendVideo</a></code></h4>
+<div class='docblock'><p>Start a video constructor to send.</p>
+</div><h4 id='method.forward' class='method'><code>fn <a href='#method.forward' class='fnname'>forward</a>(self, to: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>, msg: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendForward.html' title='awesome_bot::SendForward'>SendForward</a></code></h4>
+<div class='docblock'><p>Start a forward constructor to send.</p>
+</div><h4 id='method.action' class='method'><code>fn <a href='#method.action' class='fnname'>action</a>(self, action: <a class='enum' href='../telegram_bot/types/enum.ChatAction.html' title='telegram_bot::types::ChatAction'>ChatAction</a>) -&gt; <a class='struct' href='../awesome_bot/struct.SendAction.html' title='awesome_bot::SendAction'>SendAction</a></code></h4>
+<div class='docblock'><p>Start an action constructor to send.</p>
+</div><h4 id='method.location' class='method'><code>fn <a href='#method.location' class='fnname'>location</a>(self) -&gt; <a class='struct' href='../awesome_bot/struct.SendLocation.html' title='awesome_bot::SendLocation'>SendLocation</a></code></h4>
+<div class='docblock'><p>Start a location constructor to send.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../awesome_bot/struct.SendBuilder.html' title='awesome_bot::SendBuilder'>SendBuilder</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../awesome_bot/struct.SendBuilder.html' title='awesome_bot::SendBuilder'>SendBuilder</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+            <p>
+                Search functions by type signature (e.g.
+                <code>vec -> usize</code>)
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "awesome_bot";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

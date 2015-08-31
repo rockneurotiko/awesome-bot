@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["client","The client-side abstraction for multipart requests. Enabled with the `client` feature (on by default)."],["server","The server-side abstraction for multipart requests. Enabled with the `server` feature (on by default)."]]});

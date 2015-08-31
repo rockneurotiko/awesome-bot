@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SendText` struct in crate `awesome_bot`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SendText">
+
+    <title>awesome_bot::SendText - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>awesome_bot</a></p><script>window.sidebarCurrent = {name: 'SendText', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>awesome_bot</a>::<wbr><a class='struct' href=''>SendText</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-246' class='srclink' href='../src/awesome_bot/send.rs.html#83-88' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct SendText {
+    // some fields omitted
+}</pre><div class='docblock'><p>Transparent struct builded by <code>SendBuilder</code> to send
+<code>Text</code>
+messages.</p>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h3><div class='impl-items'><h4 id='method.disable_preview' class='method'><code>fn <a href='#method.disable_preview' class='fnname'>disable_preview</a>(&amp;mut self, v: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Set <code>true</code> to disable the link preview in the message.</p>
+</div><h4 id='method.reply_id' class='method'><code>fn <a href='#method.reply_id' class='fnname'>reply_id</a>(&amp;mut self, v: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Set a message ID to reply with this message.</p>
+</div><h4 id='method.markup' class='method'><code>fn <a href='#method.markup' class='fnname'>markup</a>(&amp;mut self, v: <a class='enum' href='../telegram_bot/types/enum.ReplyMarkup.html' title='telegram_bot::types::ReplyMarkup'>ReplyMarkup</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Set a <code>ReplyMarkup</code> to send, but instead of this, use the <code>keyboard</code>, <code>hide</code> or <code>force</code> methods</p>
+</div></div><h3 class='impl'><code>impl <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h3><div class='docblock'><p>Add keyboard methods to the struct, only one of this will be sended, and will be the last one used.</p>
+</div><div class='impl-items'><h4 id='method.keyboard' class='method'><code>fn <a href='#method.keyboard' class='fnname'>keyboard</a>(&amp;mut self, r: <a class='struct' href='../telegram_bot/types/struct.ReplyKeyboardMarkup.html' title='telegram_bot::types::ReplyKeyboardMarkup'>ReplyKeyboardMarkup</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Add a keyboard to the reply</p>
+</div><h4 id='method.hide' class='method'><code>fn <a href='#method.hide' class='fnname'>hide</a>(&amp;mut self, h: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Hide the keyboard</p>
+</div><h4 id='method.force' class='method'><code>fn <a href='#method.force' class='fnname'>force</a>(&amp;mut self, f: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h4>
+<div class='docblock'><p>Force the reply to this message</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../awesome_bot/trait.Ender.html' title='awesome_bot::Ender'>Ender</a>&lt;<a class='struct' href='../telegram_bot/types/struct.Message.html' title='telegram_bot::types::Message'>Message</a>&gt; for <a class='struct' href='../awesome_bot/struct.SendText.html' title='awesome_bot::SendText'>SendText</a></code></h3><div class='impl-items'><h4 id='method.end' class='method'><code>fn <a href='../awesome_bot/trait.Ender.html#method.end' class='fnname'>end</a>(&amp;mut self) -&gt; <a class='type' href='../telegram_bot/error/type.Result.html' title='telegram_bot::error::Result'>Result</a>&lt;<a class='struct' href='../telegram_bot/types/struct.Message.html' title='telegram_bot::types::Message'>Message</a>&gt;</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+            <p>
+                Search functions by type signature (e.g.
+                <code>vec -> usize</code>)
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "awesome_bot";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

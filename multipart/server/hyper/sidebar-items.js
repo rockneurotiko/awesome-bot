@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Switch","A container that implements `hyper::server::Handler` which will switch the handler implementation depending on if the incoming request is multipart or not."]],"trait":[["MultipartHandler","A trait defining a type that can handle an incoming multipart request."]]});
