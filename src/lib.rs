@@ -210,6 +210,7 @@ impl AwesomeBot {
     // Listener functions
 
     /// Start the bot using `getUpdates` method, calling the routings defined before calling this method.
+    #[cfg(compiler_has_scoped_bugfix)]
     pub fn simple_start(&self) -> Result<()> {
         let mut listener = self.bot.listener(ListeningMethod::LongPoll(Some(20)));
         let mut pool = Pool::new(4);
@@ -224,6 +225,32 @@ impl AwesomeBot {
                         // bot_instance.handle_message(m);
                         self.handle_message(m);
                     });
+                }
+                Ok(ListeningAction::Continue)
+            });
+            scoped.join_all(); // Wait all scoped threads to finish
+            result
+        })
+    }
+
+    /// Start the bot using `getUpdates` method, calling the routings defined before calling this method.
+    #[cfg(not(compiler_has_scoped_bugfix))]
+    pub fn simple_start(&self) -> Result<()> {
+        let mut listener = self.bot.listener(ListeningMethod::LongPoll(Some(20)));
+        let mut pool = Pool::new(4);
+        // let botcloned = Arc::new(self.clone());
+
+        pool.scoped(|scoped| {
+            // Handle updates
+            let result = listener.listen(|u| {
+                if let Some(m) = u.message {
+                    // let bot_instance = botcloned.clone();
+                    unsafe {
+                        scoped.execute(move || {
+                            // bot_instance.handle_message(m);
+                            self.handle_message(m);
+                        });
+                    }
                 }
                 Ok(ListeningAction::Continue)
             });
@@ -408,6 +435,7 @@ impl AwesomeBot {
     }
 
     fn handle_message(&self, message: Message) {
+        // use MessageType::*; // When nightly becomes stable?
         use telegram_bot::MessageType::*;
         // // Any message
         // let anybot = bot.clone();
