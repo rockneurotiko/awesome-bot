@@ -408,7 +408,7 @@ impl AwesomeBot {
     }
 
     fn handle_message(&self, message: Message) {
-        use MessageType::*;
+        use telegram_bot::MessageType::*;
         // // Any message
         // let anybot = bot.clone();
         // let anym = m.clone();
