@@ -1,11 +1,14 @@
 language: rust
 rust:
-  - nightly
-  - beta
-  - stable
-# after_success:
-#   - |
-#     test ${TRAVIS_PULL_REQUEST} == "false" && \
-#     test ${TRAVIS_BRANCH} == "master" && \
-#     test "${TRAVIS_BUILD_NUMBER}.3" == "${TRAVIS_JOB_NUMBER}" && \
-#     bash deploy.sh
+- nightly
+- beta
+- stable
+env:
+  global:
+    secure: TnVf8DHhB24blKZoHuY1bm79aD47lqKG0qn0xHMlC/+mwhilz/0ZUbr9flnwnuVsDRJJjWkinjZS9/LObtwHJCGiirb7L5167wspEiJYx9PCrIbpjdS+nGy+VTL89xIzD4Ga7cOcW/bTTOAIUpufZpC0+t1arOmmkFPgNBg7u/qSukiqykYii2W0a25zxegzqQnbht7zv7/0515AWIM3fg9L15f8C1aqVNHTv49Y8vC+uTYAAffr1iTuc4em48ye+8xrArJKStEwlxNGBRMlQfIDp2qyPwM2MZfuygULyYs/A88yRz0cDxW5VabxCQBXxRGvQWDXeHqzA87dQ5afy88aiVgmyHZKul/WfDZKcRMbwGxX0JkMT98FnqK/fkbhh2U4p0iTUhE1DTJT1Sdz0cNcqmK+mAgD+TzYriVlrJ3lMbO+izrDQy85E3gXh94PCI2VG03pRyswjSoO936fMKzKQDQriX+/dHKtUsHpYSROMzRfGkSvbCiaugQyUTY+3iXsCJid3scxMyBB7Y9CKwkLMEkHX9PH9xTpYUHHDCJBHP4AkqcwRu7MLPFTHoAoA6jrEgnLIaWCuBFcG85TFsy9EGA5lBb+dZJKwWQHdUEuf5wKsf0+4AS9QGFgvMZdlU3JBzMFneiyvU9Lc5ImNICakx4ltCV6XMxcNSIZAQ8=
+after_success:
+  - |
+      test ${TRAVIS_PULL_REQUEST} == "false" && \
+      test ${TRAVIS_BRANCH} == "master" && \
+      test "${TRAVIS_BUILD_NUMBER}.3" == "${TRAVIS_JOB_NUMBER}" && \
+      bash deploy.sh

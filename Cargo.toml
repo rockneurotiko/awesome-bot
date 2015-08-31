@@ -1,0 +1,21 @@
+[package]
+name = "awesome-bot"
+version = "0.1.0"
+authors = ["Rock Neurotiko <miguelglafuente@gmail.com>"]
+
+description = "An awesome framework to build Telegram bots up to telegram-bot library."
+
+documentation = ""
+repository = "https://github.com/rockneurotiko/awesome-bot"
+readme = "README.md"
+
+keywords = ["telegram", "bot", "chat", "api", "library", "framework"]
+license = "MIT"
+
+[dependencies]
+telegram-bot = "*"
+rustc-serialize = "*"
+regex = "*"
+
+[dependencies.scoped_threadpool]
+git = "https://github.com/Kimundi/scoped-threadpool-rs"
