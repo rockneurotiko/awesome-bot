@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/git/checkouts/scoped-threadpool-rs-f63b1e5f17e89b6b/master/src/lib.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/scoped_threadpool-0.1.6/src/lib.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>lib.rs.html -- source</title>
@@ -528,6 +528,9 @@
 <span id="486">486</span>
 <span id="487">487</span>
 <span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This crate provides a stable, safe and scoped threadpool.</span>
 <span class='doccomment'>//!</span>
@@ -577,6 +580,7 @@
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;nightly&quot;</span>, <span class='ident'>feature</span>(<span class='ident'>const_fn</span>))]</span>
 
 <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>warn</span>(<span class='ident'>missing_docs</span>)]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;nightly&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>unused_unsafe</span>))]</span>
 
 <span class='attribute'>#[<span class='ident'>macro_use</span>]</span>
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
@@ -788,8 +792,6 @@
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>feature</span><span class='op'>=</span><span class='string'>&quot;nightly&quot;</span>, <span class='ident'>allow</span>(<span class='ident'>unused_unsafe</span>))]</span>
-
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>Pool</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>;
@@ -931,11 +933,13 @@
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>data</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u8</span>; <span class='ident'>size</span>];
         <span class='ident'>pool</span>.<span class='ident'>scoped</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> {
             <span class='kw'>for</span> <span class='ident'>e</span> <span class='kw'>in</span> <span class='ident'>data</span>.<span class='ident'>iter_mut</span>() {
-                <span class='ident'>s</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-                    <span class='op'>*</span><span class='ident'>e</span> <span class='op'>+=</span> <span class='ident'>fib</span>(<span class='ident'>black_box</span>(<span class='number'>1000</span> <span class='op'>*</span> (<span class='op'>*</span><span class='ident'>e</span> <span class='kw'>as</span> <span class='ident'>u64</span>))) <span class='kw'>as</span> <span class='ident'>u8</span>;
-                    <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>10000</span> { <span class='ident'>black_box</span>(<span class='ident'>i</span>); }
-                    <span class='comment'>//thread::sleep_ms(MS_SLEEP_PER_OP);</span>
-                });
+                <span class='kw'>unsafe</span> {
+                    <span class='ident'>s</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
+                        <span class='op'>*</span><span class='ident'>e</span> <span class='op'>+=</span> <span class='ident'>fib</span>(<span class='ident'>black_box</span>(<span class='number'>1000</span> <span class='op'>*</span> (<span class='op'>*</span><span class='ident'>e</span> <span class='kw'>as</span> <span class='ident'>u64</span>))) <span class='kw'>as</span> <span class='ident'>u8</span>;
+                        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='number'>10000</span> { <span class='ident'>black_box</span>(<span class='ident'>i</span>); }
+                        <span class='comment'>//thread::sleep_ms(MS_SLEEP_PER_OP);</span>
+                    });
+                }
             }
         });
     }
@@ -970,19 +974,21 @@
         <span class='ident'>pool</span>.<span class='ident'>scoped</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> {
             <span class='kw'>let</span> <span class='ident'>l</span> <span class='op'>=</span> (<span class='ident'>data</span>.<span class='ident'>len</span>() <span class='op'>-</span> <span class='number'>1</span>) <span class='op'>/</span> <span class='ident'>n</span> <span class='kw'>as</span> <span class='ident'>usize</span> <span class='op'>+</span> <span class='number'>1</span>;
             <span class='kw'>for</span> <span class='ident'>es</span> <span class='kw'>in</span> <span class='ident'>data</span>.<span class='ident'>chunks_mut</span>(<span class='ident'>l</span>) {
-                <span class='ident'>s</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-                    <span class='kw'>if</span> <span class='ident'>es</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> {
-                        <span class='ident'>es</span>[<span class='number'>0</span>] <span class='op'>=</span> <span class='number'>1</span>;
-                        <span class='ident'>es</span>[<span class='number'>1</span>] <span class='op'>=</span> <span class='number'>1</span>;
-                        <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>2</span>..<span class='ident'>es</span>.<span class='ident'>len</span>() {
-                            <span class='comment'>// Fibonnaci gets big fast,</span>
-                            <span class='comment'>// so just wrap around all the time</span>
-                            <span class='ident'>es</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>black_box</span>(<span class='ident'>es</span>[<span class='ident'>i</span><span class='op'>-</span><span class='number'>1</span>].<span class='ident'>wrapping_add</span>(<span class='ident'>es</span>[<span class='ident'>i</span><span class='op'>-</span><span class='number'>2</span>]));
-                            <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>bb_repeat</span> { <span class='ident'>black_box</span>(<span class='ident'>i</span>); }
+                <span class='kw'>unsafe</span> {
+                    <span class='ident'>s</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
+                        <span class='kw'>if</span> <span class='ident'>es</span>.<span class='ident'>len</span>() <span class='op'>&gt;</span> <span class='number'>1</span> {
+                            <span class='ident'>es</span>[<span class='number'>0</span>] <span class='op'>=</span> <span class='number'>1</span>;
+                            <span class='ident'>es</span>[<span class='number'>1</span>] <span class='op'>=</span> <span class='number'>1</span>;
+                            <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>2</span>..<span class='ident'>es</span>.<span class='ident'>len</span>() {
+                                <span class='comment'>// Fibonnaci gets big fast,</span>
+                                <span class='comment'>// so just wrap around all the time</span>
+                                <span class='ident'>es</span>[<span class='ident'>i</span>] <span class='op'>=</span> <span class='ident'>black_box</span>(<span class='ident'>es</span>[<span class='ident'>i</span><span class='op'>-</span><span class='number'>1</span>].<span class='ident'>wrapping_add</span>(<span class='ident'>es</span>[<span class='ident'>i</span><span class='op'>-</span><span class='number'>2</span>]));
+                                <span class='kw'>for</span> <span class='ident'>i</span> <span class='kw'>in</span> <span class='number'>0</span>..<span class='ident'>bb_repeat</span> { <span class='ident'>black_box</span>(<span class='ident'>i</span>); }
+                            }
                         }
-                    }
-                    <span class='comment'>//thread::sleep_ms(MS_SLEEP_PER_OP);</span>
-                });
+                        <span class='comment'>//thread::sleep_ms(MS_SLEEP_PER_OP);</span>
+                    });
+                }
             }
         });
     }
