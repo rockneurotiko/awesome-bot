@@ -7,16 +7,16 @@ build = "build.rs"
 
 description = "An awesome framework to build Telegram bots up to telegram-bot library."
 readme = "README.md"
-documentation = ""
+documentation = "http://web.neurotiko.com/awesome-bot/awesome_bot"
 
 repository = "https://github.com/rockneurotiko/awesome-bot"
 keywords = ["telegram", "bot", "chat", "api", "library", "framework"]
 
 
 [dependencies]
-telegram-bot = "*"
-rustc-serialize = "*"
-regex = "*"
+telegram-bot = "0.3"
+rustc-serialize = "0.3"
+regex = "0.1"
 
 [build-dependencies]
 rustc_version = "0.1"

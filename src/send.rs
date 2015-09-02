@@ -65,8 +65,8 @@ impl SendBuilder {
     }
 
     /// Start a location constructor to send.
-    pub fn location(self) -> SendLocation {
-        SendLocation { send: self, latitude: 0.0, longitude: 0.0, reply_to_message_id: None, reply_markup: None }
+    pub fn location(self, latitude: Float, longitude: Float) -> SendLocation {
+        SendLocation { send: self, latitude: latitude, longitude: longitude, reply_to_message_id: None, reply_markup: None }
     }
 }
 
