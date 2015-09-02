@@ -2,7 +2,7 @@ Awesome Bot
 ===========
 
 [![Travis](https://travis-ci.org/rockneurotiko/awesome-bot.svg?branch=master)](https://travis-ci.org/rockneurotiko/awesome-bot)
-[![Creates.io]()](https://crates.io/crates/telegram-bot)
+[![Crates.io]()](https://crates.io/crates/telegram-bot)
 
 [**Documentation**](http://web.neurotiko.com/awesome-bot/awesome_bot/)
 

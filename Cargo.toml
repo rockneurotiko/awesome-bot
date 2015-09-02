@@ -14,12 +14,12 @@ keywords = ["telegram", "bot", "chat", "api", "library", "framework"]
 
 
 [dependencies]
-telegram-bot = "0.3"
-rustc-serialize = "0.3"
-regex = "0.1"
+telegram-bot = "~0.3"
+rustc-serialize = "~0.3"
+regex = "~0.1"
 
 [build-dependencies]
-rustc_version = "0.1"
+rustc_version = "~0.1"
 
 [dependencies.scoped_threadpool]
 git = "https://github.com/Kimundi/scoped-threadpool-rs"
