@@ -432,8 +432,8 @@
     }
 
     <span class='doccomment'>/// Start a location constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>location</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>SendLocation</span> {
-        <span class='ident'>SendLocation</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>latitude</span>: <span class='number'>0.0</span>, <span class='ident'>longitude</span>: <span class='number'>0.0</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>location</span>(<span class='self'>self</span>, <span class='ident'>latitude</span>: <span class='ident'>Float</span>, <span class='ident'>longitude</span>: <span class='ident'>Float</span>) <span class='op'>-&gt;</span> <span class='ident'>SendLocation</span> {
+        <span class='ident'>SendLocation</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>latitude</span>: <span class='ident'>latitude</span>, <span class='ident'>longitude</span>: <span class='ident'>longitude</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
     }
 }
 

@@ -719,6 +719,12 @@
 <span id="677">677</span>
 <span id="678">678</span>
 <span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This crate helps writing bots for Telegram. This is a framework to build the bots,</span>
 <span class='doccomment'>//! the main wrapper crate are `telegram-bot`</span>
@@ -765,15 +771,21 @@
 <span class='doccomment'>//! use awesome_bot::*;</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! fn echohandler(bot: &amp;AwesomeBot, msg: &amp;Message, _: String, args: Vec&lt;String&gt;) {</span>
-<span class='doccomment'>//!     let toecho = &amp;args[1]; // We can access because the pattern match have that argument</span>
+<span class='doccomment'>//!     // We can access safely because the pattern match have that argument mandatory</span>
+<span class='doccomment'>//!     let toecho = &amp;args[1];</span>
 <span class='doccomment'>//!     let phrase = format!(&quot;Echoed: {}&quot;, toecho);</span>
+<span class='doccomment'>//!     // Send the text in a beauty way :)</span>
 <span class='doccomment'>//!     let sended = bot.answer(msg).text(&amp;phrase).end();</span>
 <span class='doccomment'>//!     println!(&quot;{:?}&quot;, sended);</span>
 <span class='doccomment'>//! }</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! fn main() {</span>
+<span class='doccomment'>//!     // Create the Awesome Bot (You need TELEGRAM_BOT_TOKEN environment with the token)</span>
 <span class='doccomment'>//!     let mut bot = AwesomeBot::from_env(&quot;TELEGRAM_BOT_TOKEN&quot;);</span>
+<span class='doccomment'>//!     // Add a command, this will add the routing to that function.</span>
 <span class='doccomment'>//!     bot.command(&quot;echo (.+)&quot;, echohandler);</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//!     // Start the bot with getUpdates</span>
 <span class='doccomment'>//!     let res = bot.simple_start();</span>
 <span class='doccomment'>//!     if let Err(e) = res {</span>
 <span class='doccomment'>//!         println!(&quot;An error occurred: {}&quot;, e);</span>

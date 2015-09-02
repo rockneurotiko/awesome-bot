@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/hyper-0.6.11/src/server/mod.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/hyper-0.6.12/src/server/mod.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>mod.rs.html -- source</title>
@@ -509,6 +509,20 @@
 <span id="467">467</span>
 <span id="468">468</span>
 <span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! HTTP Server</span>
 <span class='doccomment'>//!</span>
@@ -768,6 +782,8 @@
     <span class='kw'>fn</span> <span class='ident'>handle_connection</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>stream</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>S</span>) <span class='kw'>where</span> <span class='ident'>S</span>: <span class='ident'>NetworkStream</span> <span class='op'>+</span> <span class='ident'>Clone</span> {
         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;Incoming stream&quot;</span>);
 
+        <span class='self'>self</span>.<span class='ident'>handler</span>.<span class='ident'>on_connection_start</span>();
+
         <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>set_timeouts</span>(<span class='ident'>stream</span>) {
             <span class='macro'>error</span><span class='macro'>!</span>(<span class='string'>&quot;set_timeouts error: {:?}&quot;</span>, <span class='ident'>e</span>);
             <span class='kw'>return</span>;
@@ -787,6 +803,9 @@
         <span class='kw'>let</span> <span class='ident'>wrt</span> <span class='op'>=</span> <span class='ident'>BufWriter</span>::<span class='ident'>new</span>(<span class='ident'>stream</span>);
 
         <span class='self'>self</span>.<span class='ident'>keep_alive_loop</span>(<span class='ident'>rdr</span>, <span class='ident'>wrt</span>, <span class='ident'>addr</span>);
+
+        <span class='self'>self</span>.<span class='ident'>handler</span>.<span class='ident'>on_connection_end</span>();
+
         <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;keep_alive loop ending for {}&quot;</span>, <span class='ident'>addr</span>);
     }
 
@@ -847,7 +866,6 @@
 
             <span class='macro'>debug</span><span class='macro'>!</span>(<span class='string'>&quot;keep_alive = {:?} for {}&quot;</span>, <span class='ident'>keep_alive</span>, <span class='ident'>addr</span>);
         }
-
     }
 
     <span class='kw'>fn</span> <span class='ident'>handle_expect</span><span class='op'>&lt;</span><span class='ident'>W</span>: <span class='ident'>Write</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>req</span>: <span class='kw-2'>&amp;</span><span class='ident'>Request</span>, <span class='ident'>wrt</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>W</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
@@ -913,6 +931,16 @@
     <span class='kw'>fn</span> <span class='ident'>check_continue</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, _: (<span class='kw-2'>&amp;</span><span class='ident'>Method</span>, <span class='kw-2'>&amp;</span><span class='ident'>RequestUri</span>, <span class='kw-2'>&amp;</span><span class='ident'>Headers</span>)) <span class='op'>-&gt;</span> <span class='ident'>StatusCode</span> {
         <span class='ident'>StatusCode</span>::<span class='ident'>Continue</span>
     }
+
+    <span class='doccomment'>/// This is run after a connection is received, on a per-connection basis (not a</span>
+    <span class='doccomment'>/// per-request basis, as a connection with keep-alive may handle multiple</span>
+    <span class='doccomment'>/// requests)</span>
+    <span class='kw'>fn</span> <span class='ident'>on_connection_start</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) { }
+
+    <span class='doccomment'>/// This is run before a connection is closed, on a per-connection basis (not a</span>
+    <span class='doccomment'>/// per-request basis, as a connection with keep-alive may handle multiple</span>
+    <span class='doccomment'>/// requests)</span>
+    <span class='kw'>fn</span> <span class='ident'>on_connection_end</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) { }
 }
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>F</span><span class='op'>&gt;</span> <span class='ident'>Handler</span> <span class='kw'>for</span> <span class='ident'>F</span> <span class='kw'>where</span> <span class='ident'>F</span>: <span class='ident'>Fn</span>(<span class='ident'>Request</span>, <span class='ident'>Response</span><span class='op'>&lt;</span><span class='ident'>Fresh</span><span class='op'>&gt;</span>), <span class='ident'>F</span>: <span class='ident'>Sync</span> <span class='op'>+</span> <span class='ident'>Send</span> {

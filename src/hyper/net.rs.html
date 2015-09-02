@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/hyper-0.6.11/src/net.rs`.">
+    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/hyper-0.6.12/src/net.rs`.">
     <meta name="keywords" content="rust, rustlang, rust-lang">
 
     <title>net.rs.html -- source</title>
@@ -722,6 +722,17 @@
 <span id="680">680</span>
 <span id="681">681</span>
 <span id="682">682</span>
+<span id="683">683</span>
+<span id="684">684</span>
+<span id="685">685</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! A collection of traits abstracting over Listeners and Streams.</span>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>any</span>::{<span class='ident'>Any</span>, <span class='ident'>TypeId</span>};
@@ -786,6 +797,17 @@
     <span class='attribute'>#[<span class='ident'>inline</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>close</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>_how</span>: <span class='ident'>Shutdown</span>) <span class='op'>-&gt;</span> <span class='ident'>io</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
         <span class='prelude-val'>Ok</span>(())
+    }
+
+    <span class='comment'>// Unsure about name and implementation...</span>
+
+    <span class='attribute'>#[<span class='ident'>doc</span>(<span class='ident'>hidden</span>)]</span>
+    <span class='kw'>fn</span> <span class='ident'>set_previous_response_expected_no_content</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>_expected</span>: <span class='ident'>bool</span>) {
+    
+    }
+    <span class='attribute'>#[<span class='ident'>doc</span>(<span class='ident'>hidden</span>)]</span>
+    <span class='kw'>fn</span> <span class='ident'>previous_response_expected_no_content</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
+        <span class='boolval'>false</span>
     }
 }
 
