@@ -10,7 +10,7 @@ readme = "README.md"
 documentation = "http://web.neurotiko.com/awesome-bot/awesome_bot"
 
 repository = "https://github.com/rockneurotiko/awesome-bot"
-keywords = ["telegram", "bot", "chat", "api", "library", "framework"]
+keywords = ["telegram", "bot", "api", "library", "framework"]
 
 
 [dependencies]
