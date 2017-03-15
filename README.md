@@ -33,8 +33,8 @@ fn echohandler(bot: &AwesomeBot, msg: &Message, _: String, args: Vec<String>) {
     let toecho = &args[1];
     let phrase = format!("Echoed: {}", toecho);
     // Send the text in a beauty way :)
-    let sended = bot.answer(msg).text(&phrase).end();
-    println!("{:?}", sended);
+    let sent = bot.answer(msg).text(&phrase).end();
+    println!("{:?}", sent);
 }
 
 fn main() {
