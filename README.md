@@ -62,4 +62,4 @@ In the `examples` folder are more code:
 
 All help are welcome! Open issues, open PR of code or documentation, make suggestions, tell me that my rust sucks (and why), what you want :)
 
-You can contact me in [telegram](https://telegram.me/rock_neurotiko).
+You can contact me in [telegram](https://telegram.me/rockneurotiko).
