@@ -6,13 +6,13 @@ Awesome Bot
 
 [**Documentation**](http://web.neurotiko.com/awesome-bot/awesome_bot/)
 
-A framework to build in an easy way your own [Telegram](https://telegram.org/) bots. More information [here](https://core.telegram.org/bots). Official API [here](https://core.telegram.org/bots/api).
+A framework to build your own [Telegram](https://telegram.org/) bots easily. More information [here](https://core.telegram.org/bots). Official API [here](https://core.telegram.org/bots/api).
 
-This framework is based in [`telegram-bot`](https://github.com/LukasKalbertodt/telegram-bot) library to communicate with the API.
+This framework is based on [`telegram-bot`](https://github.com/LukasKalbertodt/telegram-bot) library to communicate with the API.
 
 ## Usage
 
-This framework/library is available in `crates.io`. Just add this to your `Cargo.toml` dependencies:
+This framework is available in `crates.io`. Just add this to your `Cargo.toml` dependencies:
 
 ```
 [dependencies]
@@ -21,9 +21,9 @@ awesome-bot = "0.1.0"
 
 ## Example
 
-Here is a simple example (download in [`examples/simple.rs`](https://github.com/rockneurotiko/awesome-bot/blob/master/examples/simple.rs)).
+Here is a simple example (download from [`examples/simple.rs`](https://github.com/rockneurotiko/awesome-bot/blob/master/examples/simple.rs)).
 
-``` rust
+```rust
 extern crate awesome_bot;
 
 use awesome_bot::*;
@@ -51,12 +51,12 @@ fn main() {
 }
 ```
 
-In the `examples` folder are more code:
+In the `examples` folder there is more code:
 
 - [`examples/simple.rs`](https://github.com/rockneurotiko/awesome-bot/blob/master/examples/simple.rs): An echo example, really simple.
 - [`examples/complete.rs`](https://github.com/rockneurotiko/awesome-bot/blob/master/examples/complete.rs): An example that have all (I think, probably not all, but almost all) features of `awesome-bot`, it's a big example ;-)
 
-*Note: To execute `examples/complete.rs` with all the features, you will need to add some test files that the bot will send, this files are: `files/test.{jpg, mp3, mp4, pdf, webp}` for image, audio/voice, video, document and sticker*
+*Note: To execute `examples/complete.rs` with all the features, you will need to add some test files that the bot will send, this files shall be: `files/test.{jpg, mp3, mp4, pdf, webp}` for image, audio/voice, video, document and sticker*
 
 ## Collaboration
 
