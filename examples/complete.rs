@@ -1,6 +1,6 @@
 extern crate awesome_bot;
 
-use std::thread;
+use std::{thread, time};
 use std::iter::FromIterator;
 use std::collections::HashMap;
 
@@ -37,7 +37,7 @@ fn cmd_keyboard(bot: &AwesomeBot, msg: &Message, _: String) {
 
 fn test_async_hand(bot: &AwesomeBot, msg: &Message, _: String) {
     debug!(bot.answer(msg).text("Starting, send me another command in the next 5 seconds...").end());
-    thread::sleep_ms(5000);
+    thread::sleep(time::Duration::from_millis(5000));
     debug!(bot.answer(msg).text("End async test").end());
 }
 
@@ -158,7 +158,7 @@ fn handaction(bot: &AwesomeBot, msg: &Message, _: String) {
 fn transform_info_photos(v: Vec<PhotoSize>) -> String {
     v.iter().map(|p| {
         format!("Image of size ({} x {})\nID: {}\nSize: {}", p.width, p.height, p.file_id, p.file_size.unwrap_or(0))
-    }).collect::<Vec<_>>().connect("\n----------\n")
+    }).collect::<Vec<_>>().join("\n----------\n")
 }
 
 fn photo_handler(bot: &AwesomeBot, msg: &Message, photos: Vec<PhotoSize>) {

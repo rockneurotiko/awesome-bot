@@ -111,8 +111,10 @@ enum Muxer {
     LeftParticipantMux(Arc<Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static>),
     NewTitleMux(Arc<Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static>),
     NewChatPhotoMux(Arc<Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static>),
-    DeleteChatPhotoMux(Arc<Fn(&AwesomeBot, &Message, GroupChat) + Send + Sync + 'static>),
-    GroupChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, GroupChat) + Send + Sync + 'static>),
+    DeleteChatPhotoMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
+    GroupChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
+    SuperGroupChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static>),
+    ChannelChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
     AnyMux(Arc<Fn(&AwesomeBot, &Message) + Send + Sync + 'static>),
 }
 
@@ -216,7 +218,6 @@ impl AwesomeBot {
     // Listener functions
 
     /// Start the bot using `getUpdates` method, calling the routings defined before calling this method.
-    #[cfg(compiler_has_scoped_bugfix)]
     pub fn simple_start(&self) -> Result<()> {
         let mut listener = self.bot.listener(ListeningMethod::LongPoll(Some(20)));
         let mut pool = Pool::new(4);
@@ -231,32 +232,6 @@ impl AwesomeBot {
                         // bot_instance.handle_message(m);
                         self.handle_message(m);
                     });
-                }
-                Ok(ListeningAction::Continue)
-            });
-            scoped.join_all(); // Wait all scoped threads to finish
-            result
-        })
-    }
-
-    /// Start the bot using `getUpdates` method, calling the routings defined before calling this method.
-    #[cfg(not(compiler_has_scoped_bugfix))]
-    pub fn simple_start(&self) -> Result<()> {
-        let mut listener = self.bot.listener(ListeningMethod::LongPoll(Some(20)));
-        let mut pool = Pool::new(4);
-        // let botcloned = Arc::new(self.clone());
-
-        pool.scoped(|scoped| {
-            // Handle updates
-            let result = listener.listen(|u| {
-                if let Some(m) = u.message {
-                    // let bot_instance = botcloned.clone();
-                    unsafe {
-                        scoped.execute(move || {
-                            // bot_instance.handle_message(m);
-                            self.handle_message(m);
-                        });
-                    }
                 }
                 Ok(ListeningAction::Continue)
             });
@@ -294,8 +269,7 @@ impl AwesomeBot {
             words.insert(0, ns);
         }
 
-        // let mut ns: String = words.join(" ");
-        let mut ns: String = words.connect(" ");
+        let mut ns: String = words.join(" ");
         if !ns.starts_with("^/") {
             if !ns.starts_with("/") {
                 ns.insert(0, '/');
@@ -426,18 +400,28 @@ impl AwesomeBot {
                           );
     }
 
-    fn handle_delete_photo_msg(&self, msg: &Message, group: GroupChat) {
+    fn handle_delete_photo_msg(&self, msg: &Message, group: Chat) {
         use Muxer::*;
         muxer_match!(self, msg,
                           [&DeleteChatPhotoMux(ref f) => f(self, msg, group.clone())]
                           );
     }
 
-    fn handle_group_created_msg(&self, msg: &Message, group: GroupChat) {
+    fn handle_group_created_msg(&self, msg: &Message, group: Chat) {
         use Muxer::*;
         muxer_match!(self, msg,
                           [&GroupChatCreatedMux(ref f) => f(self, msg, group.clone())]
                           );
+    }
+
+    fn handle_super_group_chat_created_msg(&self, msg: &Message, migration: GroupToSuperGroupMigration) {
+        use Muxer::*;
+        muxer_match!(self, msg, [&SuperGroupChatCreatedMux (ref f) => f(self, msg, migration.clone())]);
+    }
+
+    fn handle_channel_chat_created_msg(&self, msg: &Message, chat: Chat) {
+        use Muxer::*;
+        muxer_match!(self, msg, [&ChannelChatCreatedMux (ref f) => f(self, msg, chat.clone())]);
     }
 
     fn handle_message(&self, message: Message) {
@@ -465,16 +449,10 @@ impl AwesomeBot {
             LeftChatParticipant(user) => self.handle_left_part_msg(&message, user),
             NewChatTitle(title) => self.handle_new_title_msg(&message, title),
             NewChatPhoto(photos) => self.handle_chat_photo_msg(&message, photos),
-            DeleteChatPhoto => {
-                if let Chat::Group(group) = message.chat.clone() {
-                    self.handle_delete_photo_msg(&message, group);
-                }
-            },
-            GroupChatCreated => {
-                if let Chat::Group(group) = message.chat.clone() {
-                    self.handle_group_created_msg(&message, group);
-                }
-            },
+            DeleteChatPhoto => self.handle_delete_photo_msg(&message, message.chat.clone()),
+            GroupChatCreated => self.handle_group_created_msg(&message, message.chat.clone()),
+            SuperGroupChatCreated(migration) => self.handle_super_group_chat_created_msg(&message, migration),
+            ChannelChatCreated => self.handle_channel_chat_created_msg(&message, message.chat.clone()),
         }
     }
 }
@@ -494,7 +472,7 @@ impl AwesomeBot {
 ///    - `Vec<PhotoSize>`: Represents an image (it's received in different sizes) and you get it when a photo arrives or when someone change a group photo.
 ///    - `Video`, `Document`, `Sticker`, `Audio`, `Voice`, `GeneralSound`, `Contact`, `Float`: All this parameters are the media that made the handler trigger, for example, in `video_fn` you will receive a `Video`.
 ///    - `User`: An User is received when a participant left or enter a group.
-///    - `GroupChat`: Whenever someone delete a chat photo, or create a group (add the bot to the group) you receive this.
+///    - `Chat::Group`: Whenever someone delete a chat photo, or create a group (add the bot to the group) you receive this.
 impl AwesomeBot {
     /// Add a complex command routing (With capture groups).
     ///
@@ -659,16 +637,30 @@ impl AwesomeBot {
 
     /// Add a routing handler that is triggered when the photo of a group chat is deleted.
     pub fn delete_chat_photo_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, GroupChat) + Send + Sync + 'static
+        where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
     {
         add_muxer!(self, handler, Muxer::DeleteChatPhotoMux, [])
     }
 
     /// Add a routing handler that is triggered when a group chat is created.
     pub fn group_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, GroupChat) + Send + Sync + 'static
+        where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
     {
         add_muxer!(self, handler, Muxer::GroupChatCreatedMux, [])
+    }
+
+    /// Add a routing handler that is triggered when a super group chat is created.
+    pub fn super_group_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
+    where H: Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static
+    {
+        add_muxer!(self, handler, Muxer::SuperGroupChatCreatedMux, [])
+    }
+
+    /// Add a routing handler that is triggered when a channel chat is created.
+    pub fn channel_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
+    where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
+    {
+        add_muxer!(self, handler, Muxer::ChannelChatCreatedMux, [])
     }
 }
 
