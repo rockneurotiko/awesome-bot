@@ -1,5 +1,5 @@
+use rustc_serialize::Decodable;
 use telegram_bot::*;
-use rustc_serialize::{Decodable};
 
 /// Help trait indicating that at least the `end` method is implemented for the SendBuilder structs
 pub trait Finisher<T: Decodable> {
@@ -19,57 +19,117 @@ impl SendBuilder {
     /// Create a new SendBuilder, don't use it,
     /// use the `send` and `answer` methods of `AwesomeBot` :)
     pub fn new(id: Integer, bot: Api) -> SendBuilder {
-        SendBuilder { chat_id: id, bot: bot }
+        SendBuilder {
+            chat_id: id,
+            bot: bot,
+        }
     }
 
     /// Start a text constructor to send.
     pub fn text(self, t: &str) -> SendText {
-        SendText { send: self, text: t.to_string(), parse_mode: None, disable_webpage_preview: None, reply_to_message_id: None, reply_markup: None }
+        SendText {
+            send: self,
+            text: t.to_string(),
+            parse_mode: None,
+            disable_webpage_preview: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a photo constructor to send.
     pub fn photo(self, t: &str) -> SendPhoto {
-        SendPhoto { send: self, photo: t.to_string(), caption: None, reply_to_message_id: None, reply_markup: None }
+        SendPhoto {
+            send: self,
+            photo: t.to_string(),
+            caption: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start an audio constructor to send.
     pub fn audio(self, t: &str) -> SendAudio {
-        SendAudio { send: self, audio: t.to_string(), duration: None, performer: None, title: None, reply_to_message_id: None, reply_markup: None }
+        SendAudio {
+            send: self,
+            audio: t.to_string(),
+            duration: None,
+            performer: None,
+            title: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a voice constructor to send.
     pub fn voice(self, t: &str) -> SendVoice {
-        SendVoice { send: self, voice: t.to_string(), duration: None, reply_to_message_id: None, reply_markup: None }
+        SendVoice {
+            send: self,
+            voice: t.to_string(),
+            duration: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a document constructor to send.
     pub fn document(self, t: &str) -> SendDocument {
-        SendDocument { send: self, document: t.to_string(), reply_to_message_id: None, reply_markup: None }
+        SendDocument {
+            send: self,
+            document: t.to_string(),
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a sticker constructor to send.
     pub fn sticker(self, t: &str) -> SendSticker {
-        SendSticker { send: self, sticker: t.to_string(), reply_to_message_id: None, reply_markup: None }
+        SendSticker {
+            send: self,
+            sticker: t.to_string(),
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a video constructor to send.
     pub fn video(self, t: &str) -> SendVideo {
-        SendVideo { send: self, video: t.to_string(), caption: None, duration: None, reply_to_message_id: None, reply_markup: None }
+        SendVideo {
+            send: self,
+            video: t.to_string(),
+            caption: None,
+            duration: None,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 
     /// Start a forward constructor to send.
     pub fn forward(self, to: Integer, msg: Integer) -> SendForward {
-        SendForward { send: self, to: to, msg: msg }
+        SendForward {
+            send: self,
+            to: to,
+            msg: msg,
+        }
     }
 
     /// Start an action constructor to send.
     pub fn action(self, action: ChatAction) -> SendAction {
-        SendAction { send: self, action: action }
+        SendAction {
+            send: self,
+            action: action,
+        }
     }
 
     /// Start a location constructor to send.
     pub fn location(self, latitude: Float, longitude: Float) -> SendLocation {
-        SendLocation { send: self, latitude: latitude, longitude: longitude, reply_to_message_id: None, reply_markup: None }
+        SendLocation {
+            send: self,
+            latitude: latitude,
+            longitude: longitude,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
     }
 }
 
@@ -103,8 +163,7 @@ macro_rules! basesendtype {
 }
 
 macro_rules! addkeyboardfuncs {
-    ($name: ident,
-     $markname: ident) => {
+    ($name:ident, $markname:ident) => {
         /// Add keyboard methods to the struct, only one of these will be sent,
         /// and it will be the last one used.
         impl $name {
@@ -126,7 +185,7 @@ macro_rules! addkeyboardfuncs {
                 self
             }
         }
-    }
+    };
 }
 
 basesendtype!(SendText,
@@ -147,7 +206,8 @@ impl Finisher<Message> for SendText {
             self.parse_mode,
             self.disable_webpage_preview,
             self.reply_to_message_id,
-            self.reply_markup.clone())
+            self.reply_markup.clone(),
+        )
     }
 }
 
@@ -168,7 +228,7 @@ impl Finisher<Message> for SendPhoto {
             self.caption.clone(),
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
 
@@ -193,7 +253,7 @@ impl Finisher<Message> for SendAudio {
             self.title.clone(),
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
 
@@ -214,7 +274,7 @@ impl Finisher<Message> for SendVoice {
             self.duration,
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
 
@@ -233,10 +293,9 @@ impl Finisher<Message> for SendDocument {
             self.document.clone(),
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
-
 
 basesendtype!(SendSticker,
               "`Sticker`",
@@ -253,7 +312,7 @@ impl Finisher<Message> for SendSticker {
             self.sticker.clone(),
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
 
@@ -276,7 +335,7 @@ impl Finisher<Message> for SendVideo {
             self.duration,
             self.reply_to_message_id,
             self.reply_markup.clone(),
-            )
+        )
     }
 }
 
@@ -287,11 +346,9 @@ basesendtype!(SendForward,
 
 impl Finisher<Message> for SendForward {
     fn end(&mut self) -> Result<Message> {
-        self.send.bot.forward_message(
-            self.send.chat_id,
-            self.to,
-            self.msg,
-            )
+        self.send
+            .bot
+            .forward_message(self.send.chat_id, self.to, self.msg)
     }
 }
 
@@ -302,10 +359,9 @@ basesendtype!(SendAction,
 
 impl Finisher<bool> for SendAction {
     fn end(&mut self) -> Result<bool> {
-        self.send.bot.send_chat_action(
-            self.send.chat_id,
-            self.action,
-            )
+        self.send
+            .bot
+            .send_chat_action(self.send.chat_id, self.action)
     }
 }
 
@@ -325,6 +381,7 @@ impl Finisher<Message> for SendLocation {
             self.latitude,
             self.longitude,
             self.reply_to_message_id,
-            self.reply_markup.clone())
+            self.reply_markup.clone(),
+        )
     }
 }
