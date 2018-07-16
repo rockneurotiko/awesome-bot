@@ -4,7 +4,7 @@ use std::{thread, time};
 use std::iter::FromIterator;
 use std::collections::HashMap;
 
-use awesome_bot::{ AwesomeBot, Message, ReplyKeyboardMarkup, ChatAction, PhotoSize, Ender, MessageType, Audio, Voice, Document, Sticker, Video, Float};
+use awesome_bot::{ AwesomeBot, Message, ReplyKeyboardMarkup, ChatAction, PhotoSize, Finisher, MessageType, Audio, Voice, Document, Sticker, Video, Float};
 
 macro_rules! debug {
     ($e: expr) => {

@@ -12,9 +12,9 @@ fn echohandler(bot: &AwesomeBot, msg: &Message, _: String, args: Vec<String>) {
 }
 
 fn main() {
-    // Create the Awesome Bot (You need TELEGRAM_BOT_TOKEN environment with the token)
+    // Create the Awesome Bot (You need TELEGRAM_BOT_TOKEN environment variable with the token)
     let mut bot = AwesomeBot::from_env("TELEGRAM_BOT_TOKEN");
-    // Add a command, this will add the routing to that function.
+    // Add a command, this will add the route to that function.
     bot.command("echo (.+)", echohandler);
 
     // Start the bot with getUpdates

@@ -1,12 +1,14 @@
 use telegram_bot::*;
 use rustc_serialize::{Decodable};
 
-/// Help trait that allows to type that at least the end method is implemented for the SendBuilder structs
-pub trait Ender<T: Decodable> {
+/// Help trait indicating that at least the `end` method is implemented for the SendBuilder structs
+pub trait Finisher<T: Decodable> {
     fn end(&mut self) -> Result<T>;
 }
 
-/// SendBuilder it's a builder struct that allows you to construct answers in a beauty way, you will use it transparently with the `send` and `answer` methods of `AwesomeBot`
+/// SendBuilder it's a builder struct that allows you to construct answers in
+/// a composable way, you will use it transparently with the `send` and `answer`
+/// methods of `AwesomeBot`
 #[derive(Clone)]
 pub struct SendBuilder {
     chat_id: Integer,
@@ -14,7 +16,8 @@ pub struct SendBuilder {
 }
 
 impl SendBuilder {
-    /// Create a new SendBuilder, you shouldn't use it, use the `send` and `answer` methods of `AwesomeBot` :)
+    /// Create a new SendBuilder, don't use it,
+    /// use the `send` and `answer` methods of `AwesomeBot` :)
     pub fn new(id: Integer, bot: Api) -> SendBuilder {
         SendBuilder { chat_id: id, bot: bot }
     }
@@ -77,7 +80,7 @@ macro_rules! basesendtype {
         [$($id: ident => $field: ty),*],
         [$($o_id: ident => ($o_name: ident, $o_field: ty, $docf: expr)),*]) => {
 
-        #[doc="Transparent struct builded by `SendBuilder` to send"]
+        #[doc="Transparent struct built by `SendBuilder` to send"]
         #[doc=$structdoc]
         #[doc="messages."]
         pub struct $name  {
@@ -102,7 +105,8 @@ macro_rules! basesendtype {
 macro_rules! addkeyboardfuncs {
     ($name: ident,
      $markname: ident) => {
-        /// Add keyboard methods to the struct, only one of this will be sended, and will be the last one used.
+        /// Add keyboard methods to the struct, only one of these will be sent,
+        /// and it will be the last one used.
         impl $name {
             /// Add a keyboard to the reply
             pub fn keyboard(&mut self, r: ReplyKeyboardMarkup) -> &mut $name {
@@ -128,14 +132,14 @@ macro_rules! addkeyboardfuncs {
 basesendtype!(SendText,
               "`Text`",
               [text => String],
-              [parse_mode => (parse_mode, ParseMode, "Set a `ParseMode` for the message"),
+              [parse_mode => (parse_mode, ParseMode, "Set `ParseMode` for the message"),
                disable_webpage_preview => (disable_preview, bool, "Set `true` to disable the link preview in the message."),
-               reply_to_message_id => (reply_id, Integer, "Set a message ID to reply with this message."),
-               reply_markup => (markup, ReplyMarkup, "Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods")]);
+               reply_to_message_id => (reply_id, Integer, "Set a message ID to reply to with this message."),
+               reply_markup => (markup, ReplyMarkup, "Set a `ReplyMarkup` to send, but instead of directly using this, use the `keyboard`, `hide` or `force` methods")]);
 
 addkeyboardfuncs!(SendText, reply_markup);
 
-impl Ender<Message> for SendText {
+impl Finisher<Message> for SendText {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_message(
             self.send.chat_id,
@@ -156,7 +160,7 @@ basesendtype!(SendPhoto,
 
 addkeyboardfuncs!(SendPhoto, reply_markup);
 
-impl Ender<Message> for SendPhoto {
+impl Finisher<Message> for SendPhoto {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_photo(
             self.send.chat_id,
@@ -179,7 +183,7 @@ basesendtype!(SendAudio,
 
 addkeyboardfuncs!(SendAudio, reply_markup);
 
-impl Ender<Message> for SendAudio {
+impl Finisher<Message> for SendAudio {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_audio(
             self.send.chat_id,
@@ -202,7 +206,7 @@ basesendtype!(SendVoice,
 
 addkeyboardfuncs!(SendVoice, reply_markup);
 
-impl Ender<Message> for SendVoice {
+impl Finisher<Message> for SendVoice {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_voice(
             self.send.chat_id,
@@ -222,7 +226,7 @@ basesendtype!(SendDocument,
 
 addkeyboardfuncs!(SendDocument, reply_markup);
 
-impl Ender<Message> for SendDocument {
+impl Finisher<Message> for SendDocument {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_document(
             self.send.chat_id,
@@ -242,7 +246,7 @@ basesendtype!(SendSticker,
 
 addkeyboardfuncs!(SendSticker, reply_markup);
 
-impl Ender<Message> for SendSticker {
+impl Finisher<Message> for SendSticker {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_sticker(
             self.send.chat_id,
@@ -263,7 +267,7 @@ basesendtype!(SendVideo,
 
 addkeyboardfuncs!(SendVideo, reply_markup);
 
-impl Ender<Message> for SendVideo {
+impl Finisher<Message> for SendVideo {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_video(
             self.send.chat_id,
@@ -281,7 +285,7 @@ basesendtype!(SendForward,
               [to => Integer, msg => Integer],
               []);
 
-impl Ender<Message> for SendForward {
+impl Finisher<Message> for SendForward {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.forward_message(
             self.send.chat_id,
@@ -296,7 +300,7 @@ basesendtype!(SendAction,
               [action => ChatAction],
               []);
 
-impl Ender<bool> for SendAction {
+impl Finisher<bool> for SendAction {
     fn end(&mut self) -> Result<bool> {
         self.send.bot.send_chat_action(
             self.send.chat_id,
@@ -314,7 +318,7 @@ basesendtype!(SendLocation,
 
 addkeyboardfuncs!(SendLocation, reply_markup);
 
-impl Ender<Message> for SendLocation {
+impl Finisher<Message> for SendLocation {
     fn end(&mut self) -> Result<Message> {
         self.send.bot.send_location(
             self.send.chat_id,

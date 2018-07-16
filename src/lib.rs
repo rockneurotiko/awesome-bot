@@ -1,32 +1,35 @@
 //! This crate helps writing bots for Telegram. This is a framework to build the bots,
-//! the main wrapper crate are `telegram-bot`
+//! the main wrapped crate is `telegram-bot` which provides the actual protocol access.
 //!
 //! How to use it
 //! -------------
 //!
-//! The first step is always create the AwesomeBot instance,
+//! The first step is always to create the AwesomeBot instance,
 //! this will represent your bot, so, if you have more than one bot,
 //! you will have to create more instances.
 //!
 //! You have two ways to create the bot, with `new`,
-//! that you pass the bot token diretly, or with `from_env`, more recommended.
+//! that you pass the bot token directly, or with `from_env`, more recommended.
 //!
-//! This framework uses a routing methodology to apply behaviour.
+//! This framework uses the "route" pattern to apply behavior.
 //! There are plenty of routing ways available, the main ones are:
 //! `command`, `simple_command`, `any_fn`.
 //! But there are many more, check the docs of [AwesomeBot](struct.AwesomeBot.html)
 //!
-//! Then, to send things you need to use the SendBuilder struct, to create an instance use the `send` or `answer` methods in `AwesomeBot`.
+//! Then, to send things you need to use the SendBuilder struct, to create an instance use
+//! the `send` or `answer` methods in `AwesomeBot`.
 //!
-//! This uses the "builder" methodology, for example, to answer a message with a text, while disabling web pages, you do (Assuming that bot is `&AwesomeBot` and msg is `&Message`):
+//! This uses the "builder" pattern, for example, to answer a message with a text,
+//! while disabling web pages, you do (Assuming that bot is `&AwesomeBot` and msg is `&Message`):
 //!
 //! ``` ignore
 //! bot.answer(msg).text("Answering this text").disable_preview(true).end();
 //! ```
 //!
-//! Check [`SendBuilder`](struct.SendBuilder.html) struct implementation to see the methods available (text, photo, audio, ...)
+//! Check [`SendBuilder`](struct.SendBuilder.html) struct implementation to see the methods
+//! available (text, photo, audio, ...)
 //!
-//! Once you have all your routings, you need to start the bot, right now it support only
+//! Once you have all your routings, you need to start the bot, right now it supports only
 //! getUpdates method, just call the `simple_start` method in AwesomeBot.
 //!
 //! You don't have to worry about blocking the bot in a function handler,
@@ -93,7 +96,7 @@ pub enum GeneralSound {
     Voice(Voice),
 }
 
-// This enumerable is used to determine what type of routing handler to use
+// This enumeration determines what type of routing handler to use
 #[derive(Clone)]
 enum Muxer {
     PatternMux(Regex, Arc<Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static>),
@@ -118,10 +121,10 @@ enum Muxer {
     AnyMux(Arc<Fn(&AwesomeBot, &Message) + Send + Sync + 'static>),
 }
 
-// This macros match one muxer and execute a block while sending to the "Any" message :)
+// This macro matches one muxer and executes a block while sending "Any" message :)
 // First: self
 // Second: msg to pass
-// Third: List of Pattern to match => Code block to execute for that Pattern
+// Third: List of Patterns to match => Code block to execute for that Pattern
 macro_rules! muxer_match {
     ($_self: expr, $msg: expr, [$($pat:pat => $result: expr),*]) => {
         for m in &$_self.muxers {
@@ -136,7 +139,7 @@ macro_rules! muxer_match {
     }
 }
 
-// This macro add a muxer to the muxers vec
+// This macro adds a muxer to the muxers vec
 // First: self
 // Second: handler (function to add)
 // Third: The Muxer enum type
@@ -156,7 +159,7 @@ macro_rules! add_muxer {
 
 /// Main type for building the Telegram Bot.
 ///
-/// You can create a new instance with `new` or `from_env`, add routing handlers and start the bot.
+/// Create a new instance using `new` or `from_env`, add routing handlers and start the bot.
 pub struct AwesomeBot {
     bot: Api,
     /// The ID of the bot.
@@ -206,7 +209,7 @@ impl AwesomeBot {
     }
 
     /// Will receive the Bot Token from the environment variable `var` and call `new`.
-    /// It panics if the environment variable can't be readed or the token are invalid.
+    /// It panics if the environment variable can't be read or if the token is invalid.
     pub fn from_env(var: &str) -> AwesomeBot {
         let token = env::var(var)
             .ok()
@@ -217,7 +220,7 @@ impl AwesomeBot {
 
     // Listener functions
 
-    /// Start the bot using `getUpdates` method, calling the routings defined before calling this method.
+    /// Start the bot using `getUpdates` method, calling the routes defined before calling this method.
     pub fn simple_start(&self) -> Result<()> {
         let mut listener = self.bot.listener(ListeningMethod::LongPoll(Some(20)));
         let mut pool = Pool::new(4);
@@ -241,19 +244,19 @@ impl AwesomeBot {
     }
 
     // Send builders
-    /// Start a SendBuilder builder directly with the id, this is useful when you have the id saved and want to send a message.
+    /// Start a SendBuilder directly with the id, this is useful when you have the id saved and want to send a message.
     pub fn send(&self, id: Integer) -> SendBuilder {
         SendBuilder::new(id, self.bot.clone())
     }
 
-    /// Start a SendBuilder builder answering a message directly, this is used to answer in a handler to the sender of the message.
+    /// Start a SendBuilder answering a message directly, this is used to answer in a handler to the sender of the message.
     pub fn answer(&self, m: &Message) -> SendBuilder {
         self.send(m.chat.id())
     }
 
-    // AUXILIAR FUNCTIONS
+    // AUXILIARY FUNCTIONS
 
-    // This function modify the command adding the username and the some regex cleanup
+    // This function modifies the command by adding the username and some regex cleanup
     fn modify_command(orig: &str, username: &str) -> String {
         let s = String::from(orig);
         let mut words: Vec<String> = s.split_whitespace().map(|x| String::from(x)).collect();
@@ -285,7 +288,7 @@ impl AwesomeBot {
     }
 }
 
-// Handle functions, this implementations are separated of the other
+// Internal handler functions
 impl AwesomeBot {
     fn handle_text_msg(&self, msg: &Message, text: String) {
         use Muxer::*;
@@ -298,9 +301,9 @@ impl AwesomeBot {
                       },
                       &PatternMux(ref r, ref f) =>
                       {
-                          if r.is_match(&text) { // If there are match
+                          if r.is_match(&text) { // If there are matches
                               r.captures(&text) // Get the captures
-                                  .map(|c| { // Map over them because are Option<_>
+                                  .map(|c| { // Map over them because they are Option<_>
                                       // Change the capture groups to Vec<String>
                                       c.iter().map(|x| String::from(x.unwrap_or("")))
                                           .collect::<Vec<_>>()
@@ -459,24 +462,34 @@ impl AwesomeBot {
 
 
 // Add functions implementation
-/// Methods to add function handlers on different routings.
+/// Methods to add function handlers to different routes.
 ///
 /// The different parameters of the handlers are:
 ///
 /// - Common:
-///    - `&AwesomeBot`: First argument of all the handlers, it's the bot itself, so you can send/answer.
-///    - `&Message`: Second argument of all the handlers, it's the message that has triggered the handler, you can grab all the information you want. This struct comes from `telegram-bot` crate.
+///    - `&AwesomeBot`: First argument of all the handlers is the bot itself, so you can send/answer.
+///    - `&Message`: Second argument of all the handlers is the message that has triggered
+///                  the handler, you can grab all the information you want. This struct comes
+///                  from `telegram-bot` crate.
 /// - Specific to some handlers:
-///    - `String`: Refers to the full text if it's a command or regular expression, or the new title of a group.
-///    - `Vec<String>`: This are only in `command` and `regex` method, and are a vector of the capture groups.
-///    - `Vec<PhotoSize>`: Represents an image (it's received in different sizes) and you get it when a photo arrives or when someone change a group photo.
-///    - `Video`, `Document`, `Sticker`, `Audio`, `Voice`, `GeneralSound`, `Contact`, `Float`: All this parameters are the media that made the handler trigger, for example, in `video_fn` you will receive a `Video`.
-///    - `User`: An User is received when a participant left or enter a group.
-///    - `Chat::Group`: Whenever someone delete a chat photo, or create a group (add the bot to the group) you receive this.
+///    - `String`: Refers to the full text if it's a command or regular expression,
+///                or the new title of a group.
+///    - `Vec<String>`: These are only in `command` and `regex` methods, and represent a vector
+///                     of the capture groups.
+///    - `Vec<PhotoSize>`: Represents an image (it's received in different sizes) and you get it
+///                        when a photo arrives or when someone change a group photo.
+///    - `Video`, `Document`, `Sticker`, `Audio`, `Voice`, `GeneralSound`, `Contact`, `Float`:
+///                  All these parameters are the media that made the handler trigger, for example,
+///                  in `video_fn` you will receive a `Video`.
+///    - `User`: An User is received when a participants leave or enter a group.
+///    - `Chat::Group`: Whenever someone delete a chat photo, or create a group (add the bot to
+///                     the group) you receive this.
 impl AwesomeBot {
-    /// Add a complex command routing (With capture groups).
+    /// Add complex command routing (With capture groups).
     ///
-    /// This method will transform the pattern to be exhaustive and include the mention to the bot, for example, the pattern `echo (.+)` will be used inside an the regular expression `^/start(?:@usernamebot)? (.+)$`
+    /// This method will transform the pattern to be exhaustive and include the mention to the bot,
+    /// for example, the pattern `echo (.+)` will be used inside an the regular expression
+    /// `^/start(?:@usernamebot)? (.+)$`
     pub fn command<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static
     {
@@ -489,9 +502,10 @@ impl AwesomeBot {
         }
     }
 
-    /// Add a simple command routing (Without capture groups).
+    /// Add simple command routing (Without capture groups).
     ///
-    /// This method will transform the pattern the same as `command` method, but the handler will not get the capture groups.
+    /// This method will transform the pattern the same as `command` method, but the handler
+    /// will not receive the capture groups.
     pub fn simple_command<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static
     {
@@ -504,9 +518,10 @@ impl AwesomeBot {
         }
     }
 
-    /// Add a complex regular expression routing (With capture groups)
+    /// Add complex regular expression routing (With capture groups)
     ///
-    /// This method won't tranform anything about the regular expression, you are free to write the expression you want and receive the capture groups matched.
+    /// This method won't tranform anything about the regular expression, you are free to write
+    /// the expression you want and receive the capture groups matched.
     pub fn regex<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static
     {
@@ -518,9 +533,10 @@ impl AwesomeBot {
         }
     }
 
-    /// Add a complex simple expression routing (Without capture groups)
+    /// Add complex regular expression routing (Without capture groups)
     ///
-    /// This method won't tranform anything about the regular expression, you are free to write the expression. The difference with `regex` is that you won't receive the capture groups.
+    /// This method won't tranform anything about the regular expression, you are free to write
+    /// the expression. The difference from `regex` is that you won't receive any capture groups.
     pub fn simple_regex<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static
     {
@@ -537,7 +553,7 @@ impl AwesomeBot {
     // {
     // }
 
-    /// Add a routing handler that will be triggerer in every message, useful to log.
+    /// Add a routing handler that will be triggerer on every message, useful for logging.
     pub fn any_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message) + Send + Sync + 'static
     {
@@ -572,7 +588,7 @@ impl AwesomeBot {
         add_muxer!(self, handler, Muxer::StickerMux, [])
     }
 
-    /// Add a audio media routing handler.
+    /// Add an audio media routing handler.
     pub fn audio_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, Audio) + Send + Sync + 'static
     {
@@ -586,7 +602,7 @@ impl AwesomeBot {
         add_muxer!(self, handler, Muxer::VoiceMux, [])
     }
 
-    /// Add a routing handler that is triggered when it is received an `Audio` or a `Voice`
+    /// Add a routing handler that is triggered when an `Audio` or a `Voice` is received.
     pub fn all_music_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, GeneralSound) + Send + Sync + 'static
     {
@@ -607,14 +623,14 @@ impl AwesomeBot {
         add_muxer!(self, handler, Muxer::LocationMux, [])
     }
 
-    /// Add a routing handler that is triggered when a new participant enters in a group.
+    /// Add a routing handler that is triggered when a new participant enters a group.
     pub fn new_participant_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static
     {
         add_muxer!(self, handler, Muxer::NewParticipantMux, [])
     }
 
-    /// Add a routing handler that is triggered when a participant left a group.
+    /// Add a routing handler that is triggered when a participant leaves a group.
     pub fn left_participant_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
         where H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static
     {
