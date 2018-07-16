@@ -21,7 +21,7 @@ impl SendBuilder {
 
     /// Start a text constructor to send.
     pub fn text(self, t: &str) -> SendText {
-        SendText { send: self, text: t.to_string(), disable_webpage_preview: None, reply_to_message_id: None, reply_markup: None }
+        SendText { send: self, text: t.to_string(), parse_mode: None, disable_webpage_preview: None, reply_to_message_id: None, reply_markup: None }
     }
 
     /// Start a photo constructor to send.
@@ -128,7 +128,8 @@ macro_rules! addkeyboardfuncs {
 basesendtype!(SendText,
               "`Text`",
               [text => String],
-              [disable_webpage_preview => (disable_preview, bool, "Set `true` to disable the link preview in the message."),
+              [parse_mode => (parse_mode, ParseMode, "Set a `ParseMode` for the message"),
+               disable_webpage_preview => (disable_preview, bool, "Set `true` to disable the link preview in the message."),
                reply_to_message_id => (reply_id, Integer, "Set a message ID to reply with this message."),
                reply_markup => (markup, ReplyMarkup, "Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods")]);
 
@@ -139,6 +140,7 @@ impl Ender<Message> for SendText {
         self.send.bot.send_message(
             self.send.chat_id,
             self.text.clone(),
+            self.parse_mode,
             self.disable_webpage_preview,
             self.reply_to_message_id,
             self.reply_markup.clone())

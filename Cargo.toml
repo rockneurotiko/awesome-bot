@@ -3,7 +3,6 @@ name = "awesome-bot"
 version = "0.1.0"
 authors = ["Rock Neurotiko <miguelglafuente@gmail.com>"]
 license = "MIT or Apache-2.0 or Beerware"
-build = "build.rs"
 
 description = "An awesome framework to build Telegram bots up to telegram-bot library."
 readme = "README.md"
@@ -14,10 +13,7 @@ keywords = ["telegram", "bot", "api", "library", "framework"]
 
 
 [dependencies]
-telegram-bot = "0.3.*"
+telegram-bot = "0.4.2"
 rustc-serialize = "0.3.*"
 regex = "0.1.*"
 scoped_threadpool = "0.1.*"
-
-[build-dependencies]
-rustc_version = "~0.1"
