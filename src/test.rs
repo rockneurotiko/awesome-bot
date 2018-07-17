@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test {
-    use AwesomeBot;
     use regex::Regex;
+    use AwesomeBot;
 
     struct Defs {
         cmd: &'static str,
@@ -20,16 +20,16 @@ mod test {
     }
 
     macro_rules! create_test_string {
-        (
-            $name: ident,
-            $cmd: expr
-                ) => {
+        ($name:ident, $cmd:expr) => {
             #[test]
             fn $name() {
-                let defs = Defs{cmd: $cmd, ..Default::default()};
+                let defs = Defs {
+                    cmd: $cmd,
+                    ..Default::default()
+                };
                 assert_eq!(AwesomeBot::modify_command(defs.cmd, &defs.usern), defs.res);
             }
-        }
+        };
     }
     create_test_string!(mt_simple_right, "test");
     create_test_string!(mt_end_right, "test$");
@@ -40,11 +40,17 @@ mod test {
 
     #[test]
     fn test_complex_command() {
-        assert_eq!(AwesomeBot::modify_command("echo (.+)", "rock"), String::from("^/echo(?:@rock)? (.+)$"));
+        assert_eq!(
+            AwesomeBot::modify_command("echo (.+)", "rock"),
+            String::from("^/echo(?:@rock)? (.+)$")
+        );
     }
 
     fn create_regex(cmd: &'static str) -> Regex {
-        let defs = Defs{cmd: cmd, ..Default::default()};
+        let defs = Defs {
+            cmd: cmd,
+            ..Default::default()
+        };
         let cmd = AwesomeBot::modify_command(defs.cmd, &defs.usern);
         Regex::new(&*cmd).unwrap()
     }

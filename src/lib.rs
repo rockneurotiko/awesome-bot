@@ -72,10 +72,10 @@
 //! You have more examples in `examples/` directory in the project's repository.
 //!
 
-extern crate telegram_bot;
 extern crate regex;
 extern crate rustc_serialize;
 extern crate scoped_threadpool;
+extern crate telegram_bot;
 
 mod send;
 mod test;
@@ -99,8 +99,14 @@ pub enum GeneralSound {
 // This enumeration determines what type of routing handler to use
 #[derive(Clone)]
 enum Muxer {
-    PatternMux(Regex, Arc<Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static>),
-    TextMux(Regex, Arc<Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static>),
+    PatternMux(
+        Regex,
+        Arc<Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static>,
+    ),
+    TextMux(
+        Regex,
+        Arc<Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static>,
+    ),
     PhotoMux(Arc<Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static>),
     VideoMux(Arc<Fn(&AwesomeBot, &Message, Video) + Send + Sync + 'static>),
     DocumentMux(Arc<Fn(&AwesomeBot, &Message, Document) + Send + Sync + 'static>),
@@ -116,7 +122,9 @@ enum Muxer {
     NewChatPhotoMux(Arc<Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static>),
     DeleteChatPhotoMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
     GroupChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
-    SuperGroupChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static>),
+    SuperGroupChatCreatedMux(
+        Arc<Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static>,
+    ),
     ChannelChatCreatedMux(Arc<Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static>),
     AnyMux(Arc<Fn(&AwesomeBot, &Message) + Send + Sync + 'static>),
 }
@@ -417,7 +425,11 @@ impl AwesomeBot {
                           );
     }
 
-    fn handle_super_group_chat_created_msg(&self, msg: &Message, migration: GroupToSuperGroupMigration) {
+    fn handle_super_group_chat_created_msg(
+        &self,
+        msg: &Message,
+        migration: GroupToSuperGroupMigration,
+    ) {
         use Muxer::*;
         muxer_match!(self, msg, [&SuperGroupChatCreatedMux (ref f) => f(self, msg, migration.clone())]);
     }
@@ -454,12 +466,15 @@ impl AwesomeBot {
             NewChatPhoto(photos) => self.handle_chat_photo_msg(&message, photos),
             DeleteChatPhoto => self.handle_delete_photo_msg(&message, message.chat.clone()),
             GroupChatCreated => self.handle_group_created_msg(&message, message.chat.clone()),
-            SuperGroupChatCreated(migration) => self.handle_super_group_chat_created_msg(&message, migration),
-            ChannelChatCreated => self.handle_channel_chat_created_msg(&message, message.chat.clone()),
+            SuperGroupChatCreated(migration) => {
+                self.handle_super_group_chat_created_msg(&message, migration)
+            }
+            ChannelChatCreated => {
+                self.handle_channel_chat_created_msg(&message, message.chat.clone())
+            }
         }
     }
 }
-
 
 // Add functions implementation
 /// Methods to add function handlers to different routes.
@@ -491,14 +506,13 @@ impl AwesomeBot {
     /// for example, the pattern `echo (.+)` will be used inside an the regular expression
     /// `^/start(?:@usernamebot)? (.+)$`
     pub fn command<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static,
     {
         let nr = Self::modify_command(pattern, &self.username);
         match Regex::new(&*nr) {
-            Ok(r) => {
-                add_muxer!(self, handler, Muxer::PatternMux, [r])
-            }
-            Err(_) => self
+            Ok(r) => add_muxer!(self, handler, Muxer::PatternMux, [r]),
+            Err(_) => self,
         }
     }
 
@@ -507,14 +521,13 @@ impl AwesomeBot {
     /// This method will transform the pattern the same as `command` method, but the handler
     /// will not receive the capture groups.
     pub fn simple_command<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static,
     {
         let nr = Self::modify_command(pattern, &self.username);
         match Regex::new(&*nr) {
-            Ok(r) => {
-                add_muxer!(self, handler, Muxer::TextMux, [r])
-            }
-            Err(_) => self
+            Ok(r) => add_muxer!(self, handler, Muxer::TextMux, [r]),
+            Err(_) => self,
         }
     }
 
@@ -523,13 +536,12 @@ impl AwesomeBot {
     /// This method won't tranform anything about the regular expression, you are free to write
     /// the expression you want and receive the capture groups matched.
     pub fn regex<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, String, Vec<String>) + Send + Sync + 'static,
     {
         match Regex::new(pattern) {
-            Ok(r) => {
-                add_muxer!(self, handler, Muxer::PatternMux, [r])
-            }
-            Err(_) => self
+            Ok(r) => add_muxer!(self, handler, Muxer::PatternMux, [r]),
+            Err(_) => self,
         }
     }
 
@@ -538,13 +550,12 @@ impl AwesomeBot {
     /// This method won't tranform anything about the regular expression, you are free to write
     /// the expression. The difference from `regex` is that you won't receive any capture groups.
     pub fn simple_regex<H>(&mut self, pattern: &str, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static,
     {
         match Regex::new(pattern) {
-            Ok(r) => {
-                add_muxer!(self, handler, Muxer::TextMux, [r])
-            }
-            Err(_) => self
+            Ok(r) => add_muxer!(self, handler, Muxer::TextMux, [r]),
+            Err(_) => self,
         }
     }
 
@@ -555,132 +566,148 @@ impl AwesomeBot {
 
     /// Add a routing handler that will be triggerer on every message, useful for logging.
     pub fn any_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::AnyMux, [])
     }
 
     /// Add a photo media routing handler.
     pub fn photo_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::PhotoMux, [])
     }
 
     /// Add a video media routing handler.
     pub fn video_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Video) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Video) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::VideoMux, [])
     }
 
     /// Add a document media routing handler.
     pub fn document_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Document) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Document) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::DocumentMux, [])
     }
 
     /// Add a sticker media routing handler.
     pub fn sticker_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Sticker) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Sticker) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::StickerMux, [])
     }
 
     /// Add an audio media routing handler.
     pub fn audio_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Audio) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Audio) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::AudioMux, [])
     }
 
     /// Add a voice media routing handler.
     pub fn voice_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Voice) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Voice) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::VoiceMux, [])
     }
 
     /// Add a routing handler that is triggered when an `Audio` or a `Voice` is received.
     pub fn all_music_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, GeneralSound) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, GeneralSound) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::GeneralAudioMux, [])
     }
 
     /// Add a contact routing handler.
     pub fn contact_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Contact) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Contact) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::ContactMux, [])
     }
 
     /// Add a location routing handler.
     pub fn location_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Float, Float) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Float, Float) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::LocationMux, [])
     }
 
     /// Add a routing handler that is triggered when a new participant enters a group.
     pub fn new_participant_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::NewParticipantMux, [])
     }
 
     /// Add a routing handler that is triggered when a participant leaves a group.
     pub fn left_participant_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, User) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::LeftParticipantMux, [])
     }
 
     /// Add a routing handler that is triggered when the title of a group chat is changed.
     pub fn new_title_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, String) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::NewTitleMux, [])
     }
 
     /// Add a routing handler that is triggered when the photo of a group chat is changed.
     pub fn new_chat_photo_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Vec<PhotoSize>) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::NewChatPhotoMux, [])
     }
 
     /// Add a routing handler that is triggered when the photo of a group chat is deleted.
     pub fn delete_chat_photo_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::DeleteChatPhotoMux, [])
     }
 
     /// Add a routing handler that is triggered when a group chat is created.
     pub fn group_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-        where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::GroupChatCreatedMux, [])
     }
 
     /// Add a routing handler that is triggered when a super group chat is created.
     pub fn super_group_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-    where H: Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, GroupToSuperGroupMigration) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::SuperGroupChatCreatedMux, [])
     }
 
     /// Add a routing handler that is triggered when a channel chat is created.
     pub fn channel_chat_created_fn<H>(&mut self, handler: H) -> &mut AwesomeBot
-    where H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static
+    where
+        H: Fn(&AwesomeBot, &Message, Chat) + Send + Sync + 'static,
     {
         add_muxer!(self, handler, Muxer::ChannelChatCreatedMux, [])
     }
 }
-
-
 
 // fn detect_file_or_id(name: &str, path: String) -> SendPath {
 //     // When PathExt becomes stable, use Path::new(&path).exists() instead of this!

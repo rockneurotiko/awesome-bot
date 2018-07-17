@@ -1,28 +1,33 @@
 extern crate awesome_bot;
 
-use std::{thread, time};
-use std::iter::FromIterator;
 use std::collections::HashMap;
+use std::iter::FromIterator;
+use std::{thread, time};
 
-use awesome_bot::{ AwesomeBot, Message, ReplyKeyboardMarkup, ChatAction, PhotoSize, Finisher, MessageType, Audio, Voice, Document, Sticker, Video, Float};
+use awesome_bot::{
+    Audio, AwesomeBot, ChatAction, Document, Finisher, Float, Message, MessageType, PhotoSize,
+    ReplyKeyboardMarkup, Sticker, Video, Voice,
+};
 
 macro_rules! debug {
-    ($e: expr) => {
+    ($e:expr) => {
         println!("{:?}", $e);
-    }
+    };
 }
 
 macro_rules! debug_msg {
-    ($m: expr, $t: expr) => {
+    ($m:expr, $t:expr) => {
         println!("<{}> {}", $m.from.first_name, $t);
     };
-    ($m: expr) => {
+    ($m:expr) => {
         println!("<{}>", $m.from.first_name);
-    }
+    };
 }
 
 fn transform(vecs: Vec<Vec<&str>>) -> Vec<Vec<String>> {
-    vecs.iter().map(|x| x.iter().map(|x| x.to_string()).collect()).collect()
+    vecs.iter()
+        .map(|x| x.iter().map(|x| x.to_string()).collect())
+        .collect()
 }
 
 fn cmd_keyboard(bot: &AwesomeBot, msg: &Message, _: String) {
@@ -36,7 +41,11 @@ fn cmd_keyboard(bot: &AwesomeBot, msg: &Message, _: String) {
 }
 
 fn test_async_hand(bot: &AwesomeBot, msg: &Message, _: String) {
-    debug!(bot.answer(msg).text("Starting, send me another command in the next 5 seconds...").end());
+    debug!(
+        bot.answer(msg)
+            .text("Starting, send me another command in the next 5 seconds...")
+            .end()
+    );
     thread::sleep(time::Duration::from_millis(5000));
     debug!(bot.answer(msg).text("End async test").end());
 }
@@ -63,24 +72,36 @@ fn show_me_hand(bot: &AwesomeBot, msg: &Message, _: String) {
         ("/hidekeyboard", "Hide the keyboard"),
         ("/hardecho", "Echo with force reply"),
         ("/forwardme", "Forward that message to you"),
-        ("/sleep", "Sleep for 5 seconds, without blocking, awesome goroutines"),
-        ("/showmecommands", "Returns you a keyboard with the simplest commands"),
+        (
+            "/sleep",
+            "Sleep for 5 seconds, without blocking, awesome goroutines",
+        ),
+        (
+            "/showmecommands",
+            "Returns you a keyboard with the simplest commands",
+        ),
         ("/sendimage", "Sends you an image"),
         ("/sendimagekey", "Sends you an image with a custom keyboard"),
         ("/senddocument", "Sends you a document"),
         ("/sendsticker", "Sends you a sticker"),
         ("/sendvideo", "Sends you a video"),
         ("/sendlocation", "Sends you a location"),
-        ("/sendchataction", "Sends a random chat action")]);
+        ("/sendchataction", "Sends a random chat action"),
+    ]);
 
-    let commands_k = divide_by_two(cmds.into_iter().map(|(x,_)| x));
+    let commands_k = divide_by_two(cmds.into_iter().map(|(x, _)| x));
     let kbl = ReplyKeyboardMarkup {
         keyboard: transform(commands_k),
         resize_keyboard: None,
         one_time_keyboard: Some(true),
         selective: None,
     };
-    debug!(bot.answer(msg).text("There you have the commands!").keyboard(kbl).end());
+    debug!(
+        bot.answer(msg)
+            .text("There you have the commands!")
+            .keyboard(kbl)
+            .end()
+    );
 }
 
 fn hide_keyboard(bot: &AwesomeBot, msg: &Message, _: String) {
@@ -96,7 +117,11 @@ fn hard_echo(bot: &AwesomeBot, msg: &Message, _: String, args: Vec<String>) {
 }
 
 fn hello_hand(bot: &AwesomeBot, msg: &Message, _: String) {
-    debug!(bot.answer(msg).text(&format!("Hi {}!", msg.from.first_name)).end());
+    debug!(
+        bot.answer(msg)
+            .text(&format!("Hi {}!", msg.from.first_name))
+            .end()
+    );
 }
 
 fn tell_me_hand(bot: &AwesomeBot, msg: &Message, _: String, args: Vec<String>) {
@@ -156,9 +181,18 @@ fn handaction(bot: &AwesomeBot, msg: &Message, _: String) {
 // =================
 
 fn transform_info_photos(v: Vec<PhotoSize>) -> String {
-    v.iter().map(|p| {
-        format!("Image of size ({} x {})\nID: {}\nSize: {}", p.width, p.height, p.file_id, p.file_size.unwrap_or(0))
-    }).collect::<Vec<_>>().join("\n----------\n")
+    v.iter()
+        .map(|p| {
+            format!(
+                "Image of size ({} x {})\nID: {}\nSize: {}",
+                p.width,
+                p.height,
+                p.file_id,
+                p.file_size.unwrap_or(0)
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n----------\n")
 }
 
 fn photo_handler(bot: &AwesomeBot, msg: &Message, photos: Vec<PhotoSize>) {
@@ -177,19 +211,39 @@ fn voice_handler(bot: &AwesomeBot, msg: &Message, voice: Voice) {
 }
 
 fn document_handler(bot: &AwesomeBot, msg: &Message, document: Document) {
-    let mut message = format!("Information about the document:\nID: {}\nFile name: {}\nMimeType: {}\nFile size: {} Bytes", document.file_id, document.file_name.unwrap_or("No name".into()), document.mime_type.unwrap_or("No mime type".into()), document.file_size.unwrap_or(0));
+    let mut message = format!(
+        "Information about the document:\nID: {}\nFile name: {}\nMimeType: {}\nFile size: {} Bytes",
+        document.file_id,
+        document.file_name.unwrap_or("No name".into()),
+        document.mime_type.unwrap_or("No mime type".into()),
+        document.file_size.unwrap_or(0)
+    );
     if let Some(thumb) = document.thumb {
-        message = format!("{}\nAnd the information about the thumb:\n{}", message, transform_info_photos(vec![thumb]));
+        message = format!(
+            "{}\nAnd the information about the thumb:\n{}",
+            message,
+            transform_info_photos(vec![thumb])
+        );
     }
     // Add thumb
     debug!(bot.answer(msg).text(&message).end());
 }
 
 fn sticker_handler(bot: &AwesomeBot, msg: &Message, sticker: Sticker) {
-    let mut message = format!("Information about the sticker:\nID: {}\nWidth: {}\nHeight: {}\nFile size: {} Bytes", sticker.file_id, sticker.width, sticker.height, sticker.file_size.unwrap_or(0));
+    let mut message = format!(
+        "Information about the sticker:\nID: {}\nWidth: {}\nHeight: {}\nFile size: {} Bytes",
+        sticker.file_id,
+        sticker.width,
+        sticker.height,
+        sticker.file_size.unwrap_or(0)
+    );
     // Add thumb
     if let Some(thumb) = sticker.thumb {
-        message = format!("{}\nAnd the information about the thumb:\n{}", message, transform_info_photos(vec![thumb]));
+        message = format!(
+            "{}\nAnd the information about the thumb:\n{}",
+            message,
+            transform_info_photos(vec![thumb])
+        );
     }
     debug!(bot.answer(msg).text(&message).end());
 }
@@ -198,13 +252,20 @@ fn video_handler(bot: &AwesomeBot, msg: &Message, video: Video) {
     let mut message = format!("Information about the video:\nID: {}\nWidth: {}\nHeight: {}\nDuration: {}\nMime type: {}\nFile size: {} Bytes", video.file_id, video.width, video.height, video.duration, video.mime_type.unwrap_or("No mime type".into()), video.file_size.unwrap_or(0));
     // Add thumb
     if let Some(thumb) = video.thumb {
-        message = format!("{}\nThumb:\n{}", message, transform_info_photos(vec![thumb]));
+        message = format!(
+            "{}\nThumb:\n{}",
+            message,
+            transform_info_photos(vec![thumb])
+        );
     }
     debug!(bot.answer(msg).text(&message).end());
 }
 
 fn location_handler(bot: &AwesomeBot, msg: &Message, latitude: Float, longitude: Float) {
-    let message = format!("Information of location:\nLatitude: {}\nLongitude: {}", latitude, longitude);
+    let message = format!(
+        "Information of location:\nLatitude: {}\nLongitude: {}",
+        latitude, longitude
+    );
     debug!(bot.answer(msg).text(&message).end());
 }
 
