@@ -1,46 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/telegram-bot-0.3.0/src/lib.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>lib.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/Users/rock/.cargo/registry/src/github.com-1ecc6299db9ec823/telegram-bot-0.4.2/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -768,692 +726,696 @@
 <span id="726">726</span>
 <span id="727">727</span>
 <span id="728">728</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! This crate helps writing bots for the messenger Telegram. Here is a</span>
-<span class='doccomment'>//! minimalistic example:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```no_run</span>
-<span class='doccomment'>//! use telegram_bot::*;</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! // Create the Api from a bot token saved in a environment variable and</span>
-<span class='doccomment'>//! // test an Api-call</span>
-<span class='doccomment'>//! let api = Api::from_env(&quot;TELEGRAM_BOT_TOKEN&quot;).unwrap();</span>
-<span class='doccomment'>//! println!(&quot;getMe: {:?}&quot;, api.get_me());</span>
-<span class='doccomment'>//! // We want to listen for new updates via LongPoll</span>
-<span class='doccomment'>//! let mut listener = api.listener(ListeningMethod::LongPoll(None));</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! // Fetch new updates</span>
-<span class='doccomment'>//! listener.listen(|u| {</span>
-<span class='doccomment'>//!     // If the received update contains a message...</span>
-<span class='doccomment'>//!     if let Some(m) = u.message {</span>
-<span class='doccomment'>//!         // if the message was a text message:</span>
-<span class='doccomment'>//!         if let MessageType::Text(_) = m.msg {</span>
-<span class='doccomment'>//!             // Answer message with &quot;Hi&quot;</span>
-<span class='doccomment'>//!             try!(api.send_message(</span>
-<span class='doccomment'>//!                 m.chat.id(),</span>
-<span class='doccomment'>//!                 format!(&quot;Hi, {}!&quot;, m.from.first_name),</span>
-<span class='doccomment'>//!                 None, None, None)</span>
-<span class='doccomment'>//!             );</span>
-<span class='doccomment'>//!         }</span>
-<span class='doccomment'>//!     }</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//!     // If none of the &quot;try!&quot; statements returned an error: It&#39;s Ok!</span>
-<span class='doccomment'>//!     Ok(ListeningAction::Continue)</span>
-<span class='doccomment'>//! });</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! How to use it</span>
-<span class='doccomment'>//! -------------</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! *Note*: You should be familiar with the</span>
-<span class='doccomment'>//! [official HTTP Api](https://core.telegram.org/bots/api) to use this library</span>
-<span class='doccomment'>//! effectivly.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! The first step is always to create an `Api` object. You need one `Api` for</span>
-<span class='doccomment'>//! every bot (token) you want to control. You can either create it directly</span>
-<span class='doccomment'>//! from a token with `from_token` or, since you shouldn&#39;t hardcode your token,</span>
-<span class='doccomment'>//! a bit easier: From an environment variable with `from_env`.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! The `Api` object has all methods of the Telegram HTTP API, like</span>
-<span class='doccomment'>//! `send_message`. For more information see the `Api` struct documentation.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Next you want to listen for new updates. This is best done via the `listen`</span>
-<span class='doccomment'>//! method on the `Listener` type. To obtain a listener, call `listener` on the</span>
-<span class='doccomment'>//! `Api` object.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Examples</span>
-<span class='doccomment'>//! --------</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! There are two examples in the `examples/` directory in the project&#39;s</span>
-<span class='doccomment'>//! repository.</span>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>hyper</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rustc_serialize</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>url</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>multipart</span>;
+<span id="729">729</span>
+<span id="730">730</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! This crate helps writing bots for the messenger Telegram. Here is a</span>
+<span class="doccomment">//! minimalistic example:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```no_run</span>
+<span class="doccomment">//! use telegram_bot::*;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Create the Api from a bot token saved in a environment variable and</span>
+<span class="doccomment">//! // test an Api-call</span>
+<span class="doccomment">//! let api = Api::from_env(&quot;TELEGRAM_BOT_TOKEN&quot;).unwrap();</span>
+<span class="doccomment">//! println!(&quot;getMe: {:?}&quot;, api.get_me());</span>
+<span class="doccomment">//! // We want to listen for new updates via LongPoll</span>
+<span class="doccomment">//! let mut listener = api.listener(ListeningMethod::LongPoll(None));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! // Fetch new updates</span>
+<span class="doccomment">//! listener.listen(|u| {</span>
+<span class="doccomment">//!     // If the received update contains a message...</span>
+<span class="doccomment">//!     if let Some(m) = u.message {</span>
+<span class="doccomment">//!         // if the message was a text message:</span>
+<span class="doccomment">//!         if let MessageType::Text(_) = m.msg {</span>
+<span class="doccomment">//!             // Answer message with &quot;Hi&quot;</span>
+<span class="doccomment">//!             try!(api.send_message(</span>
+<span class="doccomment">//!                 m.chat.id(),</span>
+<span class="doccomment">//!                 format!(&quot;Hi, {}!&quot;, m.from.first_name),</span>
+<span class="doccomment">//!                 None, None, None, None)</span>
+<span class="doccomment">//!             );</span>
+<span class="doccomment">//!         }</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     // If none of the &quot;try!&quot; statements returned an error: It&#39;s Ok!</span>
+<span class="doccomment">//!     Ok(ListeningAction::Continue)</span>
+<span class="doccomment">//! });</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! How to use it</span>
+<span class="doccomment">//! -------------</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! *Note*: You should be familiar with the</span>
+<span class="doccomment">//! [official HTTP Api](https://core.telegram.org/bots/api) to use this library</span>
+<span class="doccomment">//! effectivly.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The first step is always to create an `Api` object. You need one `Api` for</span>
+<span class="doccomment">//! every bot (token) you want to control. You can either create it directly</span>
+<span class="doccomment">//! from a token with `from_token` or, since you shouldn&#39;t hardcode your token,</span>
+<span class="doccomment">//! a bit easier: From an environment variable with `from_env`.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The `Api` object has all methods of the Telegram HTTP API, like</span>
+<span class="doccomment">//! `send_message`. For more information see the `Api` struct documentation.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Next you want to listen for new updates. This is best done via the `listen`</span>
+<span class="doccomment">//! method on the `Listener` type. To obtain a listener, call `listener` on the</span>
+<span class="doccomment">//! `Api` object.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Examples</span>
+<span class="doccomment">//! --------</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! There are two examples in the `examples/` directory in the project&#39;s</span>
+<span class="doccomment">//! repository.</span>
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">hyper</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_serialize</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">url</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">multipart</span>;
 
-<span class='kw'>mod</span> <span class='ident'>error</span>;
-<span class='kw'>mod</span> <span class='ident'>util</span>;
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>types</span>;
+<span class="kw">mod</span> <span class="ident">error</span>;
+<span class="kw">mod</span> <span class="ident">util</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">types</span>;
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>types</span>::<span class='op'>*</span>;
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>error</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>util</span>::<span class='ident'>Params</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">types</span>::<span class="kw-2">*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">error</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">util</span>::<span class="ident">Params</span>;
 
-<span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::{<span class='ident'>json</span>, <span class='ident'>Decodable</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>env</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fs</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>Read</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::{<span class='ident'>Path</span>, <span class='ident'>PathBuf</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>mpsc</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>thread</span>;
-<span class='kw'>use</span> <span class='ident'>hyper</span>::{<span class='ident'>Client</span>, <span class='ident'>Url</span>};
-<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>client</span>::<span class='ident'>IntoUrl</span>;
-<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>client</span>::<span class='ident'>request</span>::<span class='ident'>Request</span>;
-<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>method</span>::<span class='ident'>Method</span>;
-<span class='kw'>use</span> <span class='ident'>hyper</span>::<span class='ident'>header</span>::{<span class='ident'>Connection</span>, <span class='ident'>ContentType</span>, <span class='ident'>ContentLength</span>};
-<span class='kw'>use</span> <span class='ident'>multipart</span>::<span class='ident'>client</span>::<span class='ident'>Multipart</span>;
+<span class="kw">use</span> <span class="ident">rustc_serialize</span>::{<span class="ident">json</span>, <span class="ident">Decodable</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">Read</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::{<span class="ident">Path</span>, <span class="ident">PathBuf</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">mpsc</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">thread</span>;
+<span class="kw">use</span> <span class="ident">hyper</span>::{<span class="ident">Client</span>, <span class="ident">Url</span>};
+<span class="kw">use</span> <span class="ident">hyper</span>::<span class="ident">client</span>::<span class="ident">IntoUrl</span>;
+<span class="kw">use</span> <span class="ident">hyper</span>::<span class="ident">client</span>::<span class="ident">request</span>::<span class="ident">Request</span>;
+<span class="kw">use</span> <span class="ident">hyper</span>::<span class="ident">method</span>::<span class="ident">Method</span>;
+<span class="kw">use</span> <span class="ident">hyper</span>::<span class="ident">header</span>::{<span class="ident">Connection</span>, <span class="ident">ContentType</span>, <span class="ident">ContentLength</span>};
+<span class="kw">use</span> <span class="ident">multipart</span>::<span class="ident">client</span>::<span class="ident">Multipart</span>;
 
-<span class='doccomment'>/// API-URL prefix</span>
-<span class='kw'>pub</span> <span class='kw'>const</span> <span class='ident'>API_URL</span> : <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;static</span> <span class='ident'>str</span> <span class='op'>=</span> <span class='string'>&quot;https://api.telegram.org/bot&quot;</span>;
+<span class="doccomment">/// API-URL prefix</span>
+<span class="kw">pub</span> <span class="kw">const</span> <span class="ident">API_URL</span> : <span class="kw-2">&amp;</span><span class="lifetime">&#39;static</span> <span class="ident">str</span> <span class="op">=</span> <span class="string">&quot;https://api.telegram.org/bot&quot;</span>;
 
-<span class='comment'>// RequestType let you choose between a post request or a multipart request</span>
-<span class='kw'>enum</span> <span class='ident'>RequestType</span> {
-    <span class='ident'>Post</span>,
-    <span class='ident'>Multipart</span>(<span class='ident'>SendPath</span>),
+<span class="comment">// RequestType let you choose between a post request or a multipart request</span>
+<span class="kw">enum</span> <span class="ident">RequestType</span> {
+    <span class="ident">Post</span>,
+    <span class="ident">Multipart</span>(<span class="ident">SendPath</span>),
 }
 
-<span class='comment'>// SendPath is used in multipart request to send a local file or an id string</span>
-<span class='kw'>enum</span> <span class='ident'>SendPath</span> {
-    <span class='ident'>File</span>(<span class='ident'>String</span>, <span class='ident'>PathBuf</span>),
-    <span class='ident'>Id</span>(<span class='ident'>String</span>, <span class='ident'>String</span>),
+<span class="comment">// SendPath is used in multipart request to send a local file or an id string</span>
+<span class="kw">enum</span> <span class="ident">SendPath</span> {
+    <span class="ident">File</span>(<span class="ident">String</span>, <span class="ident">PathBuf</span>),
+    <span class="ident">Id</span>(<span class="ident">String</span>, <span class="ident">String</span>),
 }
 
-<span class='doccomment'>/// Main type for sending requests to the Telegram bot API.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// You can create an `API` object via `from_token` or `from_env`. A `Listener`</span>
-<span class='doccomment'>/// object is obtained via `listener`. All remaining methods correspond</span>
-<span class='doccomment'>/// directly to a telegram API call and are named like the API method, but in</span>
-<span class='doccomment'>/// `camel_case`.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Api</span> {
-    <span class='ident'>url</span>: <span class='ident'>Url</span>,
-    <span class='ident'>client</span>: <span class='ident'>Client</span>,
+<span class="doccomment">/// Main type for sending requests to the Telegram bot API.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// You can create an `API` object via `from_token` or `from_env`. A `Listener`</span>
+<span class="doccomment">/// object is obtained via `listener`. All remaining methods correspond</span>
+<span class="doccomment">/// directly to a telegram API call and are named like the API method, but in</span>
+<span class="doccomment">/// `camel_case`.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Api</span> {
+    <span class="ident">url</span>: <span class="ident">Url</span>,
+    <span class="ident">client</span>: <span class="ident">Client</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>Api</span> {
-    <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>Api</span> {
-        <span class='ident'>Api</span> {
-            <span class='ident'>url</span>: <span class='self'>self</span>.<span class='ident'>url</span>.<span class='ident'>clone</span>(),
-            <span class='ident'>client</span>: <span class='ident'>Client</span>::<span class='ident'>new</span>(),
+<span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">Api</span> {
+    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Api</span> {
+        <span class="ident">Api</span> {
+            <span class="ident">url</span>: <span class="self">self</span>.<span class="ident">url</span>.<span class="ident">clone</span>(),
+            <span class="ident">client</span>: <span class="ident">Client</span>::<span class="ident">new</span>(),
         }
     }
 }
 
-<span class='kw'>impl</span> <span class='ident'>Api</span> {
-    <span class='comment'>// =======================================================================</span>
-    <span class='comment'>// Constructors</span>
-    <span class='comment'>// =======================================================================</span>
-    <span class='doccomment'>/// Creates a new bot with the given token. If the token is completely</span>
-    <span class='doccomment'>/// invalid (resulting in an invalid API-URL), the function will return</span>
-    <span class='doccomment'>/// an `Err` value. However, the function will not check if the given token</span>
-    <span class='doccomment'>/// is a valid Telegram token. You can call `get_me` to execute a test</span>
-    <span class='doccomment'>/// request.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_token</span>(<span class='ident'>token</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Api</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>url</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>Url</span>::<span class='ident'>parse</span>(<span class='kw-2'>&amp;</span><span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{}{}/dummy&quot;</span>, <span class='ident'>API_URL</span>, <span class='ident'>token</span>)) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>url</span>) <span class='op'>=&gt;</span> <span class='ident'>url</span>,
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>InvalidTokenFormat</span>(<span class='ident'>e</span>)),
+<span class="kw">impl</span> <span class="ident">Api</span> {
+    <span class="comment">// =======================================================================</span>
+    <span class="comment">// Constructors</span>
+    <span class="comment">// =======================================================================</span>
+    <span class="doccomment">/// Creates a new bot with the given token. If the token is completely</span>
+    <span class="doccomment">/// invalid (resulting in an invalid API-URL), the function will return</span>
+    <span class="doccomment">/// an `Err` value. However, the function will not check if the given token</span>
+    <span class="doccomment">/// is a valid Telegram token. You can call `get_me` to execute a test</span>
+    <span class="doccomment">/// request.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_token</span>(<span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Api</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">url</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">Url</span>::<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}{}/dummy&quot;</span>, <span class="ident">API_URL</span>, <span class="ident">token</span>)) {
+            <span class="prelude-val">Ok</span>(<span class="ident">url</span>) <span class="op">=&gt;</span> <span class="ident">url</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidTokenFormat</span>(<span class="ident">e</span>)),
         };
-        <span class='prelude-val'>Ok</span>(<span class='ident'>Api</span> {
-            <span class='ident'>url</span>: <span class='ident'>url</span>,
-            <span class='ident'>client</span>: <span class='ident'>Client</span>::<span class='ident'>new</span>(),
+        <span class="prelude-val">Ok</span>(<span class="ident">Api</span> {
+            <span class="ident">url</span>: <span class="ident">url</span>,
+            <span class="ident">client</span>: <span class="ident">Client</span>::<span class="ident">new</span>(),
         })
     }
 
-    <span class='doccomment'>/// Will receive the bot token from the environment variable `var` and call</span>
-    <span class='doccomment'>/// `from_token` with it. Will return an `Err` value, if the environment</span>
-    <span class='doccomment'>/// var could not be read or the token has an invalid format.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_env</span>(<span class='ident'>var</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Api</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>env</span>::<span class='ident'>var</span>(<span class='ident'>var</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>tok</span>) <span class='op'>=&gt;</span> <span class='ident'>tok</span>,
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>InvalidEnvironmentVar</span>(<span class='ident'>e</span>)),
+    <span class="doccomment">/// Will receive the bot token from the environment variable `var` and call</span>
+    <span class="doccomment">/// `from_token` with it. Will return an `Err` value, if the environment</span>
+    <span class="doccomment">/// var could not be read or the token has an invalid format.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_env</span>(<span class="ident">var</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Api</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">var</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">tok</span>) <span class="op">=&gt;</span> <span class="ident">tok</span>,
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidEnvironmentVar</span>(<span class="ident">e</span>)),
         };
 
-        <span class='ident'>Self</span>::<span class='ident'>from_token</span>(<span class='kw-2'>&amp;</span><span class='ident'>token</span>)
+        <span class="self">Self</span>::<span class="ident">from_token</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>)
     }
 
 
-    <span class='comment'>// =======================================================================</span>
-    <span class='comment'>// Methods corresponding directly to a API method</span>
-    <span class='comment'>// =======================================================================</span>
-    <span class='doccomment'>/// Corresponds to the &quot;getMe&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_me</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>User</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Execute request with empty parameter list</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;getMe&quot;</span>, <span class='ident'>Params</span>::<span class='ident'>new</span>(), <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+    <span class="comment">// =======================================================================</span>
+    <span class="comment">// Methods corresponding directly to a API method</span>
+    <span class="comment">// =======================================================================</span>
+    <span class="doccomment">/// Corresponds to the &quot;getMe&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_me</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">User</span><span class="op">&gt;</span> {
+        <span class="comment">// Execute request with empty parameter list</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;getMe&quot;</span>, <span class="ident">Params</span>::<span class="ident">new</span>(), <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;sendMessage&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>text</span>: <span class='ident'>String</span>,
-                        <span class='ident'>disable_web_page_preview</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span>,
-                        <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                        <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;text&quot;</span>, <span class='ident'>text</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;disable_web_page_preview&quot;</span>, <span class='ident'>disable_web_page_preview</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the &quot;sendMessage&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">text</span>: <span class="ident">String</span>,
+                        <span class="ident">parse_mode</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ParseMode</span><span class="op">&gt;</span>,
+                        <span class="ident">disable_web_page_preview</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+                        <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                        <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                        <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;text&quot;</span>, <span class="ident">text</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;parse_mode&quot;</span>, <span class="ident">parse_mode</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;disable_web_page_preview&quot;</span>, <span class="ident">disable_web_page_preview</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendMessage&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendMessage&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;forwardMessage&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>forward_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>from_chat_id</span>: <span class='ident'>Integer</span>,
-                           <span class='ident'>message_id</span>: <span class='ident'>Integer</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;from_chat_id&quot;</span>, <span class='ident'>from_chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;message_id&quot;</span>, <span class='ident'>message_id</span>);
+    <span class="doccomment">/// Corresponds to the &quot;forwardMessage&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward_message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">from_chat_id</span>: <span class="ident">Integer</span>,
+                           <span class="ident">message_id</span>: <span class="ident">Integer</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;from_chat_id&quot;</span>, <span class="ident">from_chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;message_id&quot;</span>, <span class="ident">message_id</span>);
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;forwardMessage&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;forwardMessage&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;sendLocation&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_location</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>latitude</span>: <span class='ident'>Float</span>,
-                         <span class='ident'>longitude</span>: <span class='ident'>Float</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                         <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                         <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;latitude&quot;</span>, <span class='ident'>latitude</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;longitude&quot;</span>, <span class='ident'>longitude</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the &quot;sendLocation&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_location</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">latitude</span>: <span class="ident">Float</span>,
+                         <span class="ident">longitude</span>: <span class="ident">Float</span>, <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                         <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;latitude&quot;</span>, <span class="ident">latitude</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;longitude&quot;</span>, <span class="ident">longitude</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendLocation&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendLocation&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;sendChatAction&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_chat_action</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>action</span>: <span class='ident'>ChatAction</span>)
-                            <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;action&quot;</span>, <span class='ident'>action</span>);
+    <span class="doccomment">/// Corresponds to the &quot;sendChatAction&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_chat_action</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">action</span>: <span class="ident">ChatAction</span>)
+                            <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;action&quot;</span>, <span class="ident">action</span>);
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendChatAction&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendChatAction&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;getUserProfilePhotos&quot; method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_user_profile_photos</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>user_id</span>: <span class='ident'>Integer</span>,
-                                   <span class='ident'>offset</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                                   <span class='ident'>limit</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>)
-                                   <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>UserProfilePhotos</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;user_id&quot;</span>, <span class='ident'>user_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;offset&quot;</span>, <span class='ident'>offset</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;limit&quot;</span>, <span class='ident'>limit</span>);
+    <span class="doccomment">/// Corresponds to the &quot;getUserProfilePhotos&quot; method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_user_profile_photos</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">user_id</span>: <span class="ident">Integer</span>,
+                                   <span class="ident">offset</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                                   <span class="ident">limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>)
+                                   <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">UserProfilePhotos</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;user_id&quot;</span>, <span class="ident">user_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;offset&quot;</span>, <span class="ident">offset</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;limit&quot;</span>, <span class="ident">limit</span>);
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;getUserProfilePhotos&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;getUserProfilePhotos&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the &quot;getUpdates&quot; method of the API.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// **Note:**</span>
-    <span class='doccomment'>/// The method will not set the offset parameter on its own. To receive</span>
-    <span class='doccomment'>/// updates in a more high level way, see `listener`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>get_updates</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>offset</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                       <span class='ident'>limit</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>, <span class='ident'>timeout</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>)
-                       <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Update</span><span class='op'>&gt;&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;offset&quot;</span>, <span class='ident'>offset</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;limit&quot;</span>, <span class='ident'>limit</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;timeout&quot;</span>, <span class='ident'>timeout</span>);
+    <span class="doccomment">/// Corresponds to the &quot;getUpdates&quot; method of the API.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note:**</span>
+    <span class="doccomment">/// The method will not set the offset parameter on its own. To receive</span>
+    <span class="doccomment">/// updates in a more high level way, see `listener`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">get_updates</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">offset</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                       <span class="ident">limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>, <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>)
+                       <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Update</span><span class="op">&gt;&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;offset&quot;</span>, <span class="ident">offset</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;limit&quot;</span>, <span class="ident">limit</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;timeout&quot;</span>, <span class="ident">timeout</span>);
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;getUpdates&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;getUpdates&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Corresponds to the `sendPhoto` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_photo</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                      <span class='ident'>caption</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;caption&quot;</span>, <span class='ident'>caption</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendPhoto` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_photo</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                      <span class="ident">caption</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;caption&quot;</span>, <span class="ident">caption</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;photo&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendPhoto&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;photo&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendPhoto&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
-    <span class='doccomment'>/// Corresponds to the `sendAudio` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_audio</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                      <span class='ident'>duration</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>performer</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
-                      <span class='ident'>title</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;duration&quot;</span>, <span class='ident'>duration</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;performer&quot;</span>, <span class='ident'>performer</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;title&quot;</span>, <span class='ident'>title</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendAudio` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_audio</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                      <span class="ident">duration</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">performer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+                      <span class="ident">title</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;duration&quot;</span>, <span class="ident">duration</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;performer&quot;</span>, <span class="ident">performer</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;title&quot;</span>, <span class="ident">title</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;audio&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendAudio&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;audio&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendAudio&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
-    <span class='doccomment'>/// Corresponds to the `sendVoice` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_voice</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                      <span class='ident'>duration</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;duration&quot;</span>, <span class='ident'>duration</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendVoice` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_voice</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                      <span class="ident">duration</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;duration&quot;</span>, <span class="ident">duration</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;voice&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendVoice&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;voice&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendVoice&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
 
-    <span class='doccomment'>/// Corresponds to the `sendDocument` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_document</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                         <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                         <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                         <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendDocument` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_document</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                         <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                         <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                         <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;document&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendDocument&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;document&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendDocument&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
-    <span class='doccomment'>/// Corresponds to the `sendSticker` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_sticker</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                        <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                        <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendSticker` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_sticker</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                        <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                        <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                        <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;sticker&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendSticker&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;sticker&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendSticker&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
-    <span class='doccomment'>/// Corresponds to the `sendVideo` method of the API.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send_video</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>, <span class='ident'>path</span>: <span class='ident'>String</span>,
-                      <span class='ident'>caption</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
-                      <span class='ident'>duration</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_to_message_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>,
-                      <span class='ident'>reply_markup</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>ReplyMarkup</span><span class='op'>&gt;</span>)
-                      <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;chat_id&quot;</span>, <span class='ident'>chat_id</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;caption&quot;</span>, <span class='ident'>caption</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;duration&quot;</span>, <span class='ident'>duration</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;reply_to_message_id&quot;</span>, <span class='ident'>reply_to_message_id</span>);
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>params</span>.<span class='ident'>add_get_json_opt</span>(<span class='string'>&quot;reply_markup&quot;</span>, <span class='ident'>reply_markup</span>));
+    <span class="doccomment">/// Corresponds to the `sendVideo` method of the API.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send_video</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">chat_id</span>: <span class="ident">Integer</span>, <span class="ident">path</span>: <span class="ident">String</span>,
+                      <span class="ident">caption</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+                      <span class="ident">duration</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_to_message_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>,
+                      <span class="ident">reply_markup</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">ReplyMarkup</span><span class="op">&gt;</span>)
+                      <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;chat_id&quot;</span>, <span class="ident">chat_id</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;caption&quot;</span>, <span class="ident">caption</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;duration&quot;</span>, <span class="ident">duration</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;reply_to_message_id&quot;</span>, <span class="ident">reply_to_message_id</span>);
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">params</span>.<span class="ident">add_get_json_opt</span>(<span class="string">&quot;reply_markup&quot;</span>, <span class="ident">reply_markup</span>));
 
-        <span class='comment'>// Convert path string to SendPath</span>
-        <span class='kw'>let</span> <span class='ident'>path_file</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>detect_file_or_id</span>(<span class='string'>&quot;video&quot;</span>, <span class='ident'>path</span>);
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;sendVideo&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>path_file</span>))
+        <span class="comment">// Convert path string to SendPath</span>
+        <span class="kw">let</span> <span class="ident">path_file</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">detect_file_or_id</span>(<span class="string">&quot;video&quot;</span>, <span class="ident">path</span>);
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;sendVideo&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">path_file</span>))
     }
 
-    <span class='doccomment'>/// Corresponds to the `setWebhook` method of the API.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// **Note:**</span>
-    <span class='doccomment'>/// This library does not yet offer the feature to listen via webhook. This</span>
-    <span class='doccomment'>/// is just the raw telegram API request and will do nothing more. Use only</span>
-    <span class='doccomment'>/// if you know what you&#39;re doing.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>set_webhook</span><span class='op'>&lt;</span><span class='ident'>U</span>: <span class='ident'>IntoUrl</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>url</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>U</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>u</span> <span class='op'>=</span> <span class='ident'>url</span>.<span class='ident'>map_or</span>(<span class='string'>&quot;&quot;</span>.<span class='ident'>into</span>(), <span class='op'>|</span><span class='ident'>u</span><span class='op'>|</span> <span class='ident'>u</span>.<span class='ident'>into_url</span>().<span class='ident'>unwrap</span>().<span class='ident'>to_string</span>());
+    <span class="doccomment">/// Corresponds to the `setWebhook` method of the API.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note:**</span>
+    <span class="doccomment">/// This library does not yet offer the feature to listen via webhook. This</span>
+    <span class="doccomment">/// is just the raw telegram API request and will do nothing more. Use only</span>
+    <span class="doccomment">/// if you know what you&#39;re doing.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">set_webhook</span><span class="op">&lt;</span><span class="ident">U</span>: <span class="ident">IntoUrl</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">url</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">U</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">u</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">map_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">into</span>(), <span class="op">|</span><span class="ident">u</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">into_url</span>().<span class="ident">unwrap</span>().<span class="ident">to_string</span>());
 
-        <span class='comment'>// Prepare parameters</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;url&quot;</span>, <span class='ident'>u</span>);
+        <span class="comment">// Prepare parameters</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;url&quot;</span>, <span class="ident">u</span>);
 
-        <span class='comment'>// Execute request</span>
-        <span class='self'>self</span>.<span class='ident'>send_request</span>(<span class='string'>&quot;setWebhook&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+        <span class="comment">// Execute request</span>
+        <span class="self">self</span>.<span class="ident">send_request</span>(<span class="string">&quot;setWebhook&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='comment'>// =======================================================================</span>
-    <span class='comment'>// Methods for receiving updates</span>
-    <span class='comment'>// =======================================================================</span>
-    <span class='doccomment'>/// Receive and handle updates via &quot;getUpdates&quot;.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method will repeatedly call `get_updates` to receive new updates.</span>
-    <span class='doccomment'>/// It will then call the given handler for every update and increase the</span>
-    <span class='doccomment'>/// update offset accordingly, so the handler will never be called with</span>
-    <span class='doccomment'>/// the same update twice.</span>
-    <span class='doccomment'>/// The `timeout` parameter influences how long (in seconds) each poll may</span>
-    <span class='doccomment'>/// last. Defaults to 30.</span>
-    <span class='doccomment'>/// The handler gets a mutable reference to the bot since borrowing it</span>
-    <span class='doccomment'>/// from the outer scope won&#39;t work. When the handler returns an `Err`</span>
-    <span class='doccomment'>/// value the bot will stop listening for updates and `long_poll` will</span>
-    <span class='doccomment'>/// return the Error. If you want to stop listening you can just return</span>
-    <span class='doccomment'>/// `Error::UserInterrupt`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// **Note:**</span>
-    <span class='doccomment'>/// If the bot is restarted, but the last received updates are not yet</span>
-    <span class='doccomment'>/// confirmed (the last poll was not empty), there will be some duplicate</span>
-    <span class='doccomment'>/// updates.</span>
-    <span class='comment'>// pub fn long_poll&lt;H&gt;(&amp;mut self, timeout: Option&lt;Integer&gt;, mut handler: H)</span>
-    <span class='comment'>//                     -&gt; Result&lt;()&gt;</span>
-    <span class='comment'>//                     where H: FnMut(&amp;mut Api, Update) -&gt; Result&lt;()&gt; {</span>
-    <span class='comment'>//     // Calculate final timeout: Given or default (30s)</span>
-    <span class='comment'>//     let timeout = timeout.or(Some(30));</span>
+    <span class="comment">// =======================================================================</span>
+    <span class="comment">// Methods for receiving updates</span>
+    <span class="comment">// =======================================================================</span>
+    <span class="doccomment">/// Receive and handle updates via &quot;getUpdates&quot;.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method will repeatedly call `get_updates` to receive new updates.</span>
+    <span class="doccomment">/// It will then call the given handler for every update and increase the</span>
+    <span class="doccomment">/// update offset accordingly, so the handler will never be called with</span>
+    <span class="doccomment">/// the same update twice.</span>
+    <span class="doccomment">/// The `timeout` parameter influences how long (in seconds) each poll may</span>
+    <span class="doccomment">/// last. Defaults to 30.</span>
+    <span class="doccomment">/// The handler gets a mutable reference to the bot since borrowing it</span>
+    <span class="doccomment">/// from the outer scope won&#39;t work. When the handler returns an `Err`</span>
+    <span class="doccomment">/// value the bot will stop listening for updates and `long_poll` will</span>
+    <span class="doccomment">/// return the Error. If you want to stop listening you can just return</span>
+    <span class="doccomment">/// `Error::UserInterrupt`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note:**</span>
+    <span class="doccomment">/// If the bot is restarted, but the last received updates are not yet</span>
+    <span class="doccomment">/// confirmed (the last poll was not empty), there will be some duplicate</span>
+    <span class="doccomment">/// updates.</span>
+    <span class="comment">// pub fn long_poll&lt;H&gt;(&amp;mut self, timeout: Option&lt;Integer&gt;, mut handler: H)</span>
+    <span class="comment">//                     -&gt; Result&lt;()&gt;</span>
+    <span class="comment">//                     where H: FnMut(&amp;mut Api, Update) -&gt; Result&lt;()&gt; {</span>
+    <span class="comment">//     // Calculate final timeout: Given or default (30s)</span>
+    <span class="comment">//     let timeout = timeout.or(Some(30));</span>
 
-    <span class='comment'>//     loop {</span>
-    <span class='comment'>//         // Receive updates with correct offset</span>
-    <span class='comment'>//         let offset = Some(self.offset);</span>
-    <span class='comment'>//         let updates = try!(self.get_updates(offset, None, timeout));</span>
+    <span class="comment">//     loop {</span>
+    <span class="comment">//         // Receive updates with correct offset</span>
+    <span class="comment">//         let offset = Some(self.offset);</span>
+    <span class="comment">//         let updates = try!(self.get_updates(offset, None, timeout));</span>
 
-    <span class='comment'>//         // For every update: Increase the offset and call the handler.</span>
-    <span class='comment'>//         for u in updates {</span>
-    <span class='comment'>//             if u.update_id &gt;= self.offset {</span>
-    <span class='comment'>//                 self.offset = u.update_id + 1;</span>
-    <span class='comment'>//             }</span>
+    <span class="comment">//         // For every update: Increase the offset and call the handler.</span>
+    <span class="comment">//         for u in updates {</span>
+    <span class="comment">//             if u.update_id &gt;= self.offset {</span>
+    <span class="comment">//                 self.offset = u.update_id + 1;</span>
+    <span class="comment">//             }</span>
 
-    <span class='comment'>//             try!(handler(self, u));</span>
-    <span class='comment'>//         }</span>
-    <span class='comment'>//     }</span>
-    <span class='comment'>// }</span>
+    <span class="comment">//             try!(handler(self, u));</span>
+    <span class="comment">//         }</span>
+    <span class="comment">//     }</span>
+    <span class="comment">// }</span>
 
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>listener</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>method</span>: <span class='ident'>ListeningMethod</span>) <span class='op'>-&gt;</span> <span class='ident'>Listener</span> {
-        <span class='ident'>Listener</span> {
-            <span class='ident'>method</span>: <span class='ident'>method</span>,
-            <span class='ident'>confirmed</span>: <span class='number'>0</span>,
-            <span class='ident'>url</span>: <span class='self'>self</span>.<span class='ident'>url</span>.<span class='ident'>clone</span>(),
-            <span class='ident'>client</span>: <span class='ident'>Client</span>::<span class='ident'>new</span>(),
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">listener</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">method</span>: <span class="ident">ListeningMethod</span>) <span class="op">-&gt;</span> <span class="ident">Listener</span> {
+        <span class="ident">Listener</span> {
+            <span class="ident">method</span>: <span class="ident">method</span>,
+            <span class="ident">confirmed</span>: <span class="number">0</span>,
+            <span class="ident">url</span>: <span class="self">self</span>.<span class="ident">url</span>.<span class="ident">clone</span>(),
+            <span class="ident">client</span>: <span class="ident">Client</span>::<span class="ident">new</span>(),
         }
     }
 
-    <span class='comment'>// =======================================================================</span>
-    <span class='comment'>// Private methods</span>
-    <span class='comment'>// =======================================================================</span>
+    <span class="comment">// =======================================================================</span>
+    <span class="comment">// Private methods</span>
+    <span class="comment">// =======================================================================</span>
 
-    <span class='kw'>fn</span> <span class='ident'>detect_file_or_id</span>(<span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>path</span>: <span class='ident'>String</span>) <span class='op'>-&gt;</span> <span class='ident'>SendPath</span> {
-        <span class='comment'>// When PathExt becomes stable, use Path::new(&amp;path).exists() instead of this!</span>
-        <span class='kw'>let</span> <span class='ident'>check</span> <span class='op'>=</span> <span class='ident'>fs</span>::<span class='ident'>metadata</span>(<span class='kw-2'>&amp;</span><span class='ident'>path</span>);
-        <span class='kw'>if</span> <span class='ident'>path</span>.<span class='ident'>contains</span>(<span class='string'>&quot;.&quot;</span>) <span class='op'>&amp;&amp;</span> <span class='ident'>check</span>.<span class='ident'>is_ok</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>check</span>.<span class='ident'>unwrap</span>().<span class='ident'>is_file</span>() {
-            <span class='ident'>SendPath</span>::<span class='ident'>File</span>(<span class='ident'>name</span>.<span class='ident'>to_owned</span>(), <span class='ident'>Path</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>path</span>).<span class='ident'>to_path_buf</span>())
-        } <span class='kw'>else</span> {
-            <span class='ident'>SendPath</span>::<span class='ident'>Id</span>(<span class='ident'>name</span>.<span class='ident'>to_owned</span>(), <span class='ident'>path</span>)
+    <span class="kw">fn</span> <span class="ident">detect_file_or_id</span>(<span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">path</span>: <span class="ident">String</span>) <span class="op">-&gt;</span> <span class="ident">SendPath</span> {
+        <span class="comment">// When PathExt becomes stable, use Path::new(&amp;path).exists() instead of this!</span>
+        <span class="kw">let</span> <span class="ident">check</span> <span class="op">=</span> <span class="ident">fs</span>::<span class="ident">metadata</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>);
+        <span class="kw">if</span> <span class="ident">path</span>.<span class="ident">contains</span>(<span class="string">&quot;.&quot;</span>) <span class="op">&amp;&amp;</span> <span class="ident">check</span>.<span class="ident">is_ok</span>() <span class="op">&amp;&amp;</span> <span class="ident">check</span>.<span class="ident">unwrap</span>().<span class="ident">is_file</span>() {
+            <span class="ident">SendPath</span>::<span class="ident">File</span>(<span class="ident">name</span>.<span class="ident">to_owned</span>(), <span class="ident">Path</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">path</span>).<span class="ident">to_path_buf</span>())
+        } <span class="kw">else</span> {
+            <span class="ident">SendPath</span>::<span class="ident">Id</span>(<span class="ident">name</span>.<span class="ident">to_owned</span>(), <span class="ident">path</span>)
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>send_request</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Decodable</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>method</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>,
-                                  <span class='ident'>p</span>: <span class='ident'>Params</span>, <span class='ident'>typ</span>: <span class='ident'>RequestType</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='ident'>Self</span>::<span class='ident'>request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>client</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>url</span>, <span class='ident'>method</span>, <span class='ident'>p</span>, <span class='ident'>typ</span>)
+    <span class="kw">fn</span> <span class="ident">send_request</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                                  <span class="ident">p</span>: <span class="ident">Params</span>, <span class="ident">typ</span>: <span class="ident">RequestType</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="self">Self</span>::<span class="ident">request</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">client</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">url</span>, <span class="ident">method</span>, <span class="ident">p</span>, <span class="ident">typ</span>)
     }
 
-    <span class='kw'>fn</span> <span class='ident'>request</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Decodable</span><span class='op'>&gt;</span>(<span class='ident'>client</span>: <span class='kw-2'>&amp;</span><span class='ident'>Client</span>, <span class='ident'>url</span>: <span class='kw-2'>&amp;</span><span class='ident'>Url</span>,
-                             <span class='ident'>method</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>p</span>: <span class='ident'>Params</span>, <span class='ident'>typ</span>: <span class='ident'>RequestType</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='ident'>typ</span> {
-            <span class='ident'>RequestType</span>::<span class='ident'>Post</span> <span class='op'>=&gt;</span> <span class='ident'>Self</span>::<span class='ident'>post_request</span>(<span class='ident'>client</span>, <span class='ident'>url</span>, <span class='ident'>method</span>, <span class='ident'>p</span>),
-            <span class='ident'>RequestType</span>::<span class='ident'>Multipart</span>(<span class='ident'>sendpath</span>) <span class='op'>=&gt;</span> <span class='ident'>Self</span>::<span class='ident'>multipart_request</span>(<span class='ident'>url</span>, <span class='ident'>method</span>, <span class='ident'>p</span>, <span class='ident'>sendpath</span>),
+    <span class="kw">fn</span> <span class="ident">request</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>, <span class="ident">url</span>: <span class="kw-2">&amp;</span><span class="ident">Url</span>,
+                             <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">p</span>: <span class="ident">Params</span>, <span class="ident">typ</span>: <span class="ident">RequestType</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="kw">match</span> <span class="ident">typ</span> {
+            <span class="ident">RequestType</span>::<span class="ident">Post</span> <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">post_request</span>(<span class="ident">client</span>, <span class="ident">url</span>, <span class="ident">method</span>, <span class="ident">p</span>),
+            <span class="ident">RequestType</span>::<span class="ident">Multipart</span>(<span class="ident">sendpath</span>) <span class="op">=&gt;</span> <span class="self">Self</span>::<span class="ident">multipart_request</span>(<span class="ident">url</span>, <span class="ident">method</span>, <span class="ident">p</span>, <span class="ident">sendpath</span>),
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>multipart_request</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Decodable</span><span class='op'>&gt;</span>(<span class='ident'>url</span>: <span class='kw-2'>&amp;</span><span class='ident'>Url</span>, <span class='ident'>method</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>,
-                                       <span class='ident'>p</span>: <span class='ident'>Params</span>, <span class='ident'>file</span>: <span class='ident'>SendPath</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare URL for request: Clone and change the last path fragment</span>
-        <span class='comment'>// to the method name and append GET parameters.</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>url</span> <span class='op'>=</span> <span class='ident'>url</span>.<span class='ident'>clone</span>();
-        <span class='ident'>url</span>.<span class='ident'>path_mut</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>path</span><span class='op'>|</span> {         <span class='comment'>// if theres a path: Change it</span>
-            <span class='ident'>path</span>.<span class='ident'>last_mut</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>last</span><span class='op'>|</span> {    <span class='comment'>// if its not empty: Change last...</span>
-                <span class='op'>*</span><span class='ident'>last</span> <span class='op'>=</span> <span class='ident'>method</span>.<span class='ident'>into</span>()       <span class='comment'>// ... into method name</span>
+    <span class="kw">fn</span> <span class="ident">multipart_request</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span>(<span class="ident">url</span>: <span class="kw-2">&amp;</span><span class="ident">Url</span>, <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
+                                       <span class="ident">p</span>: <span class="ident">Params</span>, <span class="ident">file</span>: <span class="ident">SendPath</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare URL for request: Clone and change the last path fragment</span>
+        <span class="comment">// to the method name and append GET parameters.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">clone</span>();
+        <span class="ident">url</span>.<span class="ident">path_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">path</span><span class="op">|</span> {         <span class="comment">// if theres a path: Change it</span>
+            <span class="ident">path</span>.<span class="ident">last_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">last</span><span class="op">|</span> {    <span class="comment">// if its not empty: Change last...</span>
+                <span class="kw-2">*</span><span class="ident">last</span> <span class="op">=</span> <span class="ident">method</span>.<span class="ident">into</span>()       <span class="comment">// ... into method name</span>
             })
         });
 
-        <span class='kw'>let</span> <span class='ident'>r</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Request</span>::<span class='ident'>new</span>(<span class='ident'>Method</span>::<span class='ident'>Post</span>, <span class='ident'>url</span>));
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>req</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>Multipart</span>::<span class='ident'>from_request</span>(<span class='ident'>r</span>));
+        <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">Request</span>::<span class="ident">new</span>(<span class="ident">Method</span>::<span class="ident">Post</span>, <span class="ident">url</span>));
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">req</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">Multipart</span>::<span class="ident">from_request</span>(<span class="ident">r</span>));
 
-        <span class='kw'>for</span> <span class='kw-2'>&amp;</span>(<span class='ident'>k</span>, <span class='kw-2'>ref</span> <span class='ident'>v</span>) <span class='kw'>in</span> <span class='ident'>p</span>.<span class='ident'>get_params</span>().<span class='ident'>into_iter</span>() {
-            <span class='ident'>req</span>.<span class='ident'>write_text</span>(<span class='ident'>k</span>, <span class='ident'>v</span>);
+        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">k</span>, <span class="kw-2">ref</span> <span class="ident">v</span>) <span class="kw">in</span> <span class="ident">p</span>.<span class="ident">get_params</span>().<span class="ident">into_iter</span>() {
+            <span class="macro">try</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">write_text</span>(<span class="ident">k</span>, <span class="ident">v</span>));
         }
 
-        <span class='kw'>match</span> <span class='ident'>file</span> {
-            <span class='ident'>SendPath</span>::<span class='ident'>File</span>(<span class='ident'>name</span>, <span class='ident'>path</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>match</span> <span class='ident'>path</span>.<span class='ident'>to_str</span>() {
-                    <span class='prelude-val'>Some</span>(<span class='ident'>p</span>) <span class='op'>=&gt;</span> <span class='ident'>req</span>.<span class='ident'>write_file</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>, <span class='ident'>p</span>),
-                    <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>InvalidPath</span>(<span class='string'>&quot;Invalid path given.&quot;</span>.<span class='ident'>into</span>())),
+        <span class="macro">try</span><span class="macro">!</span>(<span class="kw">match</span> <span class="ident">file</span> {
+            <span class="ident">SendPath</span>::<span class="ident">File</span>(<span class="ident">name</span>, <span class="ident">path</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">path</span>.<span class="ident">to_str</span>() {
+                    <span class="prelude-val">Some</span>(<span class="ident">p</span>) <span class="op">=&gt;</span> <span class="ident">req</span>.<span class="ident">write_file</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">p</span>),
+                    <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidPath</span>(<span class="string">&quot;Invalid path given.&quot;</span>.<span class="ident">into</span>())),
                 }
             },
-            <span class='ident'>SendPath</span>::<span class='ident'>Id</span>(<span class='ident'>name</span>, <span class='ident'>id</span>) <span class='op'>=&gt;</span> <span class='ident'>req</span>.<span class='ident'>write_text</span>(<span class='kw-2'>&amp;</span><span class='ident'>name</span>, <span class='ident'>id</span>),
-        };
+            <span class="ident">SendPath</span>::<span class="ident">Id</span>(<span class="ident">name</span>, <span class="ident">id</span>) <span class="op">=&gt;</span> <span class="ident">req</span>.<span class="ident">write_text</span>(<span class="kw-2">&amp;</span><span class="ident">name</span>, <span class="ident">id</span>),
+        });
 
-        <span class='comment'>// Send request and check if it failed</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>resp</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>req</span>.<span class='ident'>send</span>());
+        <span class="comment">// Send request and check if it failed</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resp</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">send</span>());
 
-        <span class='comment'>// Read response into String and return error if it failed</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>body</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>new</span>();
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>resp</span>.<span class='ident'>read_to_string</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>body</span>));
+        <span class="comment">// Read response into String and return error if it failed</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body</span>));
 
-        <span class='comment'>// Try to decode response as JSON representing a Response</span>
-        <span class='kw'>match</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>json</span>::<span class='ident'>decode</span>(<span class='kw-2'>&amp;</span><span class='ident'>body</span>)) {
-            <span class='comment'>// If the response says that there was an error: Return API-Error</span>
-            <span class='comment'>// with the given description.</span>
-            <span class='ident'>Response</span> { <span class='ident'>ok</span>: <span class='boolval'>false</span>, <span class='ident'>description</span>: <span class='prelude-val'>Some</span>(<span class='ident'>desc</span>), ..} <span class='op'>=&gt;</span> {
-                <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>Api</span>(<span class='ident'>desc</span>))
+        <span class="comment">// Try to decode response as JSON representing a Response</span>
+        <span class="kw">match</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">json</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>)) {
+            <span class="comment">// If the response says that there was an error: Return API-Error</span>
+            <span class="comment">// with the given description.</span>
+            <span class="ident">Response</span> { <span class="ident">ok</span>: <span class="bool-val">false</span>, <span class="ident">description</span>: <span class="prelude-val">Some</span>(<span class="ident">desc</span>), ..} <span class="op">=&gt;</span> {
+                <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Api</span>(<span class="ident">desc</span>))
             },
-            <span class='comment'>// If response is &quot;ok&quot;: Return the result.</span>
-            <span class='ident'>Response</span> { <span class='ident'>ok</span>: <span class='boolval'>true</span>, <span class='ident'>result</span>: <span class='prelude-val'>Some</span>(<span class='ident'>res</span>), ..} <span class='op'>=&gt;</span> {
-                <span class='prelude-val'>Ok</span>(<span class='ident'>res</span>)
+            <span class="comment">// If response is &quot;ok&quot;: Return the result.</span>
+            <span class="ident">Response</span> { <span class="ident">ok</span>: <span class="bool-val">true</span>, <span class="ident">result</span>: <span class="prelude-val">Some</span>(<span class="ident">res</span>), ..} <span class="op">=&gt;</span> {
+                <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
             },
-            <span class='comment'>// This should never occur: If &quot;ok&quot;==false, &quot;description&quot; should</span>
-            <span class='comment'>// always be Some. If &quot;ok&quot;==true, then &quot;result&quot; should always be</span>
-            <span class='comment'>// Some. We could also panic in this case.</span>
-            _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>InvalidState</span>(<span class='string'>&quot;Invalid server response&quot;</span>.<span class='ident'>into</span>())),
+            <span class="comment">// This should never occur: If &quot;ok&quot;==false, &quot;description&quot; should</span>
+            <span class="comment">// always be Some. If &quot;ok&quot;==true, then &quot;result&quot; should always be</span>
+            <span class="comment">// Some. We could also panic in this case.</span>
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidState</span>(<span class="string">&quot;Invalid server response&quot;</span>.<span class="ident">into</span>())),
         }
     }
 
-    <span class='kw'>fn</span> <span class='ident'>post_request</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Decodable</span><span class='op'>&gt;</span>(<span class='ident'>client</span>: <span class='kw-2'>&amp;</span><span class='ident'>Client</span>, <span class='ident'>url</span>: <span class='kw-2'>&amp;</span><span class='ident'>Url</span>,
-                                  <span class='ident'>method</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>p</span>: <span class='ident'>Params</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-        <span class='comment'>// Prepare URL for request: Clone and change the last path fragment</span>
-        <span class='comment'>// to the method name and append GET parameters.</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>url</span> <span class='op'>=</span> <span class='ident'>url</span>.<span class='ident'>clone</span>();
-        <span class='ident'>url</span>.<span class='ident'>path_mut</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>path</span><span class='op'>|</span> {         <span class='comment'>// if theres a path: Change it</span>
-            <span class='ident'>path</span>.<span class='ident'>last_mut</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>last</span><span class='op'>|</span> {    <span class='comment'>// if its not empty: Change last...</span>
-                <span class='op'>*</span><span class='ident'>last</span> <span class='op'>=</span> <span class='ident'>method</span>.<span class='ident'>into</span>()       <span class='comment'>// ... into method name</span>
+    <span class="kw">fn</span> <span class="ident">post_request</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span>(<span class="ident">client</span>: <span class="kw-2">&amp;</span><span class="ident">Client</span>, <span class="ident">url</span>: <span class="kw-2">&amp;</span><span class="ident">Url</span>,
+                                  <span class="ident">method</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">p</span>: <span class="ident">Params</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="comment">// Prepare URL for request: Clone and change the last path fragment</span>
+        <span class="comment">// to the method name and append GET parameters.</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">url</span> <span class="op">=</span> <span class="ident">url</span>.<span class="ident">clone</span>();
+        <span class="ident">url</span>.<span class="ident">path_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">path</span><span class="op">|</span> {         <span class="comment">// if theres a path: Change it</span>
+            <span class="ident">path</span>.<span class="ident">last_mut</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">last</span><span class="op">|</span> {    <span class="comment">// if its not empty: Change last...</span>
+                <span class="kw-2">*</span><span class="ident">last</span> <span class="op">=</span> <span class="ident">method</span>.<span class="ident">into</span>()       <span class="comment">// ... into method name</span>
             })
         });
 
-        <span class='comment'>// Change the parameters to a well formed url-encoded string.</span>
-        <span class='comment'>// Change connect(&quot;&amp;&quot;) to join(&quot;&amp;&quot;) when rust 1.3 becomes stable</span>
-        <span class='kw'>let</span> <span class='ident'>bodyparams</span> <span class='op'>=</span> <span class='ident'>p</span>.<span class='ident'>get_params</span>().<span class='ident'>into_iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span>(<span class='ident'>k</span>, <span class='kw-2'>ref</span>  <span class='ident'>v</span>)<span class='op'>|</span> {
-            <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{}={}&quot;</span>, <span class='ident'>k</span>, <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='op'>*</span><span class='ident'>v</span>)
-        }).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>().<span class='ident'>connect</span>(<span class='string'>&quot;&amp;&quot;</span>);
+        <span class="comment">// Change the parameters to a well formed url-encoded string.</span>
+        <span class="comment">// Change connect(&quot;&amp;&quot;) to join(&quot;&amp;&quot;) when rust 1.3 becomes stable</span>
+        <span class="kw">let</span> <span class="ident">bodyparams</span> <span class="op">=</span> <span class="ident">p</span>.<span class="ident">get_params</span>().<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="kw-2">&amp;</span>(<span class="ident">k</span>, <span class="kw-2">ref</span>  <span class="ident">v</span>)<span class="op">|</span> {
+            <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}={}&quot;</span>, <span class="ident">k</span>, <span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">v</span>)
+        }).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>().<span class="ident">join</span>(<span class="string">&quot;&amp;&quot;</span>);
 
-        <span class='comment'>// Create the request with the body and headers</span>
-        <span class='kw'>let</span> <span class='ident'>req</span> <span class='op'>=</span> <span class='ident'>client</span>
-            .<span class='ident'>post</span>(<span class='ident'>url</span>)
-            .<span class='ident'>body</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>bodyparams</span>)
-            .<span class='ident'>header</span>(<span class='ident'>Connection</span>::<span class='ident'>close</span>())
-            .<span class='ident'>header</span>(<span class='ident'>ContentType</span>::<span class='ident'>form_url_encoded</span>())
-            .<span class='ident'>header</span>(<span class='ident'>ContentLength</span>(<span class='ident'>bodyparams</span>.<span class='ident'>len</span>() <span class='kw'>as</span> <span class='ident'>u64</span>));
+        <span class="comment">// Create the request with the body and headers</span>
+        <span class="kw">let</span> <span class="ident">req</span> <span class="op">=</span> <span class="ident">client</span>
+            .<span class="ident">post</span>(<span class="ident">url</span>)
+            .<span class="ident">body</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">bodyparams</span>)
+            .<span class="ident">header</span>(<span class="ident">Connection</span>::<span class="ident">close</span>())
+            .<span class="ident">header</span>(<span class="ident">ContentType</span>::<span class="ident">form_url_encoded</span>())
+            .<span class="ident">header</span>(<span class="ident">ContentLength</span>(<span class="ident">bodyparams</span>.<span class="ident">len</span>() <span class="kw">as</span> <span class="ident">u64</span>));
 
-        <span class='comment'>// Send request and check if it failed</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>resp</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>req</span>.<span class='ident'>send</span>());
+        <span class="comment">// Send request and check if it failed</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">resp</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">req</span>.<span class="ident">send</span>());
 
-        <span class='comment'>// Read response into String and return error if it failed</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>body</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>new</span>();
-        <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>resp</span>.<span class='ident'>read_to_string</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>body</span>));
+        <span class="comment">// Read response into String and return error if it failed</span>
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+        <span class="macro">try</span><span class="macro">!</span>(<span class="ident">resp</span>.<span class="ident">read_to_string</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body</span>));
 
-        <span class='comment'>// Try to decode response as JSON representing a Response</span>
-        <span class='kw'>match</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>json</span>::<span class='ident'>decode</span>(<span class='kw-2'>&amp;</span><span class='ident'>body</span>)) {
-            <span class='comment'>// If the response says that there was an error: Return API-Error</span>
-            <span class='comment'>// with the given description.</span>
-            <span class='ident'>Response</span> { <span class='ident'>ok</span>: <span class='boolval'>false</span>, <span class='ident'>description</span>: <span class='prelude-val'>Some</span>(<span class='ident'>desc</span>), ..} <span class='op'>=&gt;</span> {
-                <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>Api</span>(<span class='ident'>desc</span>))
+        <span class="comment">// Try to decode response as JSON representing a Response</span>
+        <span class="kw">match</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">json</span>::<span class="ident">decode</span>(<span class="kw-2">&amp;</span><span class="ident">body</span>)) {
+            <span class="comment">// If the response says that there was an error: Return API-Error</span>
+            <span class="comment">// with the given description.</span>
+            <span class="ident">Response</span> { <span class="ident">ok</span>: <span class="bool-val">false</span>, <span class="ident">description</span>: <span class="prelude-val">Some</span>(<span class="ident">desc</span>), ..} <span class="op">=&gt;</span> {
+                <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Api</span>(<span class="ident">desc</span>))
             },
-            <span class='comment'>// If response is &quot;ok&quot;: Return the result.</span>
-            <span class='ident'>Response</span> { <span class='ident'>ok</span>: <span class='boolval'>true</span>, <span class='ident'>result</span>: <span class='prelude-val'>Some</span>(<span class='ident'>res</span>), ..} <span class='op'>=&gt;</span> {
-                <span class='prelude-val'>Ok</span>(<span class='ident'>res</span>)
+            <span class="comment">// If response is &quot;ok&quot;: Return the result.</span>
+            <span class="ident">Response</span> { <span class="ident">ok</span>: <span class="bool-val">true</span>, <span class="ident">result</span>: <span class="prelude-val">Some</span>(<span class="ident">res</span>), ..} <span class="op">=&gt;</span> {
+                <span class="prelude-val">Ok</span>(<span class="ident">res</span>)
             },
-            <span class='comment'>// This should never occur: If &quot;ok&quot;==false, &quot;description&quot; should</span>
-            <span class='comment'>// always be Some. If &quot;ok&quot;==true, then &quot;result&quot; should always be</span>
-            <span class='comment'>// Some. We could also panic in this case.</span>
-            _ <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>Error</span>::<span class='ident'>InvalidState</span>(<span class='string'>&quot;Invalid server response&quot;</span>.<span class='ident'>into</span>())),
+            <span class="comment">// This should never occur: If &quot;ok&quot;==false, &quot;description&quot; should</span>
+            <span class="comment">// always be Some. If &quot;ok&quot;==true, then &quot;result&quot; should always be</span>
+            <span class="comment">// Some. We could also panic in this case.</span>
+            <span class="kw">_</span> <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidState</span>(<span class="string">&quot;Invalid server response&quot;</span>.<span class="ident">into</span>())),
         }
     }
 }
 
-<span class='doccomment'>/// Different method how to listen for new updates. Currently `LongPoll` is</span>
-<span class='doccomment'>/// the only method supported by this library. The Telegram API offers a</span>
-<span class='doccomment'>/// webhook method which is not yet implemented here.</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ListeningMethod</span> {
-    <span class='ident'>LongPoll</span>(<span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>),
+<span class="doccomment">/// Different method how to listen for new updates. Currently `LongPoll` is</span>
+<span class="doccomment">/// the only method supported by this library. The Telegram API offers a</span>
+<span class="doccomment">/// webhook method which is not yet implemented here.</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ListeningMethod</span> {
+    <span class="ident">LongPoll</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>),
 }
 
-<span class='doccomment'>/// A listening handler returns this type to signal the listening-method either</span>
-<span class='doccomment'>/// to stop or to continue. If a handler returns `Stop`, the update it was</span>
-<span class='doccomment'>/// passed counts as &quot;handled&quot; and won&#39;t be handled again.</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ListeningAction</span> {
-    <span class='ident'>Continue</span>,
-    <span class='ident'>Stop</span>
+<span class="doccomment">/// A listening handler returns this type to signal the listening-method either</span>
+<span class="doccomment">/// to stop or to continue. If a handler returns `Stop`, the update it was</span>
+<span class="doccomment">/// passed counts as &quot;handled&quot; and won&#39;t be handled again.</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ListeningAction</span> {
+    <span class="ident">Continue</span>,
+    <span class="ident">Stop</span>
 }
 
-<span class='doccomment'>/// Offers methods to easily receive new updates via the specified method. This</span>
-<span class='doccomment'>/// should be used instead of calling methods like `get_updates` yourself.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// To create a listener, you first have to create an `Api` object and call</span>
-<span class='doccomment'>/// `listener` on it. In order to make listening easier in a concurrent</span>
-<span class='doccomment'>/// environment, the `Listener` object and the `Api` object don&#39;t share any</span>
-<span class='doccomment'>/// internal state. This makes creating a `Listener` a bit more expensive, but</span>
-<span class='doccomment'>/// it&#39;s usually sufficient for any purpose to create a `Listener` only once.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Listener</span> {
-    <span class='ident'>method</span>: <span class='ident'>ListeningMethod</span>,
-    <span class='ident'>confirmed</span>: <span class='ident'>Integer</span>,
-    <span class='ident'>url</span>: <span class='ident'>Url</span>,
-    <span class='ident'>client</span>: <span class='ident'>Client</span>,
+<span class="doccomment">/// Offers methods to easily receive new updates via the specified method. This</span>
+<span class="doccomment">/// should be used instead of calling methods like `get_updates` yourself.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// To create a listener, you first have to create an `Api` object and call</span>
+<span class="doccomment">/// `listener` on it. In order to make listening easier in a concurrent</span>
+<span class="doccomment">/// environment, the `Listener` object and the `Api` object don&#39;t share any</span>
+<span class="doccomment">/// internal state. This makes creating a `Listener` a bit more expensive, but</span>
+<span class="doccomment">/// it&#39;s usually sufficient for any purpose to create a `Listener` only once.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Listener</span> {
+    <span class="ident">method</span>: <span class="ident">ListeningMethod</span>,
+    <span class="ident">confirmed</span>: <span class="ident">Integer</span>,
+    <span class="ident">url</span>: <span class="ident">Url</span>,
+    <span class="ident">client</span>: <span class="ident">Client</span>,
 }
 
 
-<span class='kw'>impl</span> <span class='ident'>Listener</span> {
+<span class="kw">impl</span> <span class="ident">Listener</span> {
 
-    <span class='kw'>fn</span> <span class='ident'>send_get_updates</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>offset</span>: <span class='ident'>Integer</span>, <span class='ident'>timeout</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>, <span class='ident'>limit</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Integer</span><span class='op'>&gt;</span>)
-                        <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Update</span><span class='op'>&gt;&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>params</span> <span class='op'>=</span> <span class='ident'>Params</span>::<span class='ident'>new</span>();
-        <span class='ident'>params</span>.<span class='ident'>add_get</span>(<span class='string'>&quot;offset&quot;</span>, <span class='ident'>offset</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;timeout&quot;</span>, <span class='ident'>timeout</span>);
-        <span class='ident'>params</span>.<span class='ident'>add_get_opt</span>(<span class='string'>&quot;limit&quot;</span>, <span class='ident'>limit</span>);
-        <span class='ident'>Api</span>::<span class='ident'>request</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>client</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>url</span>, <span class='string'>&quot;getUpdates&quot;</span>, <span class='ident'>params</span>, <span class='ident'>RequestType</span>::<span class='ident'>Post</span>)
+    <span class="kw">fn</span> <span class="ident">send_get_updates</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">offset</span>: <span class="ident">Integer</span>, <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>, <span class="ident">limit</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Integer</span><span class="op">&gt;</span>)
+                        <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Update</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">params</span> <span class="op">=</span> <span class="ident">Params</span>::<span class="ident">new</span>();
+        <span class="ident">params</span>.<span class="ident">add_get</span>(<span class="string">&quot;offset&quot;</span>, <span class="ident">offset</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;timeout&quot;</span>, <span class="ident">timeout</span>);
+        <span class="ident">params</span>.<span class="ident">add_get_opt</span>(<span class="string">&quot;limit&quot;</span>, <span class="ident">limit</span>);
+        <span class="ident">Api</span>::<span class="ident">request</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">client</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">url</span>, <span class="string">&quot;getUpdates&quot;</span>, <span class="ident">params</span>, <span class="ident">RequestType</span>::<span class="ident">Post</span>)
     }
 
-    <span class='doccomment'>/// Receive and handle updates with the given closure.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method will use the specified listening method to receive new</span>
-    <span class='doccomment'>/// updates and will then call the given handler for every update. Normally</span>
-    <span class='doccomment'>/// the handler won&#39;t ever be called for the same update twice (see Note</span>
-    <span class='doccomment'>/// below).</span>
-    <span class='doccomment'>/// When the handler returns an `Err` value, this function will stop</span>
-    <span class='doccomment'>/// listening and return the same `Err`. If you want to stop listening you</span>
-    <span class='doccomment'>/// can return `Ok(ListeningAction::Stop)` instead of an `Err` value.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// When returning an `Ok` value, the update that was passed to the handler</span>
-    <span class='doccomment'>/// is considered handled and won&#39;t be passed to a handler again. On the</span>
-    <span class='doccomment'>/// other hand if an `Err` is returned, the update is not considered handled</span>
-    <span class='doccomment'>/// so it will be passed to a handler the next time again.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// **Note:**</span>
-    <span class='doccomment'>/// If you are listening via `LongPoll` method and your handler panics or</span>
-    <span class='doccomment'>/// the program is aborted in an abnormal way (e.g. `SIGKILL`), the handler</span>
-    <span class='doccomment'>/// might receive some already handled updates a second time.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>listen</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='kw-2'>mut</span> <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>FnMut</span>(<span class='ident'>Update</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>ListeningAction</span><span class='op'>&gt;</span>
+    <span class="doccomment">/// Receive and handle updates with the given closure.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method will use the specified listening method to receive new</span>
+    <span class="doccomment">/// updates and will then call the given handler for every update. Normally</span>
+    <span class="doccomment">/// the handler won&#39;t ever be called for the same update twice (see Note</span>
+    <span class="doccomment">/// below).</span>
+    <span class="doccomment">/// When the handler returns an `Err` value, this function will stop</span>
+    <span class="doccomment">/// listening and return the same `Err`. If you want to stop listening you</span>
+    <span class="doccomment">/// can return `Ok(ListeningAction::Stop)` instead of an `Err` value.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// When returning an `Ok` value, the update that was passed to the handler</span>
+    <span class="doccomment">/// is considered handled and won&#39;t be passed to a handler again. On the</span>
+    <span class="doccomment">/// other hand if an `Err` is returned, the update is not considered handled</span>
+    <span class="doccomment">/// so it will be passed to a handler the next time again.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note:**</span>
+    <span class="doccomment">/// If you are listening via `LongPoll` method and your handler panics or</span>
+    <span class="doccomment">/// the program is aborted in an abnormal way (e.g. `SIGKILL`), the handler</span>
+    <span class="doccomment">/// might receive some already handled updates a second time.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">listen</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span>
+        <span class="kw">where</span> <span class="ident">H</span>: <span class="ident">FnMut</span>(<span class="ident">Update</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ListeningAction</span><span class="op">&gt;</span>
     {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>method</span> {
-            <span class='ident'>ListeningMethod</span>::<span class='ident'>LongPoll</span>(<span class='ident'>timeout</span>) <span class='op'>=&gt;</span> {
-                <span class='comment'>// `handled_until` will hold the id of the last handled update</span>
-                <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>handled_until</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>confirmed</span>;
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">method</span> {
+            <span class="ident">ListeningMethod</span>::<span class="ident">LongPoll</span>(<span class="ident">timeout</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// `handled_until` will hold the id of the last handled update</span>
+                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">handled_until</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">confirmed</span>;
 
-                <span class='comment'>// Calculate final timeout: Given or default (30s)</span>
-                <span class='kw'>let</span> <span class='ident'>timeout</span> <span class='op'>=</span> <span class='ident'>timeout</span>.<span class='ident'>or</span>(<span class='prelude-val'>Some</span>(<span class='number'>30</span>));
+                <span class="comment">// Calculate final timeout: Given or default (30s)</span>
+                <span class="kw">let</span> <span class="ident">timeout</span> <span class="op">=</span> <span class="ident">timeout</span>.<span class="ident">or</span>(<span class="prelude-val">Some</span>(<span class="number">30</span>));
 
-                <span class='kw'>loop</span> {
-                    <span class='comment'>// Receive updates with correct offset. We don&#39;t specify a</span>
-                    <span class='comment'>// limit (Telegram limits to 100 automatically).</span>
-                    <span class='kw'>let</span> <span class='ident'>updates</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_get_updates</span>(<span class='ident'>handled_until</span>, <span class='ident'>timeout</span>, <span class='prelude-val'>None</span>));
+                <span class="kw">loop</span> {
+                    <span class="comment">// Receive updates with correct offset. We don&#39;t specify a</span>
+                    <span class="comment">// limit (Telegram limits to 100 automatically).</span>
+                    <span class="kw">let</span> <span class="ident">updates</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">send_get_updates</span>(<span class="ident">handled_until</span>, <span class="ident">timeout</span>, <span class="prelude-val">None</span>));
 
-                    <span class='self'>self</span>.<span class='ident'>confirmed</span> <span class='op'>=</span> <span class='ident'>handled_until</span>;
+                    <span class="self">self</span>.<span class="ident">confirmed</span> <span class="op">=</span> <span class="ident">handled_until</span>;
 
-                    <span class='comment'>// For every update: Increase the offset &amp; call the handler.</span>
-                    <span class='kw'>for</span> <span class='ident'>u</span> <span class='kw'>in</span> <span class='ident'>updates</span> {
-                        <span class='kw'>let</span> <span class='ident'>update_id</span> <span class='op'>=</span> <span class='ident'>u</span>.<span class='ident'>update_id</span>;
+                    <span class="comment">// For every update: Increase the offset &amp; call the handler.</span>
+                    <span class="kw">for</span> <span class="ident">u</span> <span class="kw">in</span> <span class="ident">updates</span> {
+                        <span class="kw">let</span> <span class="ident">update_id</span> <span class="op">=</span> <span class="ident">u</span>.<span class="ident">update_id</span>;
 
-                        <span class='comment'>// Execute the handler and save it&#39;s result.</span>
-                        <span class='kw'>let</span> <span class='ident'>res</span> <span class='op'>=</span> <span class='ident'>handler</span>(<span class='ident'>u</span>);
+                        <span class="comment">// Execute the handler and save it&#39;s result.</span>
+                        <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">handler</span>(<span class="ident">u</span>);
 
-                        <span class='comment'>// If an error was returned: Confirm the update before</span>
-                        <span class='comment'>// (if necessary) and return the given error.</span>
-                        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=</span> <span class='ident'>res</span> {
-                            <span class='comment'>// Send a last request to confirm already handled</span>
-                            <span class='comment'>// updates.</span>
-                            <span class='comment'>// We don&#39;t specify a timeout (Telegram timeout 0 seconds by default)</span>
-                            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_get_updates</span>(<span class='ident'>handled_until</span>, <span class='prelude-val'>None</span>, <span class='prelude-val'>Some</span>(<span class='number'>0</span>)));
+                        <span class="comment">// If an error was returned: Confirm the update before</span>
+                        <span class="comment">// (if necessary) and return the given error.</span>
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span> <span class="ident">res</span> {
+                            <span class="comment">// Send a last request to confirm already handled</span>
+                            <span class="comment">// updates.</span>
+                            <span class="comment">// We don&#39;t specify a timeout (Telegram timeout 0 seconds by default)</span>
+                            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">send_get_updates</span>(<span class="ident">handled_until</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>)));
 
-                            <span class='self'>self</span>.<span class='ident'>confirmed</span> <span class='op'>=</span> <span class='ident'>handled_until</span>;
+                            <span class="self">self</span>.<span class="ident">confirmed</span> <span class="op">=</span> <span class="ident">handled_until</span>;
 
-                            <span class='kw'>return</span> <span class='prelude-val'>Err</span>(<span class='ident'>e</span>);
+                            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">e</span>);
                         }
 
-                        <span class='comment'>// The update is now considered &quot;handled&quot;. The</span>
-                        <span class='comment'>// if-condition should always be true.</span>
-                        <span class='kw'>if</span> <span class='ident'>update_id</span> <span class='op'>&gt;=</span> <span class='ident'>handled_until</span> {
-                            <span class='ident'>handled_until</span> <span class='op'>=</span> <span class='ident'>update_id</span> <span class='op'>+</span> <span class='number'>1</span>;
+                        <span class="comment">// The update is now considered &quot;handled&quot;. The</span>
+                        <span class="comment">// if-condition should always be true.</span>
+                        <span class="kw">if</span> <span class="ident">update_id</span> <span class="op">&gt;=</span> <span class="ident">handled_until</span> {
+                            <span class="ident">handled_until</span> <span class="op">=</span> <span class="ident">update_id</span> <span class="op">+</span> <span class="number">1</span>;
                         }
 
-                        <span class='comment'>// If an Ok(Stop) was returned, stop listening now with</span>
-                        <span class='comment'>// confirmed update.</span>
-                        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Ok</span>(<span class='ident'>ListeningAction</span>::<span class='ident'>Stop</span>) <span class='op'>=</span> <span class='ident'>res</span> {
-                            <span class='comment'>// Send a last request to confirm already handled</span>
-                            <span class='comment'>// updates.</span>
-                            <span class='comment'>// We don&#39;t specify a timeout (Telegram timeout 0 seconds by default)</span>
-                            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>send_get_updates</span>(<span class='ident'>handled_until</span>, <span class='prelude-val'>None</span>, <span class='prelude-val'>Some</span>(<span class='number'>0</span>)));
+                        <span class="comment">// If an Ok(Stop) was returned, stop listening now with</span>
+                        <span class="comment">// confirmed update.</span>
+                        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">ListeningAction</span>::<span class="ident">Stop</span>) <span class="op">=</span> <span class="ident">res</span> {
+                            <span class="comment">// Send a last request to confirm already handled</span>
+                            <span class="comment">// updates.</span>
+                            <span class="comment">// We don&#39;t specify a timeout (Telegram timeout 0 seconds by default)</span>
+                            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">send_get_updates</span>(<span class="ident">handled_until</span>, <span class="prelude-val">None</span>, <span class="prelude-val">Some</span>(<span class="number">0</span>)));
 
-                            <span class='self'>self</span>.<span class='ident'>confirmed</span> <span class='op'>=</span> <span class='ident'>handled_until</span>;
+                            <span class="self">self</span>.<span class="ident">confirmed</span> <span class="op">=</span> <span class="ident">handled_until</span>;
 
-                            <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(());
+                            <span class="kw">return</span> <span class="prelude-val">Ok</span>(());
                         }
                     }
                 }
@@ -1461,93 +1423,41 @@
         }
     }
 
-    <span class='doccomment'>/// Consumes `self` and returns a sender-receiver pair. You can receive</span>
-    <span class='doccomment'>/// new updates through the Receiver. Each update needs to be confirmed</span>
-    <span class='doccomment'>/// with a `Result&lt;ListeningAction&gt;` before the next update can be handled.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This means that handling updates isn&#39;t done in parallel. The only</span>
-    <span class='doccomment'>/// advantage of this function over the `listen` function is that you can</span>
-    <span class='doccomment'>/// ask the receiver, if a new update has arrived. This is useful if you</span>
-    <span class='doccomment'>/// want to handle different events in one thread. E.g. a remainder bot</span>
-    <span class='doccomment'>/// gets active on every received message AND on timed events.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// **Note:** Remember to send a result through the `Sender` after each</span>
-    <span class='doccomment'>/// update!</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>channel</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>)
-        <span class='op'>-&gt;</span> (<span class='ident'>mpsc</span>::<span class='ident'>Sender</span><span class='op'>&lt;</span><span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>ListeningAction</span><span class='op'>&gt;&gt;</span>, <span class='ident'>mpsc</span>::<span class='ident'>Receiver</span><span class='op'>&lt;</span><span class='ident'>Update</span><span class='op'>&gt;</span>)
+    <span class="doccomment">/// Consumes `self` and returns a sender-receiver pair. You can receive</span>
+    <span class="doccomment">/// new updates through the Receiver. Each update needs to be confirmed</span>
+    <span class="doccomment">/// with a `Result&lt;ListeningAction&gt;` before the next update can be handled.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This means that handling updates isn&#39;t done in parallel. The only</span>
+    <span class="doccomment">/// advantage of this function over the `listen` function is that you can</span>
+    <span class="doccomment">/// ask the receiver, if a new update has arrived. This is useful if you</span>
+    <span class="doccomment">/// want to handle different events in one thread. E.g. a remainder bot</span>
+    <span class="doccomment">/// gets active on every received message AND on timed events.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// **Note:** Remember to send a result through the `Sender` after each</span>
+    <span class="doccomment">/// update!</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel</span>(<span class="kw-2">mut</span> <span class="self">self</span>)
+        <span class="op">-&gt;</span> (<span class="ident">mpsc</span>::<span class="ident">Sender</span><span class="op">&lt;</span><span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ListeningAction</span><span class="op">&gt;&gt;</span>, <span class="ident">mpsc</span>::<span class="ident">Receiver</span><span class="op">&lt;</span><span class="ident">Update</span><span class="op">&gt;</span>)
     {
-        <span class='comment'>// Create channels for sending updates and handle result</span>
-        <span class='kw'>let</span> (<span class='ident'>update_tx</span>, <span class='ident'>update_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
-        <span class='kw'>let</span> (<span class='ident'>res_tx</span>, <span class='ident'>res_rx</span>) <span class='op'>=</span> <span class='ident'>mpsc</span>::<span class='ident'>channel</span>();
+        <span class="comment">// Create channels for sending updates and handle result</span>
+        <span class="kw">let</span> (<span class="ident">update_tx</span>, <span class="ident">update_rx</span>) <span class="op">=</span> <span class="ident">mpsc</span>::<span class="ident">channel</span>();
+        <span class="kw">let</span> (<span class="ident">res_tx</span>, <span class="ident">res_rx</span>) <span class="op">=</span> <span class="ident">mpsc</span>::<span class="ident">channel</span>();
 
-        <span class='comment'>// Listen for new updates in a new thread. Sadly we cannot easily</span>
-        <span class='comment'>// return the result of `listen`, so we just discard it.</span>
-        <span class='ident'>thread</span>::<span class='ident'>spawn</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-            <span class='kw'>let</span> _ <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>listen</span>(<span class='op'>|</span><span class='ident'>u</span><span class='op'>|</span> {
-                <span class='comment'>// Send received update and return if the receiver hung up.</span>
-                <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Err</span>(_) <span class='op'>=</span> <span class='ident'>update_tx</span>.<span class='ident'>send</span>(<span class='ident'>u</span>) {
-                    <span class='kw'>return</span> <span class='prelude-val'>Ok</span>(<span class='ident'>ListeningAction</span>::<span class='ident'>Stop</span>);
+        <span class="comment">// Listen for new updates in a new thread. Sadly we cannot easily</span>
+        <span class="comment">// return the result of `listen`, so we just discard it.</span>
+        <span class="ident">thread</span>::<span class="ident">spawn</span>(<span class="kw">move</span> <span class="op">||</span> {
+            <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">listen</span>(<span class="op">|</span><span class="ident">u</span><span class="op">|</span> {
+                <span class="comment">// Send received update and return if the receiver hung up.</span>
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=</span> <span class="ident">update_tx</span>.<span class="ident">send</span>(<span class="ident">u</span>) {
+                    <span class="kw">return</span> <span class="prelude-val">Ok</span>(<span class="ident">ListeningAction</span>::<span class="ident">Stop</span>);
                 }
 
-                <span class='comment'>// Receive handle result. If the channel hung up: Stop.</span>
-                <span class='ident'>res_rx</span>.<span class='ident'>recv</span>().<span class='ident'>unwrap_or</span>(<span class='prelude-val'>Ok</span>(<span class='ident'>ListeningAction</span>::<span class='ident'>Stop</span>))
+                <span class="comment">// Receive handle result. If the channel hung up: Stop.</span>
+                <span class="ident">res_rx</span>.<span class="ident">recv</span>().<span class="ident">unwrap_or</span>(<span class="prelude-val">Ok</span>(<span class="ident">ListeningAction</span>::<span class="ident">Stop</span>))
             });
         });
 
-        (<span class='ident'>res_tx</span>, <span class='ident'>update_rx</span>)
+        (<span class="ident">res_tx</span>, <span class="ident">update_rx</span>)
     }
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "telegram_bot";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
-    
-    <script async src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "telegram_bot";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

@@ -1,117 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Switch` struct in crate `multipart`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Switch">
-
-    <title>multipart::server::hyper::Switch - Rust</title>
-
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        <p class='location'><a href='../../index.html'>multipart</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>hyper</a></p><script>window.sidebarCurrent = {name: 'Switch', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>multipart</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>hyper</a>::<wbr><a class='struct' href=''>Switch</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-2842' class='srclink' href='../../../src/multipart/server/hyper.rs.html#19-22' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Switch&lt;H, M&gt; {
-    // some fields omitted
-}</pre><div class='docblock'><p>A container that implements <code>hyper::server::Handler</code> which will switch
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `Switch` struct in crate `multipart`."><meta name="keywords" content="rust, rustlang, rust-lang, Switch"><title>multipart::server::hyper::Switch - Rust</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script></head><body class="rustdoc struct"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Struct Switch</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.new">new</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Handler">Handler</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div></div><p class='location'><a href='../../index.html'>multipart</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>hyper</a></p><script>window.sidebarCurrent = {name: 'Switch', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Struct <a href='../../index.html'>multipart</a>::<wbr><a href='../index.html'>server</a>::<wbr><a href='index.html'>hyper</a>::<wbr><a class="struct" href=''>Switch</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../../../src/multipart/server/hyper.rs.html#30-33' title='goto source code'>[src]</a></span></h1><div class="docblock type-decl"><pre class='rust struct'>pub struct Switch&lt;H, M&gt; { /* fields omitted */ }</pre></div><div class='docblock'><p>A container that implements <code>hyper::server::Handler</code> which will switch
 the handler implementation depending on if the incoming request is multipart or not.</p>
-
 <p>Create an instance with <code>new()</code> and pass it to <code>hyper::server::Server::listen()</code> where
 you would normally pass a <code>Handler</code> instance.</p>
-
 <p>A convenient wrapper for <code>Multipart::from_request()</code>.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl&lt;H, M&gt; <a class='struct' href='../../../multipart/server/hyper/struct.Switch.html' title='multipart::server::hyper::Switch'>Switch</a>&lt;H, M&gt; <span class='where'>where H: <a class='trait' href='../../../hyper/server/trait.Handler.html' title='hyper::server::Handler'>Handler</a>, M: <a class='trait' href='../../../multipart/server/hyper/trait.MultipartHandler.html' title='multipart::server::hyper::MultipartHandler'>MultipartHandler</a></span></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(normal: H, multipart: M) -&gt; <a class='struct' href='../../../multipart/server/hyper/struct.Switch.html' title='multipart::server::hyper::Switch'>Switch</a>&lt;H, M&gt;</code></h4>
-<div class='docblock'><p>Create a new <code>Switch</code> instance where
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl&lt;H, M&gt; <a class="struct" href="../../../multipart/server/hyper/struct.Switch.html" title="struct multipart::server::hyper::Switch">Switch</a>&lt;H, M&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="../../../hyper/server/trait.Handler.html" title="trait hyper::server::Handler">Handler</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;M: <a class="trait" href="../../../multipart/server/hyper/trait.MultipartHandler.html" title="trait multipart::server::hyper::MultipartHandler">MultipartHandler</a>,&nbsp;</span></code><a href='#impl' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/multipart/server/hyper.rs.html#35-44' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.new' class='fnname'>new</a>(normal: H, multipart: M) -&gt; <a class="struct" href="../../../multipart/server/hyper/struct.Switch.html" title="struct multipart::server::hyper::Switch">Switch</a>&lt;H, M&gt;</code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/multipart/server/hyper.rs.html#38-43' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Create a new <code>Switch</code> instance where
 <code>normal</code> handles normal Hyper requests and <code>multipart</code> handles Multipart requests</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl&lt;H, M&gt; <a class='trait' href='../../../hyper/server/trait.Handler.html' title='hyper::server::Handler'>Handler</a> for <a class='struct' href='../../../multipart/server/hyper/struct.Switch.html' title='multipart::server::hyper::Switch'>Switch</a>&lt;H, M&gt; <span class='where'>where H: <a class='trait' href='../../../hyper/server/trait.Handler.html' title='hyper::server::Handler'>Handler</a>, M: <a class='trait' href='../../../multipart/server/hyper/trait.MultipartHandler.html' title='multipart::server::hyper::MultipartHandler'>MultipartHandler</a></span></code></h3><div class='impl-items'><h4 id='method.handle' class='method'><code>fn <a href='../../../hyper/server/trait.Handler.html#method.handle' class='fnname'>handle</a>&lt;'a, 'k&gt;(&amp;'a self, req: <a class='struct' href='../../../hyper/server/request/struct.Request.html' title='hyper::server::request::Request'>Request</a>&lt;'a, 'k&gt;, res: <a class='struct' href='../../../hyper/server/response/struct.Response.html' title='hyper::server::response::Response'>Response</a>&lt;'a, <a class='enum' href='../../../hyper/net/enum.Fresh.html' title='hyper::net::Fresh'>Fresh</a>&gt;)</code></h4>
-<h4 id='method.check_continue' class='method'><code>fn <a href='../../../hyper/server/trait.Handler.html#method.check_continue' class='fnname'>check_continue</a>(&amp;self, <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(&amp;<a class='enum' href='../../../hyper/method/enum.Method.html' title='hyper::method::Method'>Method</a>, &amp;<a class='enum' href='../../../hyper/uri/enum.RequestUri.html' title='hyper::uri::RequestUri'>RequestUri</a>, &amp;<a class='struct' href='../../../hyper/header/struct.Headers.html' title='hyper::header::Headers'>Headers</a>)</a>) -&gt; <a class='enum' href='../../../hyper/status/enum.StatusCode.html' title='hyper::status::StatusCode'>StatusCode</a></code></h4>
-<h4 id='method.on_connection_start' class='method'><code>fn <a href='../../../hyper/server/trait.Handler.html#method.on_connection_start' class='fnname'>on_connection_start</a>(&amp;self)</code></h4>
-<h4 id='method.on_connection_end' class='method'><code>fn <a href='../../../hyper/server/trait.Handler.html#method.on_connection_end' class='fnname'>on_connection_end</a>(&amp;self)</code></h4>
-</div></section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../../";
-        window.currentCrate = "multipart";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../../jquery.js"></script>
-    <script src="../../../main.js"></script>
-    
-    <script async src="../../../search-index.js"></script>
-</body>
-</html>
+</div></div>
+                <h2 id='implementations' class='small-section-header'>
+                  Trait Implementations<a href='#implementations' class='anchor'></a>
+                </h2>
+                <div id='implementations-list'><h3 id='impl-Handler' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl&lt;H, M&gt; <a class="trait" href="../../../hyper/server/trait.Handler.html" title="trait hyper::server::Handler">Handler</a> for <a class="struct" href="../../../multipart/server/hyper/struct.Switch.html" title="struct multipart::server::hyper::Switch">Switch</a>&lt;H, M&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="../../../hyper/server/trait.Handler.html" title="trait hyper::server::Handler">Handler</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;M: <a class="trait" href="../../../multipart/server/hyper/trait.MultipartHandler.html" title="trait multipart::server::hyper::MultipartHandler">MultipartHandler</a>,&nbsp;</span></code><a href='#impl-Handler' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/multipart/server/hyper.rs.html#46-53' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='impl-items'><h4 id='method.handle' class="method"><span id='handle.v' class='invisible'><table class='table-display'><tbody><tr><td><code>fn <a href='../../../hyper/server/trait.Handler.html#tymethod.handle' class='fnname'>handle</a>&lt;'a, 'k&gt;(&amp;'a self, req: <a class="struct" href="../../../multipart/server/hyper/struct.HyperRequest.html" title="struct multipart::server::hyper::HyperRequest">Request</a>&lt;'a, 'k&gt;, res: <a class="struct" href="../../../hyper/server/response/struct.Response.html" title="struct hyper::server::response::Response">Response</a>&lt;'a, <a class="enum" href="../../../hyper/net/enum.Fresh.html" title="enum hyper::net::Fresh">Fresh</a>&gt;)</code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/multipart/server/hyper.rs.html#47-52' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Receives a <code>Request</code>/<code>Response</code> pair, and should perform some action on them. <a href="../../../hyper/server/trait.Handler.html#tymethod.handle">Read more</a></p>
+</div><h4 id='method.check_continue' class="method"><span id='check_continue.v' class='invisible'><table class='table-display'><tbody><tr><td><code>fn <a href='../../../hyper/server/trait.Handler.html#method.check_continue' class='fnname'>check_continue</a>(&amp;self, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>&amp;<a class="enum" href="../../../hyper/method/enum.Method.html" title="enum hyper::method::Method">Method</a>, &amp;<a class="enum" href="../../../hyper/uri/enum.RequestUri.html" title="enum hyper::uri::RequestUri">RequestUri</a>, &amp;<a class="struct" href="../../../hyper/header/struct.Headers.html" title="struct hyper::header::Headers">Headers</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>) -&gt; <a class="enum" href="../../../hyper/status/enum.StatusCode.html" title="enum hyper::status::StatusCode">StatusCode</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/hyper/server/mod.rs.html#429-431' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Called when a Request includes a <code>Expect: 100-continue</code> header. <a href="../../../hyper/server/trait.Handler.html#method.check_continue">Read more</a></p>
+</div><h4 id='method.on_connection_start' class="method"><span id='on_connection_start.v' class='invisible'><table class='table-display'><tbody><tr><td><code>fn <a href='../../../hyper/server/trait.Handler.html#method.on_connection_start' class='fnname'>on_connection_start</a>(&amp;self)</code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/hyper/server/mod.rs.html#436' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>This is run after a connection is received, on a per-connection basis (not a per-request basis, as a connection with keep-alive may handle multiple requests) <a href="../../../hyper/server/trait.Handler.html#method.on_connection_start">Read more</a></p>
+</div><h4 id='method.on_connection_end' class="method"><span id='on_connection_end.v' class='invisible'><table class='table-display'><tbody><tr><td><code>fn <a href='../../../hyper/server/trait.Handler.html#method.on_connection_end' class='fnname'>on_connection_end</a>(&amp;self)</code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../../src/hyper/server/mod.rs.html#441' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>This is run before a connection is closed, on a per-connection basis (not a per-request basis, as a connection with keep-alive may handle multiple requests) <a href="../../../hyper/server/trait.Handler.html#method.on_connection_end">Read more</a></p>
+</div></div></div>
+                <h2 id='synthetic-implementations' class='small-section-header'>
+                  Auto Trait Implementations<a href='#synthetic-implementations' class='anchor'></a>
+                </h2>
+                <div id='synthetic-implementations-list'>
+            <h3 id='impl-Send' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl&lt;H, M&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../../../multipart/server/hyper/struct.Switch.html" title="struct multipart::server::hyper::Switch">Switch</a>&lt;H, M&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;M: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a>,&nbsp;</span></code><a href='#impl-Send' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl&lt;H, M&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="../../../multipart/server/hyper/struct.Switch.html" title="struct multipart::server::hyper::Switch">Switch</a>&lt;H, M&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;M: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a>,&nbsp;</span></code><a href='#impl-Sync' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div></div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../../";window.currentCrate = "multipart";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script defer src="../../../search-index.js"></script></body></html>

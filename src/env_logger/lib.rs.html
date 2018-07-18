@@ -1,46 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/env_logger-0.3.1/src/lib.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>lib.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../main.css">
-
-    <link rel="shortcut icon" href="http://www.rust-lang.org/favicon.ico">
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        <a href='../../env_logger/index.html'><img src='http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='' width='100'></a>
-        
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/Users/rock/.cargo/registry/src/github.com-1ecc6299db9ec823/env_logger-0.3.5/src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><link rel="shortcut icon" href="http://www.rust-lang.org/favicon.ico"></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../env_logger/index.html'><img src='http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -504,522 +462,788 @@
 <span id="462">462</span>
 <span id="463">463</span>
 <span id="464">464</span>
-</pre><pre class='rust '>
-<span class='comment'>// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
-<span class='comment'>// file at the top-level directory of this distribution and at</span>
-<span class='comment'>// http://rust-lang.org/COPYRIGHT.</span>
-<span class='comment'>//</span>
-<span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
-<span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
-<span class='comment'>// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
-<span class='comment'>// option. This file may not be copied, modified, or distributed</span>
-<span class='comment'>// except according to those terms.</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
+<span id="515">515</span>
+<span id="516">516</span>
+<span id="517">517</span>
+<span id="518">518</span>
+<span id="519">519</span>
+<span id="520">520</span>
+<span id="521">521</span>
+<span id="522">522</span>
+<span id="523">523</span>
+<span id="524">524</span>
+<span id="525">525</span>
+<span id="526">526</span>
+<span id="527">527</span>
+<span id="528">528</span>
+<span id="529">529</span>
+<span id="530">530</span>
+<span id="531">531</span>
+<span id="532">532</span>
+<span id="533">533</span>
+<span id="534">534</span>
+<span id="535">535</span>
+<span id="536">536</span>
+<span id="537">537</span>
+<span id="538">538</span>
+<span id="539">539</span>
+<span id="540">540</span>
+<span id="541">541</span>
+<span id="542">542</span>
+<span id="543">543</span>
+<span id="544">544</span>
+<span id="545">545</span>
+<span id="546">546</span>
+<span id="547">547</span>
+<span id="548">548</span>
+<span id="549">549</span>
+<span id="550">550</span>
+<span id="551">551</span>
+<span id="552">552</span>
+<span id="553">553</span>
+<span id="554">554</span>
+<span id="555">555</span>
+<span id="556">556</span>
+<span id="557">557</span>
+<span id="558">558</span>
+<span id="559">559</span>
+<span id="560">560</span>
+<span id="561">561</span>
+<span id="562">562</span>
+<span id="563">563</span>
+<span id="564">564</span>
+<span id="565">565</span>
+<span id="566">566</span>
+<span id="567">567</span>
+<span id="568">568</span>
+<span id="569">569</span>
+<span id="570">570</span>
+<span id="571">571</span>
+<span id="572">572</span>
+<span id="573">573</span>
+<span id="574">574</span>
+<span id="575">575</span>
+<span id="576">576</span>
+<span id="577">577</span>
+<span id="578">578</span>
+<span id="579">579</span>
+<span id="580">580</span>
+<span id="581">581</span>
+<span id="582">582</span>
+<span id="583">583</span>
+<span id="584">584</span>
+<span id="585">585</span>
+<span id="586">586</span>
+<span id="587">587</span>
+<span id="588">588</span>
+<span id="589">589</span>
+<span id="590">590</span>
+<span id="591">591</span>
+<span id="592">592</span>
+<span id="593">593</span>
+<span id="594">594</span>
+<span id="595">595</span>
+<span id="596">596</span>
+<span id="597">597</span>
+<span id="598">598</span>
+<span id="599">599</span>
+<span id="600">600</span>
+<span id="601">601</span>
+<span id="602">602</span>
+<span id="603">603</span>
+<span id="604">604</span>
+<span id="605">605</span>
+<span id="606">606</span>
+<span id="607">607</span>
+<span id="608">608</span>
+<span id="609">609</span>
+<span id="610">610</span>
+<span id="611">611</span>
+<span id="612">612</span>
+<span id="613">613</span>
+<span id="614">614</span>
+<span id="615">615</span>
+<span id="616">616</span>
+<span id="617">617</span>
+<span id="618">618</span>
+<span id="619">619</span>
+<span id="620">620</span>
+<span id="621">621</span>
+<span id="622">622</span>
+<span id="623">623</span>
+</pre><pre class="rust ">
+<span class="comment">// Copyright 2014-2015 The Rust Project Developers. See the COPYRIGHT</span>
+<span class="comment">// file at the top-level directory of this distribution and at</span>
+<span class="comment">// http://rust-lang.org/COPYRIGHT.</span>
+<span class="comment">//</span>
+<span class="comment">// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
+<span class="comment">// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
+<span class="comment">// &lt;LICENSE-MIT or http://opensource.org/licenses/MIT&gt;, at your</span>
+<span class="comment">// option. This file may not be copied, modified, or distributed</span>
+<span class="comment">// except according to those terms.</span>
 
-<span class='doccomment'>//! A logger configured via an environment variable.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## Example</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//! #[macro_use] extern crate log;</span>
-<span class='doccomment'>//! extern crate env_logger;</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! use log::LogLevel;</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! fn main() {</span>
-<span class='doccomment'>//!     env_logger::init().unwrap();</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//!     debug!(&quot;this is a debug {}&quot;, &quot;message&quot;);</span>
-<span class='doccomment'>//!     error!(&quot;this is printed by default&quot;);</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//!     if log_enabled!(LogLevel::Info) {</span>
-<span class='doccomment'>//!         let x = 3 * 4; // expensive computation</span>
-<span class='doccomment'>//!         info!(&quot;the answer was: {}&quot;, x);</span>
-<span class='doccomment'>//!     }</span>
-<span class='doccomment'>//! }</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Assumes the binary is `main`:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```{.bash}</span>
-<span class='doccomment'>//! $ RUST_LOG=error ./main</span>
-<span class='doccomment'>//! ERROR:main: this is printed by default</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```{.bash}</span>
-<span class='doccomment'>//! $ RUST_LOG=info ./main</span>
-<span class='doccomment'>//! ERROR:main: this is printed by default</span>
-<span class='doccomment'>//! INFO:main: the answer was: 12</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```{.bash}</span>
-<span class='doccomment'>//! $ RUST_LOG=debug ./main</span>
-<span class='doccomment'>//! DEBUG:main: this is a debug message</span>
-<span class='doccomment'>//! ERROR:main: this is printed by default</span>
-<span class='doccomment'>//! INFO:main: the answer was: 12</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! You can also set the log level on a per module basis:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```{.bash}</span>
-<span class='doccomment'>//! $ RUST_LOG=main=info ./main</span>
-<span class='doccomment'>//! ERROR:main: this is printed by default</span>
-<span class='doccomment'>//! INFO:main: the answer was: 12</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! And enable all logging:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```{.bash}</span>
-<span class='doccomment'>//! $ RUST_LOG=main ./main</span>
-<span class='doccomment'>//! DEBUG:main: this is a debug message</span>
-<span class='doccomment'>//! ERROR:main: this is printed by default</span>
-<span class='doccomment'>//! INFO:main: the answer was: 12</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! See the documentation for the log crate for more information about its API.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## Enabling logging</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Log levels are controlled on a per-module basis, and by default all logging</span>
-<span class='doccomment'>//! is disabled except for `error!`. Logging is controlled via the `RUST_LOG`</span>
-<span class='doccomment'>//! environment variable. The value of this environment variable is a</span>
-<span class='doccomment'>//! comma-separated list of logging directives. A logging directive is of the</span>
-<span class='doccomment'>//! form:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ```text</span>
-<span class='doccomment'>//! path::to::module=log_level</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! The path to the module is rooted in the name of the crate it was compiled</span>
-<span class='doccomment'>//! for, so if your program is contained in a file `hello.rs`, for example, to</span>
-<span class='doccomment'>//! turn on logging for this file you would use a value of `RUST_LOG=hello`.</span>
-<span class='doccomment'>//! Furthermore, this path is a prefix-search, so all modules nested in the</span>
-<span class='doccomment'>//! specified module will also have logging enabled.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! The actual `log_level` is optional to specify. If omitted, all logging will</span>
-<span class='doccomment'>//! be enabled. If specified, it must be one of the strings `debug`, `error`,</span>
-<span class='doccomment'>//! `info`, `warn`, or `trace`.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! As the log level for a module is optional, the module to enable logging for</span>
-<span class='doccomment'>//! is also optional. If only a `log_level` is provided, then the global log</span>
-<span class='doccomment'>//! level for all modules is set to this value.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Some examples of valid values of `RUST_LOG` are:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! * `hello` turns on all logging for the &#39;hello&#39; module</span>
-<span class='doccomment'>//! * `info` turns on all info logging</span>
-<span class='doccomment'>//! * `hello=debug` turns on debug logging for &#39;hello&#39;</span>
-<span class='doccomment'>//! * `hello,std::option` turns on hello, and std&#39;s option logging</span>
-<span class='doccomment'>//! * `error,hello=warn` turn on global error logging and also warn for hello</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## Filtering results</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! A RUST_LOG directive may include a regex filter. The syntax is to append `/`</span>
-<span class='doccomment'>//! followed by a regex. Each message is checked against the regex, and is only</span>
-<span class='doccomment'>//! logged if it matches. Note that the matching is done after formatting the</span>
-<span class='doccomment'>//! log string but before adding any logging meta-data. There is a single filter</span>
-<span class='doccomment'>//! for all modules.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Some examples:</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! * `hello/foo` turns on all logging for the &#39;hello&#39; module where the log</span>
-<span class='doccomment'>//!   message includes &#39;foo&#39;.</span>
-<span class='doccomment'>//! * `info/f.o` turns on all info logging where the log message includes &#39;foo&#39;,</span>
-<span class='doccomment'>//!   &#39;f1o&#39;, &#39;fao&#39;, etc.</span>
-<span class='doccomment'>//! * `hello=debug/foo*foo` turns on debug logging for &#39;hello&#39; where the log</span>
-<span class='doccomment'>//!   message includes &#39;foofoo&#39; or &#39;fofoo&#39; or &#39;fooooooofoo&#39;, etc.</span>
-<span class='doccomment'>//! * `error,hello=warn/[0-9] scopes` turn on global error logging and also</span>
-<span class='doccomment'>//!   warn for hello. In both cases the log message must include a single digit</span>
-<span class='doccomment'>//!   number followed by &#39;scopes&#39;.</span>
+<span class="doccomment">//! A logger configured via an environment variable which writes to standard</span>
+<span class="doccomment">//! error.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Example</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! #[macro_use] extern crate log;</span>
+<span class="doccomment">//! extern crate env_logger;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! use log::LogLevel;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! fn main() {</span>
+<span class="doccomment">//!     env_logger::init().unwrap();</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     debug!(&quot;this is a debug {}&quot;, &quot;message&quot;);</span>
+<span class="doccomment">//!     error!(&quot;this is printed by default&quot;);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     if log_enabled!(LogLevel::Info) {</span>
+<span class="doccomment">//!         let x = 3 * 4; // expensive computation</span>
+<span class="doccomment">//!         info!(&quot;the answer was: {}&quot;, x);</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Assumes the binary is `main`:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```{.bash}</span>
+<span class="doccomment">//! $ RUST_LOG=error ./main</span>
+<span class="doccomment">//! ERROR:main: this is printed by default</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```{.bash}</span>
+<span class="doccomment">//! $ RUST_LOG=info ./main</span>
+<span class="doccomment">//! ERROR:main: this is printed by default</span>
+<span class="doccomment">//! INFO:main: the answer was: 12</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```{.bash}</span>
+<span class="doccomment">//! $ RUST_LOG=debug ./main</span>
+<span class="doccomment">//! DEBUG:main: this is a debug message</span>
+<span class="doccomment">//! ERROR:main: this is printed by default</span>
+<span class="doccomment">//! INFO:main: the answer was: 12</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! You can also set the log level on a per module basis:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```{.bash}</span>
+<span class="doccomment">//! $ RUST_LOG=main=info ./main</span>
+<span class="doccomment">//! ERROR:main: this is printed by default</span>
+<span class="doccomment">//! INFO:main: the answer was: 12</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! And enable all logging:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```{.bash}</span>
+<span class="doccomment">//! $ RUST_LOG=main ./main</span>
+<span class="doccomment">//! DEBUG:main: this is a debug message</span>
+<span class="doccomment">//! ERROR:main: this is printed by default</span>
+<span class="doccomment">//! INFO:main: the answer was: 12</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! See the documentation for the log crate for more information about its API.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Enabling logging</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Log levels are controlled on a per-module basis, and by default all logging</span>
+<span class="doccomment">//! is disabled except for `error!`. Logging is controlled via the `RUST_LOG`</span>
+<span class="doccomment">//! environment variable. The value of this environment variable is a</span>
+<span class="doccomment">//! comma-separated list of logging directives. A logging directive is of the</span>
+<span class="doccomment">//! form:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```text</span>
+<span class="doccomment">//! path::to::module=log_level</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The path to the module is rooted in the name of the crate it was compiled</span>
+<span class="doccomment">//! for, so if your program is contained in a file `hello.rs`, for example, to</span>
+<span class="doccomment">//! turn on logging for this file you would use a value of `RUST_LOG=hello`.</span>
+<span class="doccomment">//! Furthermore, this path is a prefix-search, so all modules nested in the</span>
+<span class="doccomment">//! specified module will also have logging enabled.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The actual `log_level` is optional to specify. If omitted, all logging will</span>
+<span class="doccomment">//! be enabled. If specified, it must be one of the strings `debug`, `error`,</span>
+<span class="doccomment">//! `info`, `warn`, or `trace`.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! As the log level for a module is optional, the module to enable logging for</span>
+<span class="doccomment">//! is also optional. If only a `log_level` is provided, then the global log</span>
+<span class="doccomment">//! level for all modules is set to this value.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Some examples of valid values of `RUST_LOG` are:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! * `hello` turns on all logging for the &#39;hello&#39; module</span>
+<span class="doccomment">//! * `info` turns on all info logging</span>
+<span class="doccomment">//! * `hello=debug` turns on debug logging for &#39;hello&#39;</span>
+<span class="doccomment">//! * `hello,std::option` turns on hello, and std&#39;s option logging</span>
+<span class="doccomment">//! * `error,hello=warn` turn on global error logging and also warn for hello</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Filtering results</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! A RUST_LOG directive may include a regex filter. The syntax is to append `/`</span>
+<span class="doccomment">//! followed by a regex. Each message is checked against the regex, and is only</span>
+<span class="doccomment">//! logged if it matches. Note that the matching is done after formatting the</span>
+<span class="doccomment">//! log string but before adding any logging meta-data. There is a single filter</span>
+<span class="doccomment">//! for all modules.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Some examples:</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! * `hello/foo` turns on all logging for the &#39;hello&#39; module where the log</span>
+<span class="doccomment">//!   message includes &#39;foo&#39;.</span>
+<span class="doccomment">//! * `info/f.o` turns on all info logging where the log message includes &#39;foo&#39;,</span>
+<span class="doccomment">//!   &#39;f1o&#39;, &#39;fao&#39;, etc.</span>
+<span class="doccomment">//! * `hello=debug/foo*foo` turns on debug logging for &#39;hello&#39; where the log</span>
+<span class="doccomment">//!   message includes &#39;foofoo&#39; or &#39;fofoo&#39; or &#39;fooooooofoo&#39;, etc.</span>
+<span class="doccomment">//! * `error,hello=warn/[0-9] scopes` turn on global error logging and also</span>
+<span class="doccomment">//!   warn for hello. In both cases the log message must include a single digit</span>
+<span class="doccomment">//!   number followed by &#39;scopes&#39;.</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>doc</span>(<span class='ident'>html_logo_url</span> <span class='op'>=</span> <span class='string'>&quot;http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png&quot;</span>,
-       <span class='ident'>html_favicon_url</span> <span class='op'>=</span> <span class='string'>&quot;http://www.rust-lang.org/favicon.ico&quot;</span>,
-       <span class='ident'>html_root_url</span> <span class='op'>=</span> <span class='string'>&quot;http://doc.rust-lang.org/env_logger/&quot;</span>)]</span>
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>test</span>, <span class='ident'>deny</span>(<span class='ident'>warnings</span>))]</span>
+<span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_logo_url</span> <span class="op">=</span> <span class="string">&quot;http://www.rust-lang.org/logos/rust-logo-128x128-blk-v2.png&quot;</span>,
+       <span class="ident">html_favicon_url</span> <span class="op">=</span> <span class="string">&quot;http://www.rust-lang.org/favicon.ico&quot;</span>,
+       <span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;http://doc.rust-lang.org/env_logger/&quot;</span>)]</span>
+<span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">test</span>, <span class="ident">deny</span>(<span class="ident">warnings</span>))]</span>
 
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>regex</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>log</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">log</span>;
 
-<span class='kw'>use</span> <span class='ident'>regex</span>::<span class='ident'>Regex</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>prelude</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>env</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 
-<span class='kw'>use</span> <span class='ident'>log</span>::{<span class='ident'>Log</span>, <span class='ident'>LogLevel</span>, <span class='ident'>LogLevelFilter</span>, <span class='ident'>LogRecord</span>, <span class='ident'>SetLoggerError</span>, <span class='ident'>LogMetadata</span>};
+<span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">Log</span>, <span class="ident">LogLevel</span>, <span class="ident">LogLevelFilter</span>, <span class="ident">LogRecord</span>, <span class="ident">SetLoggerError</span>, <span class="ident">LogMetadata</span>};
 
-<span class='kw'>struct</span> <span class='ident'>Logger</span> {
-    <span class='ident'>directives</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>LogDirective</span><span class='op'>&gt;</span>,
-    <span class='ident'>filter</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Regex</span><span class='op'>&gt;</span>,
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;regex&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;regex.rs&quot;</span>]</span>
+<span class="kw">mod</span> <span class="ident">filter</span>;
+
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;regex&quot;</span>))]</span>
+<span class="attribute">#[<span class="ident">path</span> <span class="op">=</span> <span class="string">&quot;string.rs&quot;</span>]</span>
+<span class="kw">mod</span> <span class="ident">filter</span>;
+
+<span class="doccomment">/// The logger.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Logger</span> {
+    <span class="ident">directives</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">LogDirective</span><span class="op">&gt;</span>,
+    <span class="ident">filter</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">filter</span>::<span class="ident">Filter</span><span class="op">&gt;</span>,
+    <span class="ident">format</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">LogRecord</span>) <span class="op">-&gt;</span> <span class="ident">String</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Logger</span> {
-    <span class='kw'>fn</span> <span class='ident'>enabled</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>level</span>: <span class='ident'>LogLevel</span>, <span class='ident'>target</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='comment'>// Search for the longest match, the vector is assumed to be pre-sorted.</span>
-        <span class='kw'>for</span> <span class='ident'>directive</span> <span class='kw'>in</span> <span class='self'>self</span>.<span class='ident'>directives</span>.<span class='ident'>iter</span>().<span class='ident'>rev</span>() {
-            <span class='kw'>match</span> <span class='ident'>directive</span>.<span class='ident'>name</span> {
-                <span class='prelude-val'>Some</span>(<span class='kw-2'>ref</span> <span class='ident'>name</span>) <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>target</span>.<span class='ident'>starts_with</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span><span class='op'>*</span><span class='ident'>name</span>) <span class='op'>=&gt;</span> {},
-                <span class='prelude-val'>Some</span>(..) <span class='op'>|</span> <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
-                    <span class='kw'>return</span> <span class='ident'>level</span> <span class='op'>&lt;=</span> <span class='ident'>directive</span>.<span class='ident'>level</span>
-                }
-            }
+<span class="doccomment">/// LogBuilder acts as builder for initializing the Logger.</span>
+<span class="doccomment">/// It can be used to customize the log format, change the enviromental variable used</span>
+<span class="doccomment">/// to provide the logging directives and also set the default log level filter.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ## Example</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// #[macro_use]</span>
+<span class="doccomment">/// extern crate log;</span>
+<span class="doccomment">/// extern crate env_logger;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// use std::env;</span>
+<span class="doccomment">/// use log::{LogRecord, LogLevelFilter};</span>
+<span class="doccomment">/// use env_logger::LogBuilder;</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// fn main() {</span>
+<span class="doccomment">///     let format = |record: &amp;LogRecord| {</span>
+<span class="doccomment">///         format!(&quot;{} - {}&quot;, record.level(), record.args())</span>
+<span class="doccomment">///     };</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     let mut builder = LogBuilder::new();</span>
+<span class="doccomment">///     builder.format(format).filter(None, LogLevelFilter::Info);</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     if env::var(&quot;RUST_LOG&quot;).is_ok() {</span>
+<span class="doccomment">///        builder.parse(&amp;env::var(&quot;RUST_LOG&quot;).unwrap());</span>
+<span class="doccomment">///     }</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     builder.init().unwrap();</span>
+<span class="doccomment">///</span>
+<span class="doccomment">///     error!(&quot;error message&quot;);</span>
+<span class="doccomment">///     info!(&quot;info message&quot;);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">LogBuilder</span> {
+    <span class="ident">directives</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">LogDirective</span><span class="op">&gt;</span>,
+    <span class="ident">filter</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">filter</span>::<span class="ident">Filter</span><span class="op">&gt;</span>,
+    <span class="ident">format</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">LogRecord</span>) <span class="op">-&gt;</span> <span class="ident">String</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">LogBuilder</span> {
+    <span class="doccomment">/// Initializes the log builder with defaults</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">LogBuilder</span> {
+        <span class="ident">LogBuilder</span> {
+            <span class="ident">directives</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
+            <span class="ident">filter</span>: <span class="prelude-val">None</span>,
+            <span class="ident">format</span>: <span class="ident">Box</span>::<span class="ident">new</span>(<span class="op">|</span><span class="ident">record</span>: <span class="kw-2">&amp;</span><span class="ident">LogRecord</span><span class="op">|</span> {
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}:{}: {}&quot;</span>, <span class="ident">record</span>.<span class="ident">level</span>(),
+                        <span class="ident">record</span>.<span class="ident">location</span>().<span class="ident">module_path</span>(), <span class="ident">record</span>.<span class="ident">args</span>())
+            }),
         }
-        <span class='boolval'>false</span>
-    }
-}
-
-<span class='kw'>impl</span> <span class='ident'>Log</span> <span class='kw'>for</span> <span class='ident'>Logger</span> {
-    <span class='kw'>fn</span> <span class='ident'>enabled</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>metadata</span>: <span class='kw-2'>&amp;</span><span class='ident'>LogMetadata</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> {
-        <span class='self'>self</span>.<span class='ident'>enabled</span>(<span class='ident'>metadata</span>.<span class='ident'>level</span>(), <span class='ident'>metadata</span>.<span class='ident'>target</span>())
     }
 
-    <span class='kw'>fn</span> <span class='ident'>log</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>record</span>: <span class='kw-2'>&amp;</span><span class='ident'>LogRecord</span>) {
-        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>Log</span>::<span class='ident'>enabled</span>(<span class='self'>self</span>, <span class='ident'>record</span>.<span class='ident'>metadata</span>()) {
-            <span class='kw'>return</span>;
-        }
-
-        <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>filter</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>filter</span>.<span class='ident'>as_ref</span>() {
-            <span class='kw'>if</span> <span class='ident'>filter</span>.<span class='ident'>is_match</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>record</span>.<span class='ident'>args</span>().<span class='ident'>to_string</span>()) {
-                <span class='kw'>return</span>;
-            }
-        }
-
-        <span class='kw'>let</span> _ <span class='op'>=</span> <span class='macro'>writeln</span><span class='macro'>!</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>io</span>::<span class='ident'>stderr</span>(),
-                         <span class='string'>&quot;{}:{}: {}&quot;</span>,
-                         <span class='ident'>record</span>.<span class='ident'>level</span>(),
-                         <span class='ident'>record</span>.<span class='ident'>location</span>().<span class='ident'>module_path</span>(),
-                         <span class='ident'>record</span>.<span class='ident'>args</span>());
-    }
-}
-
-<span class='kw'>struct</span> <span class='ident'>LogDirective</span> {
-    <span class='ident'>name</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>,
-    <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>,
-}
-
-<span class='doccomment'>/// Initializes the global logger with an env logger.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// This should be called early in the execution of a Rust program, and the</span>
-<span class='doccomment'>/// global logger may only be initialized once. Future initialization attempts</span>
-<span class='doccomment'>/// will return an error.</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>init</span>() <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>(), <span class='ident'>SetLoggerError</span><span class='op'>&gt;</span> {
-    <span class='ident'>log</span>::<span class='ident'>set_logger</span>(<span class='op'>|</span><span class='ident'>max_level</span><span class='op'>|</span> {
-        <span class='kw'>let</span> (<span class='kw-2'>mut</span> <span class='ident'>directives</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='kw'>match</span> <span class='ident'>env</span>::<span class='ident'>var</span>(<span class='string'>&quot;RUST_LOG&quot;</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>spec</span>) <span class='op'>=&gt;</span> <span class='ident'>parse_logging_spec</span>(<span class='kw-2'>&amp;</span><span class='ident'>spec</span>),
-            <span class='prelude-val'>Err</span>(..) <span class='op'>=&gt;</span> (<span class='macro'>vec</span><span class='macro'>!</span>[<span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>None</span>, <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Error</span> }], <span class='prelude-val'>None</span>),
-        };
-
-        <span class='comment'>// Sort the provided directives by length of their name, this allows a</span>
-        <span class='comment'>// little more efficient lookup at runtime.</span>
-        <span class='ident'>directives</span>.<span class='ident'>sort_by</span>(<span class='op'>|</span><span class='ident'>a</span>, <span class='ident'>b</span><span class='op'>|</span> {
-            <span class='kw'>let</span> <span class='ident'>alen</span> <span class='op'>=</span> <span class='ident'>a</span>.<span class='ident'>name</span>.<span class='ident'>as_ref</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>a</span><span class='op'>|</span> <span class='ident'>a</span>.<span class='ident'>len</span>()).<span class='ident'>unwrap_or</span>(<span class='number'>0</span>);
-            <span class='kw'>let</span> <span class='ident'>blen</span> <span class='op'>=</span> <span class='ident'>b</span>.<span class='ident'>name</span>.<span class='ident'>as_ref</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>b</span><span class='op'>|</span> <span class='ident'>b</span>.<span class='ident'>len</span>()).<span class='ident'>unwrap_or</span>(<span class='number'>0</span>);
-            <span class='ident'>alen</span>.<span class='ident'>cmp</span>(<span class='kw-2'>&amp;</span><span class='ident'>blen</span>)
+    <span class="doccomment">/// Adds filters to the logger</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// The given module (if any) will log at most the specified level provided.</span>
+    <span class="doccomment">/// If no module is provided then the filter will apply to all log messages.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filter</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+                  <span class="ident">module</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>,
+                  <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+        <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">push</span>(<span class="ident">LogDirective</span> {
+            <span class="ident">name</span>: <span class="ident">module</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">to_string</span>()),
+            <span class="ident">level</span>: <span class="ident">level</span>,
         });
+        <span class="self">self</span>
+    }
 
-        <span class='kw'>let</span> <span class='ident'>level</span> <span class='op'>=</span> {
-            <span class='kw'>let</span> <span class='ident'>max</span> <span class='op'>=</span> <span class='ident'>directives</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>d</span><span class='op'>|</span> <span class='ident'>d</span>.<span class='ident'>level</span>).<span class='ident'>max</span>();
-            <span class='ident'>max</span>.<span class='ident'>unwrap_or</span>(<span class='ident'>LogLevelFilter</span>::<span class='ident'>Off</span>)
-        };
-        <span class='ident'>max_level</span>.<span class='ident'>set</span>(<span class='ident'>level</span>);
+    <span class="doccomment">/// Sets the format function for formatting the log output.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This function is called on each record logged to produce a string which</span>
+    <span class="doccomment">/// is actually printed out.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">format</span><span class="op">&lt;</span><span class="ident">F</span>: <span class="lifetime">&#39;static</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">format</span>: <span class="ident">F</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>
+        <span class="kw">where</span> <span class="ident">F</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">LogRecord</span>) <span class="op">-&gt;</span> <span class="ident">String</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="ident">Send</span>
+    {
+        <span class="self">self</span>.<span class="ident">format</span> <span class="op">=</span> <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">format</span>);
+        <span class="self">self</span>
+    }
 
-        <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='ident'>Logger</span> {
-            <span class='ident'>directives</span>: <span class='ident'>directives</span>,
-            <span class='ident'>filter</span>: <span class='ident'>filter</span>,
+    <span class="doccomment">/// Parses the directives string in the same form as the RUST_LOG</span>
+    <span class="doccomment">/// environment variable.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// See the module documentation for more details.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">filters</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span> {
+        <span class="kw">let</span> (<span class="ident">directives</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="ident">filters</span>);
+
+        <span class="self">self</span>.<span class="ident">filter</span> <span class="op">=</span> <span class="ident">filter</span>;
+
+        <span class="kw">for</span> <span class="ident">directive</span> <span class="kw">in</span> <span class="ident">directives</span> {
+            <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">push</span>(<span class="ident">directive</span>);
+        }
+        <span class="self">self</span>
+    }
+
+    <span class="doccomment">/// Initializes the global logger with an env logger.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This should be called early in the execution of a Rust program, and the</span>
+    <span class="doccomment">/// global logger may only be initialized once. Future initialization</span>
+    <span class="doccomment">/// attempts will return an error.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SetLoggerError</span><span class="op">&gt;</span> {
+        <span class="ident">log</span>::<span class="ident">set_logger</span>(<span class="op">|</span><span class="ident">max_level</span><span class="op">|</span> {
+            <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">build</span>();
+            <span class="ident">max_level</span>.<span class="ident">set</span>(<span class="ident">logger</span>.<span class="ident">filter</span>());
+            <span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">logger</span>)
         })
-    })
+    }
+
+    <span class="doccomment">/// Build an env logger.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">build</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Logger</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">is_empty</span>() {
+            <span class="comment">// Adds the default filter if none exist</span>
+            <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">push</span>(<span class="ident">LogDirective</span> {
+                <span class="ident">name</span>: <span class="prelude-val">None</span>,
+                <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Error</span>,
+            });
+        } <span class="kw">else</span> {
+            <span class="comment">// Sort the directives by length of their name, this allows a</span>
+            <span class="comment">// little more efficient lookup at runtime.</span>
+            <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">sort_by</span>(<span class="op">|</span><span class="ident">a</span>, <span class="ident">b</span><span class="op">|</span> {
+                <span class="kw">let</span> <span class="ident">alen</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">a</span><span class="op">|</span> <span class="ident">a</span>.<span class="ident">len</span>()).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+                <span class="kw">let</span> <span class="ident">blen</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">name</span>.<span class="ident">as_ref</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">b</span><span class="op">|</span> <span class="ident">b</span>.<span class="ident">len</span>()).<span class="ident">unwrap_or</span>(<span class="number">0</span>);
+                <span class="ident">alen</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">blen</span>)
+            });
+        }
+
+        <span class="ident">Logger</span> {
+            <span class="ident">directives</span>: <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">directives</span>, <span class="ident">Vec</span>::<span class="ident">new</span>()),
+            <span class="ident">filter</span>: <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">filter</span>, <span class="prelude-val">None</span>),
+            <span class="ident">format</span>: <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">format</span>, <span class="ident">Box</span>::<span class="ident">new</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">String</span>::<span class="ident">new</span>())),
+        }
+    }
 }
 
-<span class='doccomment'>/// Parse a logging specification string (e.g: &quot;crate1,crate2::mod3,crate3::x=error/foo&quot;)</span>
-<span class='doccomment'>/// and return a vector with log directives.</span>
-<span class='kw'>fn</span> <span class='ident'>parse_logging_spec</span>(<span class='ident'>spec</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> (<span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>LogDirective</span><span class='op'>&gt;</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Regex</span><span class='op'>&gt;</span>) {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>dirs</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
+<span class="kw">impl</span> <span class="ident">Logger</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>() <span class="op">-&gt;</span> <span class="ident">Logger</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>();
 
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>spec</span>.<span class='ident'>split</span>(<span class='string'>&#39;/&#39;</span>);
-    <span class='kw'>let</span> <span class='ident'>mods</span> <span class='op'>=</span> <span class='ident'>parts</span>.<span class='ident'>next</span>();
-    <span class='kw'>let</span> <span class='ident'>filter</span> <span class='op'>=</span> <span class='ident'>parts</span>.<span class='ident'>next</span>();
-    <span class='kw'>if</span> <span class='ident'>parts</span>.<span class='ident'>next</span>().<span class='ident'>is_some</span>() {
-        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;warning: invalid logging spec &#39;{}&#39;, \
-                 ignoring it (too many &#39;/&#39;s)&quot;</span>, <span class='ident'>spec</span>);
-        <span class='kw'>return</span> (<span class='ident'>dirs</span>, <span class='prelude-val'>None</span>);
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">s</span>) <span class="op">=</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;RUST_LOG&quot;</span>) {
+            <span class="ident">builder</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>);
+        }
+
+        <span class="ident">builder</span>.<span class="ident">build</span>()
     }
-    <span class='ident'>mods</span>.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>m</span><span class='op'>|</span> { <span class='kw'>for</span> <span class='ident'>s</span> <span class='kw'>in</span> <span class='ident'>m</span>.<span class='ident'>split</span>(<span class='string'>&#39;,&#39;</span>) {
-        <span class='kw'>if</span> <span class='ident'>s</span>.<span class='ident'>len</span>() <span class='op'>==</span> <span class='number'>0</span> { <span class='kw'>continue</span> }
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>parts</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>split</span>(<span class='string'>&#39;=&#39;</span>);
-        <span class='kw'>let</span> (<span class='ident'>log_level</span>, <span class='ident'>name</span>) <span class='op'>=</span> <span class='kw'>match</span> (<span class='ident'>parts</span>.<span class='ident'>next</span>(), <span class='ident'>parts</span>.<span class='ident'>next</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> <span class='ident'>s</span>.<span class='ident'>trim</span>()), <span class='ident'>parts</span>.<span class='ident'>next</span>()) {
-            (<span class='prelude-val'>Some</span>(<span class='ident'>part0</span>), <span class='prelude-val'>None</span>, <span class='prelude-val'>None</span>) <span class='op'>=&gt;</span> {
-                <span class='comment'>// if the single argument is a log-level string or number,</span>
-                <span class='comment'>// treat that as a global fallback</span>
-                <span class='kw'>match</span> <span class='ident'>part0</span>.<span class='ident'>parse</span>() {
-                    <span class='prelude-val'>Ok</span>(<span class='ident'>num</span>) <span class='op'>=&gt;</span> (<span class='ident'>num</span>, <span class='prelude-val'>None</span>),
-                    <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> (<span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>part0</span>)),
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">filter</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">LogLevelFilter</span> {
+        <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">iter</span>()
+            .<span class="ident">map</span>(<span class="op">|</span><span class="ident">d</span><span class="op">|</span> <span class="ident">d</span>.<span class="ident">level</span>).<span class="ident">max</span>()
+            .<span class="ident">unwrap_or</span>(<span class="ident">LogLevelFilter</span>::<span class="ident">Off</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">enabled</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">level</span>: <span class="ident">LogLevel</span>, <span class="ident">target</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="comment">// Search for the longest match, the vector is assumed to be pre-sorted.</span>
+        <span class="kw">for</span> <span class="ident">directive</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">directives</span>.<span class="ident">iter</span>().<span class="ident">rev</span>() {
+            <span class="kw">match</span> <span class="ident">directive</span>.<span class="ident">name</span> {
+                <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">name</span>) <span class="kw">if</span> <span class="op">!</span><span class="ident">target</span>.<span class="ident">starts_with</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="kw-2">*</span><span class="ident">name</span>) <span class="op">=&gt;</span> {},
+                <span class="prelude-val">Some</span>(..) <span class="op">|</span> <span class="prelude-val">None</span> <span class="op">=&gt;</span> {
+                    <span class="kw">return</span> <span class="ident">level</span> <span class="op">&lt;=</span> <span class="ident">directive</span>.<span class="ident">level</span>
                 }
             }
-            (<span class='prelude-val'>Some</span>(<span class='ident'>part0</span>), <span class='prelude-val'>Some</span>(<span class='string'>&quot;&quot;</span>), <span class='prelude-val'>None</span>) <span class='op'>=&gt;</span> (<span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>(), <span class='prelude-val'>Some</span>(<span class='ident'>part0</span>)),
-            (<span class='prelude-val'>Some</span>(<span class='ident'>part0</span>), <span class='prelude-val'>Some</span>(<span class='ident'>part1</span>), <span class='prelude-val'>None</span>) <span class='op'>=&gt;</span> {
-                <span class='kw'>match</span> <span class='ident'>part1</span>.<span class='ident'>parse</span>() {
-                    <span class='prelude-val'>Ok</span>(<span class='ident'>num</span>) <span class='op'>=&gt;</span> (<span class='ident'>num</span>, <span class='prelude-val'>Some</span>(<span class='ident'>part0</span>)),
-                    _ <span class='op'>=&gt;</span> {
-                        <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;warning: invalid logging spec &#39;{}&#39;, \
-                                 ignoring it&quot;</span>, <span class='ident'>part1</span>);
-                        <span class='kw'>continue</span>
+        }
+        <span class="bool-val">false</span>
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">Log</span> <span class="kw">for</span> <span class="ident">Logger</span> {
+    <span class="kw">fn</span> <span class="ident">enabled</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">metadata</span>: <span class="kw-2">&amp;</span><span class="ident">LogMetadata</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
+        <span class="self">self</span>.<span class="ident">enabled</span>(<span class="ident">metadata</span>.<span class="ident">level</span>(), <span class="ident">metadata</span>.<span class="ident">target</span>())
+    }
+
+    <span class="kw">fn</span> <span class="ident">log</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">record</span>: <span class="kw-2">&amp;</span><span class="ident">LogRecord</span>) {
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">Log</span>::<span class="ident">enabled</span>(<span class="self">self</span>, <span class="ident">record</span>.<span class="ident">metadata</span>()) {
+            <span class="kw">return</span>;
+        }
+
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">filter</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">filter</span>.<span class="ident">as_ref</span>() {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">filter</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">record</span>.<span class="ident">args</span>().<span class="ident">to_string</span>()) {
+                <span class="kw">return</span>;
+            }
+        }
+
+        <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="macro">writeln</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">io</span>::<span class="ident">stderr</span>(), <span class="string">&quot;{}&quot;</span>, (<span class="self">self</span>.<span class="ident">format</span>)(<span class="ident">record</span>));
+    }
+}
+
+<span class="kw">struct</span> <span class="ident">LogDirective</span> {
+    <span class="ident">name</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>,
+}
+
+<span class="doccomment">/// Initializes the global logger with an env logger.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This should be called early in the execution of a Rust program, and the</span>
+<span class="doccomment">/// global logger may only be initialized once. Future initialization attempts</span>
+<span class="doccomment">/// will return an error.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">init</span>() <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SetLoggerError</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">builder</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>();
+
+    <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Ok</span>(<span class="ident">s</span>) <span class="op">=</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="string">&quot;RUST_LOG&quot;</span>) {
+        <span class="ident">builder</span>.<span class="ident">parse</span>(<span class="kw-2">&amp;</span><span class="ident">s</span>);
+    }
+
+    <span class="ident">builder</span>.<span class="ident">init</span>()
+}
+
+<span class="doccomment">/// Parse a logging specification string (e.g: &quot;crate1,crate2::mod3,crate3::x=error/foo&quot;)</span>
+<span class="doccomment">/// and return a vector with log directives.</span>
+<span class="kw">fn</span> <span class="ident">parse_logging_spec</span>(<span class="ident">spec</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">LogDirective</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">filter</span>::<span class="ident">Filter</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dirs</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">spec</span>.<span class="ident">split</span>(<span class="string">&#39;/&#39;</span>);
+    <span class="kw">let</span> <span class="ident">mods</span> <span class="op">=</span> <span class="ident">parts</span>.<span class="ident">next</span>();
+    <span class="kw">let</span> <span class="ident">filter</span> <span class="op">=</span> <span class="ident">parts</span>.<span class="ident">next</span>();
+    <span class="kw">if</span> <span class="ident">parts</span>.<span class="ident">next</span>().<span class="ident">is_some</span>() {
+        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;warning: invalid logging spec &#39;{}&#39;, \
+                 ignoring it (too many &#39;/&#39;s)&quot;</span>, <span class="ident">spec</span>);
+        <span class="kw">return</span> (<span class="ident">dirs</span>, <span class="prelude-val">None</span>);
+    }
+    <span class="ident">mods</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">m</span><span class="op">|</span> { <span class="kw">for</span> <span class="ident">s</span> <span class="kw">in</span> <span class="ident">m</span>.<span class="ident">split</span>(<span class="string">&#39;,&#39;</span>) {
+        <span class="kw">if</span> <span class="ident">s</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="number">0</span> { <span class="kw">continue</span> }
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">parts</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">split</span>(<span class="string">&#39;=&#39;</span>);
+        <span class="kw">let</span> (<span class="ident">log_level</span>, <span class="ident">name</span>) <span class="op">=</span> <span class="kw">match</span> (<span class="ident">parts</span>.<span class="ident">next</span>(), <span class="ident">parts</span>.<span class="ident">next</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">trim</span>()), <span class="ident">parts</span>.<span class="ident">next</span>()) {
+            (<span class="prelude-val">Some</span>(<span class="ident">part0</span>), <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
+                <span class="comment">// if the single argument is a log-level string or number,</span>
+                <span class="comment">// treat that as a global fallback</span>
+                <span class="kw">match</span> <span class="ident">part0</span>.<span class="ident">parse</span>() {
+                    <span class="prelude-val">Ok</span>(<span class="ident">num</span>) <span class="op">=&gt;</span> (<span class="ident">num</span>, <span class="prelude-val">None</span>),
+                    <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> (<span class="ident">LogLevelFilter</span>::<span class="ident">max</span>(), <span class="prelude-val">Some</span>(<span class="ident">part0</span>)),
+                }
+            }
+            (<span class="prelude-val">Some</span>(<span class="ident">part0</span>), <span class="prelude-val">Some</span>(<span class="string">&quot;&quot;</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> (<span class="ident">LogLevelFilter</span>::<span class="ident">max</span>(), <span class="prelude-val">Some</span>(<span class="ident">part0</span>)),
+            (<span class="prelude-val">Some</span>(<span class="ident">part0</span>), <span class="prelude-val">Some</span>(<span class="ident">part1</span>), <span class="prelude-val">None</span>) <span class="op">=&gt;</span> {
+                <span class="kw">match</span> <span class="ident">part1</span>.<span class="ident">parse</span>() {
+                    <span class="prelude-val">Ok</span>(<span class="ident">num</span>) <span class="op">=&gt;</span> (<span class="ident">num</span>, <span class="prelude-val">Some</span>(<span class="ident">part0</span>)),
+                    <span class="kw">_</span> <span class="op">=&gt;</span> {
+                        <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;warning: invalid logging spec &#39;{}&#39;, \
+                                 ignoring it&quot;</span>, <span class="ident">part1</span>);
+                        <span class="kw">continue</span>
                     }
                 }
             },
-            _ <span class='op'>=&gt;</span> {
-                <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;warning: invalid logging spec &#39;{}&#39;, \
-                         ignoring it&quot;</span>, <span class='ident'>s</span>);
-                <span class='kw'>continue</span>
+            <span class="kw">_</span> <span class="op">=&gt;</span> {
+                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;warning: invalid logging spec &#39;{}&#39;, \
+                         ignoring it&quot;</span>, <span class="ident">s</span>);
+                <span class="kw">continue</span>
             }
         };
-        <span class='ident'>dirs</span>.<span class='ident'>push</span>(<span class='ident'>LogDirective</span> {
-            <span class='ident'>name</span>: <span class='ident'>name</span>.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>s</span><span class='op'>|</span> <span class='ident'>s</span>.<span class='ident'>to_string</span>()),
-            <span class='ident'>level</span>: <span class='ident'>log_level</span>,
+        <span class="ident">dirs</span>.<span class="ident">push</span>(<span class="ident">LogDirective</span> {
+            <span class="ident">name</span>: <span class="ident">name</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">s</span><span class="op">|</span> <span class="ident">s</span>.<span class="ident">to_string</span>()),
+            <span class="ident">level</span>: <span class="ident">log_level</span>,
         });
     }});
 
-    <span class='kw'>let</span> <span class='ident'>filter</span> <span class='op'>=</span> <span class='ident'>filter</span>.<span class='ident'>map_or</span>(<span class='prelude-val'>None</span>, <span class='op'>|</span><span class='ident'>filter</span><span class='op'>|</span> {
-        <span class='kw'>match</span> <span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='ident'>filter</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>re</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Some</span>(<span class='ident'>re</span>),
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>println</span><span class='macro'>!</span>(<span class='string'>&quot;warning: invalid regex filter - {}&quot;</span>, <span class='ident'>e</span>);
-                <span class='prelude-val'>None</span>
+    <span class="kw">let</span> <span class="ident">filter</span> <span class="op">=</span> <span class="ident">filter</span>.<span class="ident">map_or</span>(<span class="prelude-val">None</span>, <span class="op">|</span><span class="ident">filter</span><span class="op">|</span> {
+        <span class="kw">match</span> <span class="ident">filter</span>::<span class="ident">Filter</span>::<span class="ident">new</span>(<span class="ident">filter</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">re</span>) <span class="op">=&gt;</span> <span class="prelude-val">Some</span>(<span class="ident">re</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> {
+                <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;warning: invalid regex filter - {}&quot;</span>, <span class="ident">e</span>);
+                <span class="prelude-val">None</span>
             }
         }
     });
 
-    <span class='kw'>return</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>);
+    <span class="kw">return</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>);
 }
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
-<span class='kw'>mod</span> <span class='ident'>tests</span> {
-    <span class='kw'>use</span> <span class='ident'>log</span>::{<span class='ident'>Log</span>, <span class='ident'>LogLevel</span>, <span class='ident'>LogLevelFilter</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
+<span class="kw">mod</span> <span class="ident">tests</span> {
+    <span class="kw">use</span> <span class="ident">log</span>::{<span class="ident">LogLevel</span>, <span class="ident">LogLevelFilter</span>};
 
-    <span class='kw'>use</span> <span class='ident'>super</span>::{<span class='ident'>Logger</span>, <span class='ident'>LogDirective</span>, <span class='ident'>parse_logging_spec</span>};
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">LogBuilder</span>, <span class="ident">Logger</span>, <span class="ident">LogDirective</span>, <span class="ident">parse_logging_spec</span>};
 
-    <span class='kw'>fn</span> <span class='ident'>make_logger</span>(<span class='ident'>dirs</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>LogDirective</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Logger</span> {
-        <span class='ident'>Logger</span> {
-            <span class='ident'>directives</span>: <span class='ident'>dirs</span>,
-            <span class='ident'>filter</span>: <span class='prelude-val'>None</span>,
-        }
+    <span class="kw">fn</span> <span class="ident">make_logger</span>(<span class="ident">dirs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">LogDirective</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Logger</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>().<span class="ident">build</span>();
+        <span class="ident">logger</span>.<span class="ident">directives</span> <span class="op">=</span> <span class="ident">dirs</span>;
+        <span class="ident">logger</span>
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>match_full_path</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> {
-                <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()),
-                <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span>
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">filter_info</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>().<span class="ident">filter</span>(<span class="prelude-val">None</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span>).<span class="ident">build</span>();
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate1&quot;</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">filter_beginning_longest_match</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>()
+                        .<span class="ident">filter</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>), <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span>)
+                        .<span class="ident">filter</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;crate2::mod&quot;</span>), <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>)
+                        .<span class="ident">filter</span>(<span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>), <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span>)
+                        .<span class="ident">build</span>();
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate2::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate2&quot;</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_default</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">LogBuilder</span>::<span class="ident">new</span>().<span class="ident">parse</span>(<span class="string">&quot;info,crate1::mod1=warn&quot;</span>).<span class="ident">build</span>();
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Warn</span>, <span class="string">&quot;crate1::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate2::mod2&quot;</span>));
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">match_full_path</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> {
+                <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span>
             },
-            <span class='ident'>LogDirective</span> {
-                <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()),
-                <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span>
+            <span class="ident">LogDirective</span> {
+                <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span>
             }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Warn</span>, <span class='string'>&quot;crate1::mod1&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Info</span>, <span class='string'>&quot;crate1::mod1&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Info</span>, <span class='string'>&quot;crate2&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Debug</span>, <span class='string'>&quot;crate2&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Warn</span>, <span class="string">&quot;crate1::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate1::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate2&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate2&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>no_match</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span> }
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">no_match</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span> }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Warn</span>, <span class='string'>&quot;crate3&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Warn</span>, <span class="string">&quot;crate3&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>match_beginning</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span> }
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">match_beginning</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span> }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Info</span>, <span class='string'>&quot;crate2::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate2::mod1&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>match_beginning_longest_match</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2::mod&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span> }
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">match_beginning_longest_match</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate2::mod&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span> }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Debug</span>, <span class='string'>&quot;crate2::mod1&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Debug</span>, <span class='string'>&quot;crate2&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate2::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Debug</span>, <span class="string">&quot;crate2&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>match_default</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>None</span>, <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span> }
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">match_default</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">None</span>, <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span> }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Warn</span>, <span class='string'>&quot;crate1::mod1&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Info</span>, <span class='string'>&quot;crate2::mod2&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Warn</span>, <span class="string">&quot;crate1::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate2::mod2&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>zero_level</span>() {
-        <span class='kw'>let</span> <span class='ident'>logger</span> <span class='op'>=</span> <span class='ident'>make_logger</span>(<span class='macro'>vec</span><span class='macro'>!</span>[
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>None</span>, <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Info</span> },
-            <span class='ident'>LogDirective</span> { <span class='ident'>name</span>: <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()), <span class='ident'>level</span>: <span class='ident'>LogLevelFilter</span>::<span class='ident'>Off</span> }
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">zero_level</span>() {
+        <span class="kw">let</span> <span class="ident">logger</span> <span class="op">=</span> <span class="ident">make_logger</span>(<span class="macro">vec</span><span class="macro">!</span>[
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">None</span>, <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Info</span> },
+            <span class="ident">LogDirective</span> { <span class="ident">name</span>: <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()), <span class="ident">level</span>: <span class="ident">LogLevelFilter</span>::<span class="ident">Off</span> }
         ]);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='op'>!</span><span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Error</span>, <span class='string'>&quot;crate1::mod1&quot;</span>));
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>logger</span>.<span class='ident'>enabled</span>(<span class='ident'>LogLevel</span>::<span class='ident'>Info</span>, <span class='string'>&quot;crate2::mod2&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Error</span>, <span class="string">&quot;crate1::mod1&quot;</span>));
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">logger</span>.<span class="ident">enabled</span>(<span class="ident">LogLevel</span>::<span class="ident">Info</span>, <span class="string">&quot;crate2::mod2&quot;</span>));
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_valid</span>() {
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=error,crate1::mod2,crate2=debug&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Error</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_valid</span>() {
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=error,crate1::mod2,crate2=debug&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Error</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">max</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>2</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>2</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">2</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">2</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_invalid_crate</span>() {
-        <span class='comment'>// test parse_logging_spec with multiple = in specification</span>
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=warn=info,crate2=debug&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_invalid_crate</span>() {
+        <span class="comment">// test parse_logging_spec with multiple = in specification</span>
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=warn=info,crate2=debug&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_invalid_log_level</span>() {
-        <span class='comment'>// test parse_logging_spec with &#39;noNumber&#39; as log level</span>
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=noNumber,crate2=debug&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_invalid_log_level</span>() {
+        <span class="comment">// test parse_logging_spec with &#39;noNumber&#39; as log level</span>
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=noNumber,crate2=debug&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_string_log_level</span>() {
-        <span class='comment'>// test parse_logging_spec with &#39;warn&#39; as log level</span>
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=wrong,crate2=warn&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_string_log_level</span>() {
+        <span class="comment">// test parse_logging_spec with &#39;warn&#39; as log level</span>
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=wrong,crate2=warn&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_empty_log_level</span>() {
-        <span class='comment'>// test parse_logging_spec with &#39;&#39; as log level</span>
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=wrong,crate2=&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>());
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_empty_log_level</span>() {
+        <span class="comment">// test parse_logging_spec with &#39;&#39; as log level</span>
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=wrong,crate2=&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">max</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_global</span>() {
-        <span class='comment'>// test parse_logging_spec with no crate</span>
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;warn,crate2=debug&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>2</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>None</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Warn</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_none</span>());
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_global</span>() {
+        <span class="comment">// test parse_logging_spec with no crate</span>
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;warn,crate2=debug&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">2</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">None</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Warn</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_none</span>());
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_valid_filter</span>() {
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=error,crate1::mod2,crate2=debug/abc&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>3</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod1&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Error</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_valid_filter</span>() {
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=error,crate1::mod2,crate2=debug/abc&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">3</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod1&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Error</span>);
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1::mod2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>1</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>());
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate1::mod2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">1</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">max</span>());
 
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>2</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>2</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_some</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>filter</span>.<span class='ident'>unwrap</span>().<span class='ident'>to_string</span>() <span class='op'>==</span> <span class='string'>&quot;abc&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">2</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">2</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">filter</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>() <span class="op">==</span> <span class="string">&quot;abc&quot;</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_invalid_crate_filter</span>() {
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1::mod1=error=warn,crate2=debug/a.c&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate2&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>Debug</span>);
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_some</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>filter</span>.<span class='ident'>unwrap</span>().<span class='ident'>to_string</span>() <span class='op'>==</span> <span class='string'>&quot;a.c&quot;</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_invalid_crate_filter</span>() {
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1::mod1=error=warn,crate2=debug/a.c&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate2&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">Debug</span>);
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">filter</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>() <span class="op">==</span> <span class="string">&quot;a.c&quot;</span>);
     }
 
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>parse_logging_spec_empty_with_filter</span>() {
-        <span class='kw'>let</span> (<span class='ident'>dirs</span>, <span class='ident'>filter</span>) <span class='op'>=</span> <span class='ident'>parse_logging_spec</span>(<span class='string'>&quot;crate1/a*c&quot;</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>.<span class='ident'>len</span>(), <span class='number'>1</span>);
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>name</span>, <span class='prelude-val'>Some</span>(<span class='string'>&quot;crate1&quot;</span>.<span class='ident'>to_string</span>()));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>dirs</span>[<span class='number'>0</span>].<span class='ident'>level</span>, <span class='ident'>LogLevelFilter</span>::<span class='ident'>max</span>());
-        <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>filter</span>.<span class='ident'>is_some</span>() <span class='op'>&amp;&amp;</span> <span class='ident'>filter</span>.<span class='ident'>unwrap</span>().<span class='ident'>to_string</span>() <span class='op'>==</span> <span class='string'>&quot;a*c&quot;</span>);
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">parse_logging_spec_empty_with_filter</span>() {
+        <span class="kw">let</span> (<span class="ident">dirs</span>, <span class="ident">filter</span>) <span class="op">=</span> <span class="ident">parse_logging_spec</span>(<span class="string">&quot;crate1/a*c&quot;</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>.<span class="ident">len</span>(), <span class="number">1</span>);
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">name</span>, <span class="prelude-val">Some</span>(<span class="string">&quot;crate1&quot;</span>.<span class="ident">to_string</span>()));
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dirs</span>[<span class="number">0</span>].<span class="ident">level</span>, <span class="ident">LogLevelFilter</span>::<span class="ident">max</span>());
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">filter</span>.<span class="ident">is_some</span>() <span class="op">&amp;&amp;</span> <span class="ident">filter</span>.<span class="ident">unwrap</span>().<span class="ident">to_string</span>() <span class="op">==</span> <span class="string">&quot;a*c&quot;</span>);
     }
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "env_logger";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
-    
-    <script async src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "env_logger";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

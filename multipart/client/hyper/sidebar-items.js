@@ -1,1 +1,1 @@
-initSidebarItems({});
+initSidebarItems({"fn":[["content_type","Create a `Content-Type: multipart/form-data;boundary={bound}`"]]});

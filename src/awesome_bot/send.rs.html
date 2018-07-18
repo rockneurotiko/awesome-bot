@@ -1,46 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/send.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>send.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/send.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>send.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -364,382 +322,456 @@
 <span id="322">322</span>
 <span id="323">323</span>
 <span id="324">324</span>
-</pre><pre class='rust '>
-<span class='kw'>use</span> <span class='ident'>telegram_bot</span>::<span class='op'>*</span>;
-<span class='kw'>use</span> <span class='ident'>rustc_serialize</span>::{<span class='ident'>Decodable</span>};
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+</pre><pre class="rust ">
+<span class="kw">use</span> <span class="ident">rustc_serialize</span>::<span class="ident">Decodable</span>;
+<span class="kw">use</span> <span class="ident">telegram_bot</span>::<span class="kw-2">*</span>;
 
-<span class='doccomment'>/// Help trait that allows to type that at least the end method is implemented for the SendBuilder structs</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Decodable</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// Help trait indicating that at least the `end` method is implemented for the SendBuilder structs</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Decodable</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>;
 }
 
-<span class='doccomment'>/// SendBuilder it&#39;s a builder struct that allows you to construct answers in a beauty way, you will use it transparently with the `send` and `answer` methods of `AwesomeBot`</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>SendBuilder</span> {
-    <span class='ident'>chat_id</span>: <span class='ident'>Integer</span>,
-    <span class='ident'>bot</span>: <span class='ident'>Api</span>,
+<span class="doccomment">/// SendBuilder it&#39;s a builder struct that allows you to construct answers in</span>
+<span class="doccomment">/// a composable way, you will use it transparently with the `send` and `answer`</span>
+<span class="doccomment">/// methods of `AwesomeBot`</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SendBuilder</span> {
+    <span class="ident">chat_id</span>: <span class="ident">Integer</span>,
+    <span class="ident">bot</span>: <span class="ident">Api</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>SendBuilder</span> {
-    <span class='doccomment'>/// Create a new SendBuilder, you shouldn&#39;t use it, use the `send` and `answer` methods of `AwesomeBot` :)</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>id</span>: <span class='ident'>Integer</span>, <span class='ident'>bot</span>: <span class='ident'>Api</span>) <span class='op'>-&gt;</span> <span class='ident'>SendBuilder</span> {
-        <span class='ident'>SendBuilder</span> { <span class='ident'>chat_id</span>: <span class='ident'>id</span>, <span class='ident'>bot</span>: <span class='ident'>bot</span> }
+<span class="kw">impl</span> <span class="ident">SendBuilder</span> {
+    <span class="doccomment">/// Create a new SendBuilder, don&#39;t use it,</span>
+    <span class="doccomment">/// use the `send` and `answer` methods of `AwesomeBot` :)</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">id</span>: <span class="ident">Integer</span>, <span class="ident">bot</span>: <span class="ident">Api</span>) <span class="op">-&gt;</span> <span class="ident">SendBuilder</span> {
+        <span class="ident">SendBuilder</span> {
+            <span class="ident">chat_id</span>: <span class="ident">id</span>,
+            <span class="ident">bot</span>: <span class="ident">bot</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a text constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>text</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendText</span> {
-        <span class='ident'>SendText</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>text</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>disable_webpage_preview</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a text constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">text</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendText</span> {
+        <span class="ident">SendText</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">text</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">parse_mode</span>: <span class="prelude-val">None</span>,
+            <span class="ident">disable_webpage_preview</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a photo constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>photo</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendPhoto</span> {
-        <span class='ident'>SendPhoto</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>photo</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>caption</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a photo constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">photo</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendPhoto</span> {
+        <span class="ident">SendPhoto</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">photo</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">caption</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start an audio constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>audio</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendAudio</span> {
-        <span class='ident'>SendAudio</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>audio</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>duration</span>: <span class='prelude-val'>None</span>, <span class='ident'>performer</span>: <span class='prelude-val'>None</span>, <span class='ident'>title</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start an audio constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">audio</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendAudio</span> {
+        <span class="ident">SendAudio</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">audio</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">duration</span>: <span class="prelude-val">None</span>,
+            <span class="ident">performer</span>: <span class="prelude-val">None</span>,
+            <span class="ident">title</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a voice constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>voice</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendVoice</span> {
-        <span class='ident'>SendVoice</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>voice</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>duration</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a voice constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">voice</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendVoice</span> {
+        <span class="ident">SendVoice</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">voice</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">duration</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a document constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>document</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendDocument</span> {
-        <span class='ident'>SendDocument</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>document</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a document constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">document</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendDocument</span> {
+        <span class="ident">SendDocument</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">document</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a sticker constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sticker</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendSticker</span> {
-        <span class='ident'>SendSticker</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>sticker</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a sticker constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sticker</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendSticker</span> {
+        <span class="ident">SendSticker</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">sticker</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a video constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>video</span>(<span class='self'>self</span>, <span class='ident'>t</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>SendVideo</span> {
-        <span class='ident'>SendVideo</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>video</span>: <span class='ident'>t</span>.<span class='ident'>to_string</span>(), <span class='ident'>caption</span>: <span class='prelude-val'>None</span>, <span class='ident'>duration</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a video constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">video</span>(<span class="self">self</span>, <span class="ident">t</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">SendVideo</span> {
+        <span class="ident">SendVideo</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">video</span>: <span class="ident">t</span>.<span class="ident">to_string</span>(),
+            <span class="ident">caption</span>: <span class="prelude-val">None</span>,
+            <span class="ident">duration</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a forward constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>forward</span>(<span class='self'>self</span>, <span class='ident'>to</span>: <span class='ident'>Integer</span>, <span class='ident'>msg</span>: <span class='ident'>Integer</span>) <span class='op'>-&gt;</span> <span class='ident'>SendForward</span> {
-        <span class='ident'>SendForward</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>to</span>: <span class='ident'>to</span>, <span class='ident'>msg</span>: <span class='ident'>msg</span> }
+    <span class="doccomment">/// Start a forward constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">forward</span>(<span class="self">self</span>, <span class="ident">to</span>: <span class="ident">Integer</span>, <span class="ident">msg</span>: <span class="ident">Integer</span>) <span class="op">-&gt;</span> <span class="ident">SendForward</span> {
+        <span class="ident">SendForward</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">to</span>: <span class="ident">to</span>,
+            <span class="ident">msg</span>: <span class="ident">msg</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start an action constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>action</span>(<span class='self'>self</span>, <span class='ident'>action</span>: <span class='ident'>ChatAction</span>) <span class='op'>-&gt;</span> <span class='ident'>SendAction</span> {
-        <span class='ident'>SendAction</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>action</span>: <span class='ident'>action</span> }
+    <span class="doccomment">/// Start an action constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">action</span>(<span class="self">self</span>, <span class="ident">action</span>: <span class="ident">ChatAction</span>) <span class="op">-&gt;</span> <span class="ident">SendAction</span> {
+        <span class="ident">SendAction</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">action</span>: <span class="ident">action</span>,
+        }
     }
 
-    <span class='doccomment'>/// Start a location constructor to send.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>location</span>(<span class='self'>self</span>, <span class='ident'>latitude</span>: <span class='ident'>Float</span>, <span class='ident'>longitude</span>: <span class='ident'>Float</span>) <span class='op'>-&gt;</span> <span class='ident'>SendLocation</span> {
-        <span class='ident'>SendLocation</span> { <span class='ident'>send</span>: <span class='self'>self</span>, <span class='ident'>latitude</span>: <span class='ident'>latitude</span>, <span class='ident'>longitude</span>: <span class='ident'>longitude</span>, <span class='ident'>reply_to_message_id</span>: <span class='prelude-val'>None</span>, <span class='ident'>reply_markup</span>: <span class='prelude-val'>None</span> }
+    <span class="doccomment">/// Start a location constructor to send.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">location</span>(<span class="self">self</span>, <span class="ident">latitude</span>: <span class="ident">Float</span>, <span class="ident">longitude</span>: <span class="ident">Float</span>) <span class="op">-&gt;</span> <span class="ident">SendLocation</span> {
+        <span class="ident">SendLocation</span> {
+            <span class="ident">send</span>: <span class="self">self</span>,
+            <span class="ident">latitude</span>: <span class="ident">latitude</span>,
+            <span class="ident">longitude</span>: <span class="ident">longitude</span>,
+            <span class="ident">reply_to_message_id</span>: <span class="prelude-val">None</span>,
+            <span class="ident">reply_markup</span>: <span class="prelude-val">None</span>,
+        }
     }
 }
 
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>basesendtype</span> {
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">basesendtype</span> {
     (
-        <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>: <span class='ident'>ident</span>,
-        <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>structdoc</span>: <span class='ident'>expr</span>,
-        [$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>id</span>: <span class='ident'>ident</span> <span class='op'>=&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>: <span class='ident'>ty</span>),<span class='op'>*</span>],
-        [$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_id</span>: <span class='ident'>ident</span> <span class='op'>=&gt;</span> (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_name</span>: <span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_field</span>: <span class='ident'>ty</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>docf</span>: <span class='ident'>expr</span>)),<span class='op'>*</span>]) <span class='op'>=&gt;</span> {
+        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>: <span class="ident">ident</span>,
+        <span class="macro-nonterminal">$</span><span class="macro-nonterminal">structdoc</span>: <span class="ident">expr</span>,
+        [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>: <span class="ident">ident</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>: <span class="ident">ty</span>),<span class="kw-2">*</span>],
+        [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_id</span>: <span class="ident">ident</span> <span class="op">=&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_name</span>: <span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_field</span>: <span class="ident">ty</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">docf</span>: <span class="ident">expr</span>)),<span class="kw-2">*</span>]) <span class="op">=&gt;</span> {
 
-        <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;Transparent struct builded by `SendBuilder` to send&quot;</span>]</span>
-        <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>structdoc</span>]</span>
-        <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='string'>&quot;messages.&quot;</span>]</span>
-        <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>  {
-            <span class='ident'>send</span>: <span class='ident'>SendBuilder</span>,
-            $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>id</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>field</span>),<span class='op'>*</span>
+        <span class="attribute">#[<span class="ident">doc</span><span class="op">=</span><span class="string">&quot;Transparent struct built by `SendBuilder` to send&quot;</span>]</span>
+        <span class="attribute">#[<span class="ident">doc</span><span class="op">=</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">structdoc</span>]</span>
+        <span class="attribute">#[<span class="ident">doc</span><span class="op">=</span><span class="string">&quot;messages.&quot;</span>]</span>
+        <span class="kw">pub</span> <span class="kw">struct</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>  {
+            <span class="ident">send</span>: <span class="ident">SendBuilder</span>,
+            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">id</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">field</span>),<span class="op">*</span>
                 ,
-            $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_id</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_field</span><span class='op'>&gt;</span>),<span class='op'>*</span>
+            $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_id</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_field</span><span class="op">&gt;</span>),<span class="op">*</span>
         }
 
-        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
+        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
             $(
-                <span class='attribute'>#[<span class='ident'>doc</span><span class='op'>=</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>docf</span>]</span>
-                <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_name</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>v</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_field</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-                    <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>o_id</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>v</span>);
-                    <span class='self'>self</span>
+                <span class="attribute">#[<span class="ident">doc</span><span class="op">=</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">docf</span>]</span>
+                <span class="kw">pub</span> <span class="kw">fn</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_name</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">v</span>: <span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_field</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+                    <span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">o_id</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>);
+                    <span class="self">self</span>
                 }
-                )<span class='op'>*</span>
+                )<span class="op">*</span>
         }
     }
 }
 
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>addkeyboardfuncs</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span>: <span class='ident'>ident</span>,
-     <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>markname</span>: <span class='ident'>ident</span>) <span class='op'>=&gt;</span> {
-        <span class='doccomment'>/// Add keyboard methods to the struct, only one of this will be sended, and will be the last one used.</span>
-        <span class='kw'>impl</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-            <span class='doccomment'>/// Add a keyboard to the reply</span>
-            <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>keyboard</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>r</span>: <span class='ident'>ReplyKeyboardMarkup</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-                <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>markname</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>ReplyMarkup</span>::<span class='ident'>from</span>(<span class='ident'>r</span>));
-                <span class='self'>self</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">addkeyboardfuncs</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">markname</span>:<span class="ident">ident</span>) <span class="op">=&gt;</span> {
+        <span class="doccomment">/// Add keyboard methods to the struct, only one of these will be sent,</span>
+        <span class="doccomment">/// and it will be the last one used.</span>
+        <span class="kw">impl</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+            <span class="doccomment">/// Add a keyboard to the reply</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">keyboard</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">r</span>: <span class="ident">ReplyKeyboardMarkup</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+                <span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">markname</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ReplyMarkup</span>::<span class="ident">from</span>(<span class="ident">r</span>));
+                <span class="self">self</span>
             }
 
-            <span class='doccomment'>/// Hide the keyboard</span>
-            <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>hide</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>h</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-                <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>markname</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>ReplyMarkup</span>::<span class='ident'>KeyboardHide</span>(<span class='ident'>h</span>));
-                <span class='self'>self</span>
+            <span class="doccomment">/// Hide the keyboard</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">hide</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">h</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+                <span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">markname</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ReplyMarkup</span>::<span class="ident">KeyboardHide</span>(<span class="ident">h</span>));
+                <span class="self">self</span>
             }
 
-            <span class='doccomment'>/// Force the reply to this message</span>
-            <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>force</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>f</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>name</span> {
-                <span class='self'>self</span>.<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>markname</span> <span class='op'>=</span> <span class='prelude-val'>Some</span>(<span class='ident'>ReplyMarkup</span>::<span class='ident'>ForceReply</span>(<span class='ident'>f</span>));
-                <span class='self'>self</span>
+            <span class="doccomment">/// Force the reply to this message</span>
+            <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">force</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">f</span>: <span class="ident">bool</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">name</span> {
+                <span class="self">self</span>.<span class="macro-nonterminal">$</span><span class="macro-nonterminal">markname</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">ReplyMarkup</span>::<span class="ident">ForceReply</span>(<span class="ident">f</span>));
+                <span class="self">self</span>
             }
         }
+    };
+}
+
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendText</span>,
+              <span class="string">&quot;`Text`&quot;</span>,
+              [<span class="ident">text</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">parse_mode</span> <span class="op">=&gt;</span> (<span class="ident">parse_mode</span>, <span class="ident">ParseMode</span>, <span class="string">&quot;Set `ParseMode` for the message&quot;</span>),
+               <span class="ident">disable_webpage_preview</span> <span class="op">=&gt;</span> (<span class="ident">disable_preview</span>, <span class="ident">bool</span>, <span class="string">&quot;Set `true` to disable the link preview in the message.&quot;</span>),
+               <span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply to with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of directly using this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendText</span>, <span class="ident">reply_markup</span>);
+
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendText</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_message</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">text</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">parse_mode</span>,
+            <span class="self">self</span>.<span class="ident">disable_webpage_preview</span>,
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendText</span>,
-              <span class='string'>&quot;`Text`&quot;</span>,
-              [<span class='ident'>text</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>disable_webpage_preview</span> <span class='op'>=&gt;</span> (<span class='ident'>disable_preview</span>, <span class='ident'>bool</span>, <span class='string'>&quot;Set `true` to disable the link preview in the message.&quot;</span>),
-               <span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendPhoto</span>,
+              <span class="string">&quot;`Photo`&quot;</span>,
+              [<span class="ident">photo</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">caption</span> <span class="op">=&gt;</span> (<span class="ident">caption</span>, <span class="ident">String</span>, <span class="string">&quot;Set a caption to be included with the message.&quot;</span>),
+               <span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendText</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendPhoto</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendText</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_message</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>text</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>disable_webpage_preview</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>())
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendPhoto</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_photo</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">photo</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">caption</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendPhoto</span>,
-              <span class='string'>&quot;`Photo`&quot;</span>,
-              [<span class='ident'>photo</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>caption</span> <span class='op'>=&gt;</span> (<span class='ident'>caption</span>, <span class='ident'>String</span>, <span class='string'>&quot;Set a caption to be included with the message.&quot;</span>),
-               <span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendAudio</span>,
+              <span class="string">&quot;`Audio`&quot;</span>,
+              [<span class="ident">audio</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">duration</span> <span class="op">=&gt;</span> (<span class="ident">duration</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set the duration of the track&quot;</span>),
+               <span class="ident">performer</span> <span class="op">=&gt;</span> (<span class="ident">performer</span>, <span class="ident">String</span>, <span class="string">&quot;Set the performer of the track&quot;</span>),
+               <span class="ident">title</span> <span class="op">=&gt;</span> (<span class="ident">title</span>, <span class="ident">String</span>, <span class="string">&quot;Set the title of the track&quot;</span>),
+               <span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendPhoto</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendAudio</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendPhoto</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_photo</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>photo</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>caption</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendAudio</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_audio</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">audio</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">duration</span>,
+            <span class="self">self</span>.<span class="ident">performer</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">title</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendAudio</span>,
-              <span class='string'>&quot;`Audio`&quot;</span>,
-              [<span class='ident'>audio</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>duration</span> <span class='op'>=&gt;</span> (<span class='ident'>duration</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set the duration of the track&quot;</span>),
-               <span class='ident'>performer</span> <span class='op'>=&gt;</span> (<span class='ident'>performer</span>, <span class='ident'>String</span>, <span class='string'>&quot;Set the performer of the track&quot;</span>),
-               <span class='ident'>title</span> <span class='op'>=&gt;</span> (<span class='ident'>title</span>, <span class='ident'>String</span>, <span class='string'>&quot;Set the title of the track&quot;</span>),
-               <span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendVoice</span>,
+              <span class="string">&quot;`Voice`&quot;</span>,
+              [<span class="ident">voice</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">duration</span> <span class="op">=&gt;</span> (<span class="ident">duration</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set the duration of the voice audio.&quot;</span>),
+               <span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendAudio</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendVoice</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendAudio</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_audio</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>audio</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>duration</span>,
-            <span class='self'>self</span>.<span class='ident'>performer</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>title</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendVoice</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_voice</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">voice</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">duration</span>,
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendVoice</span>,
-              <span class='string'>&quot;`Voice`&quot;</span>,
-              [<span class='ident'>voice</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>duration</span> <span class='op'>=&gt;</span> (<span class='ident'>duration</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set the duration of the voice audio.&quot;</span>),
-               <span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendDocument</span>,
+              <span class="string">&quot;`Document`&quot;</span>,
+              [<span class="ident">document</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendVoice</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendDocument</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendVoice</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_voice</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>voice</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>duration</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendDocument</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_document</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">document</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendDocument</span>,
-              <span class='string'>&quot;`Document`&quot;</span>,
-              [<span class='ident'>document</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendSticker</span>,
+              <span class="string">&quot;`Sticker`&quot;</span>,
+              [<span class="ident">sticker</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendDocument</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendSticker</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendDocument</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_document</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>document</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendSticker</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_sticker</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">sticker</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendVideo</span>,
+              <span class="string">&quot;`Video`&quot;</span>,
+              [<span class="ident">video</span> <span class="op">=&gt;</span> <span class="ident">String</span>],
+              [<span class="ident">caption</span> <span class="op">=&gt;</span> (<span class="ident">caption</span>, <span class="ident">String</span>, <span class="string">&quot;Set a caption to be included with the message.&quot;</span>),
+               <span class="ident">duration</span> <span class="op">=&gt;</span> (<span class="ident">duration</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set the duration of the video&quot;</span>),
+               <span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendSticker</span>,
-              <span class='string'>&quot;`Sticker`&quot;</span>,
-              [<span class='ident'>sticker</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendVideo</span>, <span class="ident">reply_markup</span>);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendSticker</span>, <span class='ident'>reply_markup</span>);
-
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendSticker</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_sticker</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>sticker</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendVideo</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_video</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">video</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">caption</span>.<span class="ident">clone</span>(),
+            <span class="self">self</span>.<span class="ident">duration</span>,
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendVideo</span>,
-              <span class='string'>&quot;`Video`&quot;</span>,
-              [<span class='ident'>video</span> <span class='op'>=&gt;</span> <span class='ident'>String</span>],
-              [<span class='ident'>caption</span> <span class='op'>=&gt;</span> (<span class='ident'>caption</span>, <span class='ident'>String</span>, <span class='string'>&quot;Set a caption to be included with the message.&quot;</span>),
-               <span class='ident'>duration</span> <span class='op'>=&gt;</span> (<span class='ident'>duration</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set the duration of the video&quot;</span>),
-               <span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
-
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendVideo</span>, <span class='ident'>reply_markup</span>);
-
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendVideo</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_video</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>video</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>caption</span>.<span class='ident'>clone</span>(),
-            <span class='self'>self</span>.<span class='ident'>duration</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>(),
-            )
-    }
-}
-
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendForward</span>,
-              <span class='string'>&quot;`Forward`&quot;</span>,
-              [<span class='ident'>to</span> <span class='op'>=&gt;</span> <span class='ident'>Integer</span>, <span class='ident'>msg</span> <span class='op'>=&gt;</span> <span class='ident'>Integer</span>],
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendForward</span>,
+              <span class="string">&quot;`Forward`&quot;</span>,
+              [<span class="ident">to</span> <span class="op">=&gt;</span> <span class="ident">Integer</span>, <span class="ident">msg</span> <span class="op">=&gt;</span> <span class="ident">Integer</span>],
               []);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendForward</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>forward_message</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>to</span>,
-            <span class='self'>self</span>.<span class='ident'>msg</span>,
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendForward</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>
+            .<span class="ident">bot</span>
+            .<span class="ident">forward_message</span>(<span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>, <span class="self">self</span>.<span class="ident">to</span>, <span class="self">self</span>.<span class="ident">msg</span>)
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendAction</span>,
-              <span class='string'>&quot;`Action`&quot;</span>,
-              [<span class='ident'>action</span> <span class='op'>=&gt;</span> <span class='ident'>ChatAction</span>],
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendAction</span>,
+              <span class="string">&quot;`Action`&quot;</span>,
+              [<span class="ident">action</span> <span class="op">=&gt;</span> <span class="ident">ChatAction</span>],
               []);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendAction</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>bool</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_chat_action</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>action</span>,
-            )
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendAction</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>
+            .<span class="ident">bot</span>
+            .<span class="ident">send_chat_action</span>(<span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>, <span class="self">self</span>.<span class="ident">action</span>)
     }
 }
 
-<span class='macro'>basesendtype</span><span class='macro'>!</span>(<span class='ident'>SendLocation</span>,
-              <span class='string'>&quot;`Location`&quot;</span>,
-              [<span class='ident'>latitude</span> <span class='op'>=&gt;</span> <span class='ident'>Float</span>,
-               <span class='ident'>longitude</span> <span class='op'>=&gt;</span> <span class='ident'>Float</span>],
-              [<span class='ident'>reply_to_message_id</span> <span class='op'>=&gt;</span> (<span class='ident'>reply_id</span>, <span class='ident'>Integer</span>, <span class='string'>&quot;Set a message ID to reply with this message.&quot;</span>),
-               <span class='ident'>reply_markup</span> <span class='op'>=&gt;</span> (<span class='ident'>markup</span>, <span class='ident'>ReplyMarkup</span>, <span class='string'>&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
+<span class="macro">basesendtype</span><span class="macro">!</span>(<span class="ident">SendLocation</span>,
+              <span class="string">&quot;`Location`&quot;</span>,
+              [<span class="ident">latitude</span> <span class="op">=&gt;</span> <span class="ident">Float</span>,
+               <span class="ident">longitude</span> <span class="op">=&gt;</span> <span class="ident">Float</span>],
+              [<span class="ident">reply_to_message_id</span> <span class="op">=&gt;</span> (<span class="ident">reply_id</span>, <span class="ident">Integer</span>, <span class="string">&quot;Set a message ID to reply with this message.&quot;</span>),
+               <span class="ident">reply_markup</span> <span class="op">=&gt;</span> (<span class="ident">markup</span>, <span class="ident">ReplyMarkup</span>, <span class="string">&quot;Set a `ReplyMarkup` to send, but instead of this, use the `keyboard`, `hide` or `force` methods&quot;</span>)]);
 
-<span class='macro'>addkeyboardfuncs</span><span class='macro'>!</span>(<span class='ident'>SendLocation</span>, <span class='ident'>reply_markup</span>);
+<span class="macro">addkeyboardfuncs</span><span class="macro">!</span>(<span class="ident">SendLocation</span>, <span class="ident">reply_markup</span>);
 
-<span class='kw'>impl</span> <span class='ident'>Ender</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>SendLocation</span> {
-    <span class='kw'>fn</span> <span class='ident'>end</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Message</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>bot</span>.<span class='ident'>send_location</span>(
-            <span class='self'>self</span>.<span class='ident'>send</span>.<span class='ident'>chat_id</span>,
-            <span class='self'>self</span>.<span class='ident'>latitude</span>,
-            <span class='self'>self</span>.<span class='ident'>longitude</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_to_message_id</span>,
-            <span class='self'>self</span>.<span class='ident'>reply_markup</span>.<span class='ident'>clone</span>())
+<span class="kw">impl</span> <span class="ident">Finisher</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">SendLocation</span> {
+    <span class="kw">fn</span> <span class="ident">end</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Message</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">bot</span>.<span class="ident">send_location</span>(
+            <span class="self">self</span>.<span class="ident">send</span>.<span class="ident">chat_id</span>,
+            <span class="self">self</span>.<span class="ident">latitude</span>,
+            <span class="self">self</span>.<span class="ident">longitude</span>,
+            <span class="self">self</span>.<span class="ident">reply_to_message_id</span>,
+            <span class="self">self</span>.<span class="ident">reply_markup</span>.<span class="ident">clone</span>(),
+        )
     }
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "awesome_bot";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
-    
-    <script async src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "awesome_bot";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

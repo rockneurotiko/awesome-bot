@@ -1,46 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `src/lib.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>lib.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -725,743 +683,761 @@
 <span id="683">683</span>
 <span id="684">684</span>
 <span id="685">685</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! This crate helps writing bots for Telegram. This is a framework to build the bots,</span>
-<span class='doccomment'>//! the main wrapper crate are `telegram-bot`</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! How to use it</span>
-<span class='doccomment'>//! -------------</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! The first step is always create the AwesomeBot instance,</span>
-<span class='doccomment'>//! this will represent your bot, so, if you have more than one bot,</span>
-<span class='doccomment'>//! you will have to create more instances.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! You have two ways to create the bot, with `new`,</span>
-<span class='doccomment'>//! that you pass the bot token diretly, or with `from_env`, more recommended.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! This framework uses a routing methodology to apply behaviour.</span>
-<span class='doccomment'>//! There are plenty of routing ways available, the main ones are:</span>
-<span class='doccomment'>//! `command`, `simple_command`, `any_fn`.</span>
-<span class='doccomment'>//! But there are many more, check the docs of [AwesomeBot](struct.AwesomeBot.html)</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Then, to send things you need to use the SendBuilder struct, to create an instance use the `send` or `answer` methods in `AwesomeBot`.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! This uses the &quot;builder&quot; methodology, for example, to answer a message with a text, while disabling web pages, you do (Assuming that bot is `&amp;AwesomeBot` and msg is `&amp;Message`):</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ``` ignore</span>
-<span class='doccomment'>//! bot.answer(msg).text(&quot;Answering this text&quot;).disable_preview(true).end();</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Check [`SendBuilder`](struct.SendBuilder.html) struct implementation to see the methods available (text, photo, audio, ...)</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Once you have all your routings, you need to start the bot, right now it support only</span>
-<span class='doccomment'>//! getUpdates method, just call the `simple_start` method in AwesomeBot.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! You don&#39;t have to worry about blocking the bot in a function handler,</span>
-<span class='doccomment'>//! because it uses a thread pool (of 4 threads right now,</span>
-<span class='doccomment'>//! it will be configurable in the future), so the handling for</span>
-<span class='doccomment'>//! a message is done in his own thread.</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! # Examples</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## Minimalistic example (Echo text)</span>
-<span class='doccomment'>//! ```no_run</span>
-<span class='doccomment'>//! extern crate awesome_bot;</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! use awesome_bot::*;</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! fn echohandler(bot: &amp;AwesomeBot, msg: &amp;Message, _: String, args: Vec&lt;String&gt;) {</span>
-<span class='doccomment'>//!     // We can access safely because the pattern match have that argument mandatory</span>
-<span class='doccomment'>//!     let toecho = &amp;args[1];</span>
-<span class='doccomment'>//!     let phrase = format!(&quot;Echoed: {}&quot;, toecho);</span>
-<span class='doccomment'>//!     // Send the text in a beauty way :)</span>
-<span class='doccomment'>//!     let sended = bot.answer(msg).text(&amp;phrase).end();</span>
-<span class='doccomment'>//!     println!(&quot;{:?}&quot;, sended);</span>
-<span class='doccomment'>//! }</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! fn main() {</span>
-<span class='doccomment'>//!     // Create the Awesome Bot (You need TELEGRAM_BOT_TOKEN environment with the token)</span>
-<span class='doccomment'>//!     let mut bot = AwesomeBot::from_env(&quot;TELEGRAM_BOT_TOKEN&quot;);</span>
-<span class='doccomment'>//!     // Add a command, this will add the routing to that function.</span>
-<span class='doccomment'>//!     bot.command(&quot;echo (.+)&quot;, echohandler);</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//!     // Start the bot with getUpdates</span>
-<span class='doccomment'>//!     let res = bot.simple_start();</span>
-<span class='doccomment'>//!     if let Err(e) = res {</span>
-<span class='doccomment'>//!         println!(&quot;An error occurred: {}&quot;, e);</span>
-<span class='doccomment'>//!     }</span>
-<span class='doccomment'>//! }</span>
-<span class='doccomment'>//! ```</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! ## More examples</span>
-<span class='doccomment'>//! You have more examples in `examples/` directory in the project&#39;s repository.</span>
-<span class='doccomment'>//!</span>
+<span id="686">686</span>
+<span id="687">687</span>
+<span id="688">688</span>
+<span id="689">689</span>
+<span id="690">690</span>
+<span id="691">691</span>
+<span id="692">692</span>
+<span id="693">693</span>
+<span id="694">694</span>
+<span id="695">695</span>
+<span id="696">696</span>
+<span id="697">697</span>
+<span id="698">698</span>
+<span id="699">699</span>
+<span id="700">700</span>
+<span id="701">701</span>
+<span id="702">702</span>
+<span id="703">703</span>
+<span id="704">704</span>
+<span id="705">705</span>
+<span id="706">706</span>
+<span id="707">707</span>
+<span id="708">708</span>
+<span id="709">709</span>
+<span id="710">710</span>
+<span id="711">711</span>
+<span id="712">712</span>
+<span id="713">713</span>
+<span id="714">714</span>
+<span id="715">715</span>
+<span id="716">716</span>
+<span id="717">717</span>
+<span id="718">718</span>
+<span id="719">719</span>
+<span id="720">720</span>
+</pre><pre class="rust ">
+<span class="doccomment">//! This crate helps writing bots for Telegram. This is a framework to build the bots,</span>
+<span class="doccomment">//! the main wrapped crate is `telegram-bot` which provides the actual protocol access.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! How to use it</span>
+<span class="doccomment">//! -------------</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! The first step is always to create the AwesomeBot instance,</span>
+<span class="doccomment">//! this will represent your bot, so, if you have more than one bot,</span>
+<span class="doccomment">//! you will have to create more instances.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! You have two ways to create the bot, with `new`,</span>
+<span class="doccomment">//! that you pass the bot token directly, or with `from_env`, more recommended.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This framework uses the &quot;route&quot; pattern to apply behavior.</span>
+<span class="doccomment">//! There are plenty of routing ways available, the main ones are:</span>
+<span class="doccomment">//! `command`, `simple_command`, `any_fn`.</span>
+<span class="doccomment">//! But there are many more, check the docs of [AwesomeBot](struct.AwesomeBot.html)</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Then, to send things you need to use the SendBuilder struct, to create an instance use</span>
+<span class="doccomment">//! the `send` or `answer` methods in `AwesomeBot`.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This uses the &quot;builder&quot; pattern, for example, to answer a message with a text,</span>
+<span class="doccomment">//! while disabling web pages, you do (Assuming that bot is `&amp;AwesomeBot` and msg is `&amp;Message`):</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ``` ignore</span>
+<span class="doccomment">//! bot.answer(msg).text(&quot;Answering this text&quot;).disable_preview(true).end();</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Check [`SendBuilder`](struct.SendBuilder.html) struct implementation to see the methods</span>
+<span class="doccomment">//! available (text, photo, audio, ...)</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Once you have all your routings, you need to start the bot, right now it supports only</span>
+<span class="doccomment">//! getUpdates method, just call the `simple_start` method in AwesomeBot.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! You don&#39;t have to worry about blocking the bot in a function handler,</span>
+<span class="doccomment">//! because it uses a thread pool (of 4 threads right now,</span>
+<span class="doccomment">//! it will be configurable in the future), so the handling for</span>
+<span class="doccomment">//! a message is done in his own thread.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Examples</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## Minimalistic example (Echo text)</span>
+<span class="doccomment">//! ```no_run</span>
+<span class="doccomment">//! extern crate awesome_bot;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! use awesome_bot::*;</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! fn echohandler(bot: &amp;AwesomeBot, msg: &amp;Message, _: String, args: Vec&lt;String&gt;) {</span>
+<span class="doccomment">//!     // We can access safely because the pattern match have that argument mandatory</span>
+<span class="doccomment">//!     let toecho = &amp;args[1];</span>
+<span class="doccomment">//!     let phrase = format!(&quot;Echoed: {}&quot;, toecho);</span>
+<span class="doccomment">//!     // Send the text in a beauty way :)</span>
+<span class="doccomment">//!     let sended = bot.answer(msg).text(&amp;phrase).end();</span>
+<span class="doccomment">//!     println!(&quot;{:?}&quot;, sended);</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! fn main() {</span>
+<span class="doccomment">//!     // Create the Awesome Bot (You need TELEGRAM_BOT_TOKEN environment with the token)</span>
+<span class="doccomment">//!     let mut bot = AwesomeBot::from_env(&quot;TELEGRAM_BOT_TOKEN&quot;);</span>
+<span class="doccomment">//!     // Add a command, this will add the routing to that function.</span>
+<span class="doccomment">//!     bot.command(&quot;echo (.+)&quot;, echohandler);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//!     // Start the bot with getUpdates</span>
+<span class="doccomment">//!     let res = bot.simple_start();</span>
+<span class="doccomment">//!     if let Err(e) = res {</span>
+<span class="doccomment">//!         println!(&quot;An error occurred: {}&quot;, e);</span>
+<span class="doccomment">//!     }</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ## More examples</span>
+<span class="doccomment">//! You have more examples in `examples/` directory in the project&#39;s repository.</span>
+<span class="doccomment">//!</span>
 
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>telegram_bot</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>regex</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>rustc_serialize</span>;
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>scoped_threadpool</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">regex</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">rustc_serialize</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">scoped_threadpool</span>;
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">telegram_bot</span>;
 
-<span class='kw'>mod</span> <span class='ident'>send</span>;
-<span class='kw'>mod</span> <span class='ident'>test</span>;
+<span class="kw">mod</span> <span class="ident">send</span>;
+<span class="kw">mod</span> <span class="ident">test</span>;
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>send</span>::<span class='op'>*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">send</span>::<span class="kw-2">*</span>;
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>telegram_bot</span>::<span class='op'>*</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">telegram_bot</span>::<span class="kw-2">*</span>;
 
-<span class='kw'>use</span> <span class='ident'>scoped_threadpool</span>::<span class='ident'>Pool</span>;
+<span class="kw">use</span> <span class="ident">scoped_threadpool</span>::<span class="ident">Pool</span>;
 
-<span class='kw'>use</span> <span class='ident'>regex</span>::<span class='ident'>Regex</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>env</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>sync</span>::<span class='ident'>Arc</span>;
+<span class="kw">use</span> <span class="ident">regex</span>::<span class="ident">Regex</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">env</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">sync</span>::<span class="ident">Arc</span>;
 
-<span class='doccomment'>/// Represents audio and voice, this is used in `all_music_fn` handler.</span>
-<span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>GeneralSound</span> {
-    <span class='ident'>Audio</span>(<span class='ident'>Audio</span>),
-    <span class='ident'>Voice</span>(<span class='ident'>Voice</span>),
+<span class="doccomment">/// Represents audio and voice, this is used in `all_music_fn` handler.</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">GeneralSound</span> {
+    <span class="ident">Audio</span>(<span class="ident">Audio</span>),
+    <span class="ident">Voice</span>(<span class="ident">Voice</span>),
 }
 
-<span class='comment'>// This enumerable is used to determine what type of routing handler to use</span>
-<span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>)]</span>
-<span class='kw'>enum</span> <span class='ident'>Muxer</span> {
-    <span class='ident'>PatternMux</span>(<span class='ident'>Regex</span>, <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>TextMux</span>(<span class='ident'>Regex</span>, <span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>PhotoMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>VideoMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Video</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>DocumentMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Document</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>StickerMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Sticker</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>AudioMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Audio</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>VoiceMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Voice</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>GeneralAudioMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GeneralSound</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>ContactMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Contact</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>LocationMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Float</span>, <span class='ident'>Float</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>NewParticipantMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>User</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>LeftParticipantMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>User</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>NewTitleMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>NewChatPhotoMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>DeleteChatPhotoMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GroupChat</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>GroupChatCreatedMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GroupChat</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
-    <span class='ident'>AnyMux</span>(<span class='ident'>Arc</span><span class='op'>&lt;</span><span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span><span class='op'>&gt;</span>),
+<span class="comment">// This enumeration determines what type of routing handler to use</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="kw">enum</span> <span class="ident">Muxer</span> {
+    <span class="ident">PatternMux</span>(
+        <span class="ident">Regex</span>,
+        <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    ),
+    <span class="ident">TextMux</span>(
+        <span class="ident">Regex</span>,
+        <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    ),
+    <span class="ident">PhotoMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">VideoMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Video</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">DocumentMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Document</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">StickerMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Sticker</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">AudioMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Audio</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">VoiceMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Voice</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">GeneralAudioMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">GeneralSound</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">ContactMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Contact</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">LocationMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Float</span>, <span class="ident">Float</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">NewParticipantMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">User</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">LeftParticipantMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">User</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">NewTitleMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">NewChatPhotoMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">DeleteChatPhotoMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">GroupChatCreatedMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">SuperGroupChatCreatedMux</span>(
+        <span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">GroupToSuperGroupMigration</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>,
+    ),
+    <span class="ident">ChannelChatCreatedMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
+    <span class="ident">AnyMux</span>(<span class="ident">Arc</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span><span class="op">&gt;</span>),
 }
 
-<span class='comment'>// This macros match one muxer and execute a block while sending to the &quot;Any&quot; message :)</span>
-<span class='comment'>// First: self</span>
-<span class='comment'>// Second: msg to pass</span>
-<span class='comment'>// Third: List of Pattern to match =&gt; Code block to execute for that Pattern</span>
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>muxer_match</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>: <span class='ident'>expr</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>msg</span>: <span class='ident'>expr</span>, [$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>pat</span>:<span class='ident'>pat</span> <span class='op'>=&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>result</span>: <span class='ident'>expr</span>),<span class='op'>*</span>]) <span class='op'>=&gt;</span> {
-        <span class='kw'>for</span> <span class='ident'>m</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>.<span class='ident'>muxers</span> {
-            <span class='kw'>match</span> <span class='ident'>m</span> {
-                <span class='kw-2'>&amp;</span><span class='ident'>Muxer</span>::<span class='ident'>AnyMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> {
-                    <span class='ident'>f</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>, <span class='kw-2'>&amp;</span><span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>msg</span>);
+<span class="comment">// This macro matches one muxer and executes a block while sending &quot;Any&quot; message :)</span>
+<span class="comment">// First: self</span>
+<span class="comment">// Second: msg to pass</span>
+<span class="comment">// Third: List of Patterns to match =&gt; Code block to execute for that Pattern</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">muxer_match</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>: <span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">msg</span>: <span class="ident">expr</span>, [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">pat</span>:<span class="ident">pat</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">result</span>: <span class="ident">expr</span>),<span class="kw-2">*</span>]) <span class="op">=&gt;</span> {
+        <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>.<span class="ident">muxers</span> {
+            <span class="kw">match</span> <span class="ident">m</span> {
+                <span class="kw-2">&amp;</span><span class="ident">Muxer</span>::<span class="ident">AnyMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> {
+                    <span class="ident">f</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>, <span class="kw-2">&amp;</span><span class="macro-nonterminal">$</span><span class="macro-nonterminal">msg</span>);
                 },
-                $(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>pat</span> <span class='op'>=&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>result</span>,)<span class='op'>*</span>
-                _ <span class='op'>=&gt;</span> {},
+                $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">pat</span> <span class="op">=&gt;</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">result</span>,)<span class="op">*</span>
+                <span class="kw">_</span> <span class="op">=&gt;</span> {},
             }
         }
     }
 }
 
-<span class='comment'>// This macro add a muxer to the muxers vec</span>
-<span class='comment'>// First: self</span>
-<span class='comment'>// Second: handler (function to add)</span>
-<span class='comment'>// Third: The Muxer enum type</span>
-<span class='comment'>// Fourth: List of extra parameters, in order, first passed to the muxer</span>
-<span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>add_muxer</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>: <span class='ident'>expr</span>,
-     <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>handler</span>: <span class='ident'>expr</span>,
-     <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>mux</span>: <span class='ident'>expr</span>,
-     [$(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>extra</span>: <span class='ident'>expr</span>),<span class='op'>*</span>]) <span class='op'>=&gt;</span> {
+<span class="comment">// This macro adds a muxer to the muxers vec</span>
+<span class="comment">// First: self</span>
+<span class="comment">// Second: handler (function to add)</span>
+<span class="comment">// Third: The Muxer enum type</span>
+<span class="comment">// Fourth: List of extra parameters, in order, first passed to the muxer</span>
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">add_muxer</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>: <span class="ident">expr</span>,
+     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">handler</span>: <span class="ident">expr</span>,
+     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">mux</span>: <span class="ident">expr</span>,
+     [$(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra</span>: <span class="ident">expr</span>),<span class="kw-2">*</span>]) <span class="op">=&gt;</span> {
         {
-            <span class='kw'>let</span> <span class='ident'>fa</span> <span class='op'>=</span> <span class='ident'>Arc</span>::<span class='ident'>new</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>handler</span>);
-            <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>.<span class='ident'>muxers</span>.<span class='ident'>push</span>(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>mux</span>($(<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>extra</span>,)<span class='op'>*</span> <span class='ident'>fa</span>.<span class='ident'>clone</span>()));
-            <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>_self</span>
+            <span class="kw">let</span> <span class="ident">fa</span> <span class="op">=</span> <span class="ident">Arc</span>::<span class="ident">new</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">handler</span>);
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>.<span class="ident">muxers</span>.<span class="ident">push</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">mux</span>($(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">extra</span>,)<span class="op">*</span> <span class="ident">fa</span>.<span class="ident">clone</span>()));
+            <span class="macro-nonterminal">$</span><span class="macro-nonterminal">_self</span>
         }
     }
 }
 
-<span class='doccomment'>/// Main type for building the Telegram Bot.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// You can create a new instance with `new` or `from_env`, add routing handlers and start the bot.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>AwesomeBot</span> {
-    <span class='ident'>bot</span>: <span class='ident'>Api</span>,
-    <span class='doccomment'>/// The ID of the bot.</span>
-    <span class='kw'>pub</span> <span class='ident'>id</span>: <span class='ident'>Integer</span>,
-    <span class='doccomment'>/// The username of the bot.</span>
-    <span class='kw'>pub</span> <span class='ident'>username</span>: <span class='ident'>String</span>,
-    <span class='ident'>muxers</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Muxer</span><span class='op'>&gt;</span>,
+<span class="doccomment">/// Main type for building the Telegram Bot.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Create a new instance using `new` or `from_env`, add routing handlers and start the bot.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AwesomeBot</span> {
+    <span class="ident">bot</span>: <span class="ident">Api</span>,
+    <span class="doccomment">/// The ID of the bot.</span>
+    <span class="kw">pub</span> <span class="ident">id</span>: <span class="ident">Integer</span>,
+    <span class="doccomment">/// The username of the bot.</span>
+    <span class="kw">pub</span> <span class="ident">username</span>: <span class="ident">String</span>,
+    <span class="ident">muxers</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Muxer</span><span class="op">&gt;</span>,
 }
 
-<span class='kw'>impl</span> <span class='ident'>Clone</span> <span class='kw'>for</span> <span class='ident'>AwesomeBot</span> {
-    <span class='kw'>fn</span> <span class='ident'>clone</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>AwesomeBot</span> {
-        <span class='kw'>let</span> <span class='ident'>b</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bot</span>.<span class='ident'>clone</span>();
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>v</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>Muxer</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>Vec</span>::<span class='ident'>new</span>();
-        <span class='kw'>for</span> <span class='ident'>m</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>muxers</span> {
-            <span class='ident'>v</span>.<span class='ident'>push</span>(<span class='ident'>m</span>.<span class='ident'>clone</span>());
+<span class="kw">impl</span> <span class="ident">Clone</span> <span class="kw">for</span> <span class="ident">AwesomeBot</span> {
+    <span class="kw">fn</span> <span class="ident">clone</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">AwesomeBot</span> {
+        <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bot</span>.<span class="ident">clone</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Muxer</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
+        <span class="kw">for</span> <span class="ident">m</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">muxers</span> {
+            <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">m</span>.<span class="ident">clone</span>());
         }
-        <span class='ident'>AwesomeBot</span> {
-            <span class='ident'>bot</span>: <span class='ident'>b</span>,
-            <span class='ident'>id</span>: <span class='self'>self</span>.<span class='ident'>id</span>,
-            <span class='ident'>username</span>: <span class='self'>self</span>.<span class='ident'>username</span>.<span class='ident'>clone</span>(),
-            <span class='ident'>muxers</span>: <span class='ident'>v</span>,
+        <span class="ident">AwesomeBot</span> {
+            <span class="ident">bot</span>: <span class="ident">b</span>,
+            <span class="ident">id</span>: <span class="self">self</span>.<span class="ident">id</span>,
+            <span class="ident">username</span>: <span class="self">self</span>.<span class="ident">username</span>.<span class="ident">clone</span>(),
+            <span class="ident">muxers</span>: <span class="ident">v</span>,
         }
     }
 }
 
-<span class='comment'>// unsafe impl Send for AwesomeBot { }</span>
-<span class='comment'>// unsafe impl Sync for AwesomeBot { }</span>
+<span class="comment">// unsafe impl Send for AwesomeBot { }</span>
+<span class="comment">// unsafe impl Sync for AwesomeBot { }</span>
 
-<span class='kw'>impl</span> <span class='ident'>AwesomeBot</span> {
-    <span class='comment'>// ===========================================================</span>
-    <span class='comment'>// Constructors</span>
-    <span class='comment'>// ===========================================================</span>
-    <span class='doccomment'>/// Creates a new bot with the given token. This checks that the token is a</span>
-    <span class='doccomment'>/// valid Telegram Bot Token by calling `get_me`.</span>
-    <span class='doccomment'>/// It panics if the token is invalid.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new</span>(<span class='ident'>token</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>AwesomeBot</span> {
-        <span class='kw'>let</span> <span class='ident'>bot</span> <span class='op'>=</span> <span class='ident'>Api</span>::<span class='ident'>from_token</span>(<span class='ident'>token</span>).<span class='ident'>unwrap</span>();
-        <span class='kw'>match</span> <span class='ident'>bot</span>.<span class='ident'>get_me</span>() {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>user</span>) <span class='op'>=&gt;</span> <span class='ident'>AwesomeBot</span> {
-                <span class='ident'>bot</span>: <span class='ident'>bot</span>,
-                <span class='ident'>id</span>: <span class='ident'>user</span>.<span class='ident'>id</span>,
-                <span class='ident'>username</span>: <span class='ident'>user</span>.<span class='ident'>username</span>.<span class='ident'>unwrap_or</span>(<span class='string'>&quot;&quot;</span>.<span class='ident'>to_string</span>()),
-                <span class='ident'>muxers</span>: <span class='ident'>Vec</span>::<span class='ident'>new</span>(),
+<span class="kw">impl</span> <span class="ident">AwesomeBot</span> {
+    <span class="comment">// ===========================================================</span>
+    <span class="comment">// Constructors</span>
+    <span class="comment">// ===========================================================</span>
+    <span class="doccomment">/// Creates a new bot with the given token. This checks that the token is a</span>
+    <span class="doccomment">/// valid Telegram Bot Token by calling `get_me`.</span>
+    <span class="doccomment">/// It panics if the token is invalid.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">token</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">AwesomeBot</span> {
+        <span class="kw">let</span> <span class="ident">bot</span> <span class="op">=</span> <span class="ident">Api</span>::<span class="ident">from_token</span>(<span class="ident">token</span>).<span class="ident">unwrap</span>();
+        <span class="kw">match</span> <span class="ident">bot</span>.<span class="ident">get_me</span>() {
+            <span class="prelude-val">Ok</span>(<span class="ident">user</span>) <span class="op">=&gt;</span> <span class="ident">AwesomeBot</span> {
+                <span class="ident">bot</span>: <span class="ident">bot</span>,
+                <span class="ident">id</span>: <span class="ident">user</span>.<span class="ident">id</span>,
+                <span class="ident">username</span>: <span class="ident">user</span>.<span class="ident">username</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>.<span class="ident">to_string</span>()),
+                <span class="ident">muxers</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             },
-            <span class='prelude-val'>Err</span>(<span class='ident'>e</span>) <span class='op'>=&gt;</span> <span class='macro'>panic</span><span class='macro'>!</span>(<span class='string'>&quot;Invalid token! ({})&quot;</span>, <span class='ident'>e</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Invalid token! ({})&quot;</span>, <span class="ident">e</span>),
         }
     }
 
-    <span class='doccomment'>/// Will receive the Bot Token from the environment variable `var` and call `new`.</span>
-    <span class='doccomment'>/// It panics if the environment variable can&#39;t be readed or the token are invalid.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_env</span>(<span class='ident'>var</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>AwesomeBot</span> {
-        <span class='kw'>let</span> <span class='ident'>token</span> <span class='op'>=</span> <span class='ident'>env</span>::<span class='ident'>var</span>(<span class='ident'>var</span>)
-            .<span class='ident'>ok</span>()
-            .<span class='ident'>expect</span>(<span class='kw-2'>&amp;</span><span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;Environment variable {} error.&quot;</span>, <span class='ident'>var</span>));
+    <span class="doccomment">/// Will receive the Bot Token from the environment variable `var` and call `new`.</span>
+    <span class="doccomment">/// It panics if the environment variable can&#39;t be read or if the token is invalid.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_env</span>(<span class="ident">var</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">AwesomeBot</span> {
+        <span class="kw">let</span> <span class="ident">token</span> <span class="op">=</span> <span class="ident">env</span>::<span class="ident">var</span>(<span class="ident">var</span>)
+            .<span class="ident">ok</span>()
+            .<span class="ident">expect</span>(<span class="kw-2">&amp;</span><span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;Environment variable {} error.&quot;</span>, <span class="ident">var</span>));
 
-        <span class='ident'>Self</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='ident'>token</span>)
+        <span class="self">Self</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="ident">token</span>)
     }
 
-    <span class='comment'>// Listener functions</span>
+    <span class="comment">// Listener functions</span>
 
-    <span class='doccomment'>/// Start the bot using `getUpdates` method, calling the routings defined before calling this method.</span>
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>compiler_has_scoped_bugfix</span>)]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>simple_start</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>listener</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bot</span>.<span class='ident'>listener</span>(<span class='ident'>ListeningMethod</span>::<span class='ident'>LongPoll</span>(<span class='prelude-val'>Some</span>(<span class='number'>20</span>)));
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>pool</span> <span class='op'>=</span> <span class='ident'>Pool</span>::<span class='ident'>new</span>(<span class='number'>4</span>);
-        <span class='comment'>// let botcloned = Arc::new(self.clone());</span>
+    <span class="doccomment">/// Start the bot using `getUpdates` method, calling the routes defined before calling this method.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">simple_start</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">listener</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">bot</span>.<span class="ident">listener</span>(<span class="ident">ListeningMethod</span>::<span class="ident">LongPoll</span>(<span class="prelude-val">Some</span>(<span class="number">20</span>)));
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pool</span> <span class="op">=</span> <span class="ident">Pool</span>::<span class="ident">new</span>(<span class="number">4</span>);
+        <span class="comment">// let botcloned = Arc::new(self.clone());</span>
 
-        <span class='ident'>pool</span>.<span class='ident'>scoped</span>(<span class='op'>|</span><span class='ident'>scoped</span><span class='op'>|</span> {
-            <span class='comment'>// Handle updates</span>
-            <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>listener</span>.<span class='ident'>listen</span>(<span class='op'>|</span><span class='ident'>u</span><span class='op'>|</span> {
-                <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>m</span>) <span class='op'>=</span> <span class='ident'>u</span>.<span class='ident'>message</span> {
-                    <span class='comment'>// let bot_instance = botcloned.clone();</span>
-                    <span class='ident'>scoped</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-                        <span class='comment'>// bot_instance.handle_message(m);</span>
-                        <span class='self'>self</span>.<span class='ident'>handle_message</span>(<span class='ident'>m</span>);
+        <span class="ident">pool</span>.<span class="ident">scoped</span>(<span class="op">|</span><span class="ident">scoped</span><span class="op">|</span> {
+            <span class="comment">// Handle updates</span>
+            <span class="kw">let</span> <span class="ident">result</span> <span class="op">=</span> <span class="ident">listener</span>.<span class="ident">listen</span>(<span class="op">|</span><span class="ident">u</span><span class="op">|</span> {
+                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">m</span>) <span class="op">=</span> <span class="ident">u</span>.<span class="ident">message</span> {
+                    <span class="comment">// let bot_instance = botcloned.clone();</span>
+                    <span class="ident">scoped</span>.<span class="ident">execute</span>(<span class="kw">move</span> <span class="op">||</span> {
+                        <span class="comment">// bot_instance.handle_message(m);</span>
+                        <span class="self">self</span>.<span class="ident">handle_message</span>(<span class="ident">m</span>);
                     });
                 }
-                <span class='prelude-val'>Ok</span>(<span class='ident'>ListeningAction</span>::<span class='ident'>Continue</span>)
+                <span class="prelude-val">Ok</span>(<span class="ident">ListeningAction</span>::<span class="ident">Continue</span>)
             });
-            <span class='ident'>scoped</span>.<span class='ident'>join_all</span>(); <span class='comment'>// Wait all scoped threads to finish</span>
-            <span class='ident'>result</span>
+            <span class="ident">scoped</span>.<span class="ident">join_all</span>(); <span class="comment">// Wait all scoped threads to finish</span>
+            <span class="ident">result</span>
         })
     }
 
-    <span class='doccomment'>/// Start the bot using `getUpdates` method, calling the routings defined before calling this method.</span>
-    <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>not</span>(<span class='ident'>compiler_has_scoped_bugfix</span>))]</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>simple_start</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>listener</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>bot</span>.<span class='ident'>listener</span>(<span class='ident'>ListeningMethod</span>::<span class='ident'>LongPoll</span>(<span class='prelude-val'>Some</span>(<span class='number'>20</span>)));
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>pool</span> <span class='op'>=</span> <span class='ident'>Pool</span>::<span class='ident'>new</span>(<span class='number'>4</span>);
-        <span class='comment'>// let botcloned = Arc::new(self.clone());</span>
-
-        <span class='ident'>pool</span>.<span class='ident'>scoped</span>(<span class='op'>|</span><span class='ident'>scoped</span><span class='op'>|</span> {
-            <span class='comment'>// Handle updates</span>
-            <span class='kw'>let</span> <span class='ident'>result</span> <span class='op'>=</span> <span class='ident'>listener</span>.<span class='ident'>listen</span>(<span class='op'>|</span><span class='ident'>u</span><span class='op'>|</span> {
-                <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>m</span>) <span class='op'>=</span> <span class='ident'>u</span>.<span class='ident'>message</span> {
-                    <span class='comment'>// let bot_instance = botcloned.clone();</span>
-                    <span class='kw'>unsafe</span> {
-                        <span class='ident'>scoped</span>.<span class='ident'>execute</span>(<span class='kw'>move</span> <span class='op'>||</span> {
-                            <span class='comment'>// bot_instance.handle_message(m);</span>
-                            <span class='self'>self</span>.<span class='ident'>handle_message</span>(<span class='ident'>m</span>);
-                        });
-                    }
-                }
-                <span class='prelude-val'>Ok</span>(<span class='ident'>ListeningAction</span>::<span class='ident'>Continue</span>)
-            });
-            <span class='ident'>scoped</span>.<span class='ident'>join_all</span>(); <span class='comment'>// Wait all scoped threads to finish</span>
-            <span class='ident'>result</span>
-        })
+    <span class="comment">// Send builders</span>
+    <span class="doccomment">/// Start a SendBuilder directly with the id, this is useful when you have the id saved and want to send a message.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">Integer</span>) <span class="op">-&gt;</span> <span class="ident">SendBuilder</span> {
+        <span class="ident">SendBuilder</span>::<span class="ident">new</span>(<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">bot</span>.<span class="ident">clone</span>())
     }
 
-    <span class='comment'>// Send builders</span>
-    <span class='doccomment'>/// Start a SendBuilder builder directly with the id, this is useful when you have the id saved and want to send a message.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>id</span>: <span class='ident'>Integer</span>) <span class='op'>-&gt;</span> <span class='ident'>SendBuilder</span> {
-        <span class='ident'>SendBuilder</span>::<span class='ident'>new</span>(<span class='ident'>id</span>, <span class='self'>self</span>.<span class='ident'>bot</span>.<span class='ident'>clone</span>())
+    <span class="doccomment">/// Start a SendBuilder answering a message directly, this is used to answer in a handler to the sender of the message.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">answer</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">m</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>) <span class="op">-&gt;</span> <span class="ident">SendBuilder</span> {
+        <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">m</span>.<span class="ident">chat</span>.<span class="ident">id</span>())
     }
 
-    <span class='doccomment'>/// Start a SendBuilder builder answering a message directly, this is used to answer in a handler to the sender of the message.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>answer</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>m</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>) <span class='op'>-&gt;</span> <span class='ident'>SendBuilder</span> {
-        <span class='self'>self</span>.<span class='ident'>send</span>(<span class='ident'>m</span>.<span class='ident'>chat</span>.<span class='ident'>id</span>())
-    }
+    <span class="comment">// AUXILIARY FUNCTIONS</span>
 
-    <span class='comment'>// AUXILIAR FUNCTIONS</span>
+    <span class="comment">// This function modifies the command by adding the username and some regex cleanup</span>
+    <span class="kw">fn</span> <span class="ident">modify_command</span>(<span class="ident">orig</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">username</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">String</span> {
+        <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">orig</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">words</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">s</span>.<span class="ident">split_whitespace</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">x</span>)).<span class="ident">collect</span>();
 
-    <span class='comment'>// This function modify the command adding the username and the some regex cleanup</span>
-    <span class='kw'>fn</span> <span class='ident'>modify_command</span>(<span class='ident'>orig</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>username</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>) <span class='op'>-&gt;</span> <span class='ident'>String</span> {
-        <span class='kw'>let</span> <span class='ident'>s</span> <span class='op'>=</span> <span class='ident'>String</span>::<span class='ident'>from</span>(<span class='ident'>orig</span>);
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>words</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='ident'>s</span>.<span class='ident'>split_whitespace</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>String</span>::<span class='ident'>from</span>(<span class='ident'>x</span>)).<span class='ident'>collect</span>();
-
-        <span class='kw'>if</span> <span class='ident'>words</span>.<span class='ident'>len</span>() <span class='op'>&gt;=</span> <span class='number'>1</span> {
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>lastchar</span> <span class='op'>=</span> <span class='string'>&quot;&quot;</span>;
-            <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>comm</span> <span class='op'>=</span> <span class='ident'>words</span>.<span class='ident'>remove</span>(<span class='number'>0</span>);
-            <span class='kw'>if</span> <span class='ident'>comm</span>.<span class='ident'>ends_with</span>(<span class='string'>&quot;$&quot;</span>) {
-                <span class='ident'>lastchar</span> <span class='op'>=</span> <span class='string'>&quot;$&quot;</span>;
-                <span class='ident'>comm</span>.<span class='ident'>pop</span>();
+        <span class="kw">if</span> <span class="ident">words</span>.<span class="ident">len</span>() <span class="op">&gt;=</span> <span class="number">1</span> {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">lastchar</span> <span class="op">=</span> <span class="string">&quot;&quot;</span>;
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">comm</span> <span class="op">=</span> <span class="ident">words</span>.<span class="ident">remove</span>(<span class="number">0</span>);
+            <span class="kw">if</span> <span class="ident">comm</span>.<span class="ident">ends_with</span>(<span class="string">&quot;$&quot;</span>) {
+                <span class="ident">lastchar</span> <span class="op">=</span> <span class="string">&quot;$&quot;</span>;
+                <span class="ident">comm</span>.<span class="ident">pop</span>();
             }
-            <span class='kw'>let</span> <span class='ident'>ns</span>: <span class='ident'>String</span> <span class='op'>=</span> <span class='macro'>format</span><span class='macro'>!</span>(<span class='string'>&quot;{}(?:@{})?{}&quot;</span>, <span class='ident'>comm</span>, <span class='ident'>username</span>, <span class='ident'>lastchar</span>);
-            <span class='ident'>words</span>.<span class='ident'>insert</span>(<span class='number'>0</span>, <span class='ident'>ns</span>);
+            <span class="kw">let</span> <span class="ident">ns</span>: <span class="ident">String</span> <span class="op">=</span> <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;{}(?:@{})?{}&quot;</span>, <span class="ident">comm</span>, <span class="ident">username</span>, <span class="ident">lastchar</span>);
+            <span class="ident">words</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="ident">ns</span>);
         }
 
-        <span class='comment'>// let mut ns: String = words.join(&quot; &quot;);</span>
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>ns</span>: <span class='ident'>String</span> <span class='op'>=</span> <span class='ident'>words</span>.<span class='ident'>connect</span>(<span class='string'>&quot; &quot;</span>);
-        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>ns</span>.<span class='ident'>starts_with</span>(<span class='string'>&quot;^/&quot;</span>) {
-            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>ns</span>.<span class='ident'>starts_with</span>(<span class='string'>&quot;/&quot;</span>) {
-                <span class='ident'>ns</span>.<span class='ident'>insert</span>(<span class='number'>0</span>, <span class='string'>&#39;/&#39;</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ns</span>: <span class="ident">String</span> <span class="op">=</span> <span class="ident">words</span>.<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">ns</span>.<span class="ident">starts_with</span>(<span class="string">&quot;^/&quot;</span>) {
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">ns</span>.<span class="ident">starts_with</span>(<span class="string">&quot;/&quot;</span>) {
+                <span class="ident">ns</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="string">&#39;/&#39;</span>);
             }
-            <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>s</span>.<span class='ident'>starts_with</span>(<span class='string'>&quot;^&quot;</span>) {
-                <span class='ident'>ns</span>.<span class='ident'>insert</span>(<span class='number'>0</span>, <span class='string'>&#39;^&#39;</span>);
+            <span class="kw">if</span> <span class="op">!</span><span class="ident">s</span>.<span class="ident">starts_with</span>(<span class="string">&quot;^&quot;</span>) {
+                <span class="ident">ns</span>.<span class="ident">insert</span>(<span class="number">0</span>, <span class="string">&#39;^&#39;</span>);
             }
         }
-        <span class='kw'>if</span> <span class='op'>!</span><span class='ident'>ns</span>.<span class='ident'>ends_with</span>(<span class='string'>&quot;$&quot;</span>) {
-            <span class='ident'>ns</span>.<span class='ident'>push_str</span>(<span class='string'>&quot;$&quot;</span>);
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">ns</span>.<span class="ident">ends_with</span>(<span class="string">&quot;$&quot;</span>) {
+            <span class="ident">ns</span>.<span class="ident">push_str</span>(<span class="string">&quot;$&quot;</span>);
         }
-        <span class='ident'>ns</span>
+        <span class="ident">ns</span>
     }
 }
 
-<span class='comment'>// Handle functions, this implementations are separated of the other</span>
-<span class='kw'>impl</span> <span class='ident'>AwesomeBot</span> {
-    <span class='kw'>fn</span> <span class='ident'>handle_text_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>text</span>: <span class='ident'>String</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                     [<span class='kw-2'>&amp;</span><span class='ident'>TextMux</span>(<span class='kw-2'>ref</span> <span class='ident'>r</span>, <span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span>
+<span class="comment">// Internal handler functions</span>
+<span class="kw">impl</span> <span class="ident">AwesomeBot</span> {
+    <span class="kw">fn</span> <span class="ident">handle_text_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">text</span>: <span class="ident">String</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                     [<span class="kw-2">&amp;</span><span class="ident">TextMux</span>(<span class="kw-2">ref</span> <span class="ident">r</span>, <span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span>
                       {
-                         <span class='kw'>if</span> <span class='ident'>r</span>.<span class='ident'>is_match</span>(<span class='kw-2'>&amp;</span><span class='ident'>text</span>) {
-                             <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>text</span>.<span class='ident'>clone</span>());
+                         <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">text</span>) {
+                             <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">text</span>.<span class="ident">clone</span>());
                          }
                       },
-                      <span class='kw-2'>&amp;</span><span class='ident'>PatternMux</span>(<span class='kw-2'>ref</span> <span class='ident'>r</span>, <span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span>
+                      <span class="kw-2">&amp;</span><span class="ident">PatternMux</span>(<span class="kw-2">ref</span> <span class="ident">r</span>, <span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span>
                       {
-                          <span class='kw'>if</span> <span class='ident'>r</span>.<span class='ident'>is_match</span>(<span class='kw-2'>&amp;</span><span class='ident'>text</span>) { <span class='comment'>// If there are match</span>
-                              <span class='ident'>r</span>.<span class='ident'>captures</span>(<span class='kw-2'>&amp;</span><span class='ident'>text</span>) <span class='comment'>// Get the captures</span>
-                                  .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>c</span><span class='op'>|</span> { <span class='comment'>// Map over them because are Option&lt;_&gt;</span>
-                                      <span class='comment'>// Change the capture groups to Vec&lt;String&gt;</span>
-                                      <span class='ident'>c</span>.<span class='ident'>iter</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>String</span>::<span class='ident'>from</span>(<span class='ident'>x</span>.<span class='ident'>unwrap_or</span>(<span class='string'>&quot;&quot;</span>)))
-                                          .<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>_<span class='op'>&gt;&gt;</span>()
+                          <span class="kw">if</span> <span class="ident">r</span>.<span class="ident">is_match</span>(<span class="kw-2">&amp;</span><span class="ident">text</span>) { <span class="comment">// If there are matches</span>
+                              <span class="ident">r</span>.<span class="ident">captures</span>(<span class="kw-2">&amp;</span><span class="ident">text</span>) <span class="comment">// Get the captures</span>
+                                  .<span class="ident">map</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> { <span class="comment">// Map over them because they are Option&lt;_&gt;</span>
+                                      <span class="comment">// Change the capture groups to Vec&lt;String&gt;</span>
+                                      <span class="ident">c</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="ident">x</span>.<span class="ident">unwrap_or</span>(<span class="string">&quot;&quot;</span>)))
+                                          .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;&gt;</span>()
                                   })
-                                  .<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>captures_vec</span><span class='op'>|</span>{
-                                      <span class='comment'>// If everything goes well, call the function</span>
-                                      <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>text</span>.<span class='ident'>clone</span>(), <span class='ident'>captures_vec</span>)
+                                  .<span class="ident">map</span>(<span class="op">|</span><span class="ident">captures_vec</span><span class="op">|</span>{
+                                      <span class="comment">// If everything goes well, call the function</span>
+                                      <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">text</span>.<span class="ident">clone</span>(), <span class="ident">captures_vec</span>)
                                   });
                           }
                       }]
                      );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_image_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>photos</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>PhotoMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>photos</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_image_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">photos</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">PhotoMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">photos</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_video_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>video</span>: <span class='ident'>Video</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                     [<span class='kw-2'>&amp;</span><span class='ident'>VideoMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>video</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_video_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">video</span>: <span class="ident">Video</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                     [<span class="kw-2">&amp;</span><span class="ident">VideoMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">video</span>.<span class="ident">clone</span>())]
                      );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_document_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>document</span>: <span class='ident'>Document</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                     [<span class='kw-2'>&amp;</span><span class='ident'>DocumentMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>document</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_document_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">document</span>: <span class="ident">Document</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                     [<span class="kw-2">&amp;</span><span class="ident">DocumentMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">document</span>.<span class="ident">clone</span>())]
                      );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_sticker_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>sticker</span>: <span class='ident'>Sticker</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                     [<span class='kw-2'>&amp;</span><span class='ident'>StickerMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>sticker</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_sticker_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">sticker</span>: <span class="ident">Sticker</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                     [<span class="kw-2">&amp;</span><span class="ident">StickerMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">sticker</span>.<span class="ident">clone</span>())]
                      );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_audio_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>audio</span>: <span class='ident'>Audio</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                     [<span class='kw-2'>&amp;</span><span class='ident'>AudioMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>audio</span>.<span class='ident'>clone</span>()),
-                      <span class='kw-2'>&amp;</span><span class='ident'>GeneralAudioMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>GeneralSound</span>::<span class='ident'>Audio</span>(<span class='ident'>audio</span>.<span class='ident'>clone</span>()))]
+    <span class="kw">fn</span> <span class="ident">handle_audio_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">audio</span>: <span class="ident">Audio</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                     [<span class="kw-2">&amp;</span><span class="ident">AudioMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">audio</span>.<span class="ident">clone</span>()),
+                      <span class="kw-2">&amp;</span><span class="ident">GeneralAudioMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">GeneralSound</span>::<span class="ident">Audio</span>(<span class="ident">audio</span>.<span class="ident">clone</span>()))]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_voice_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>voice</span>: <span class='ident'>Voice</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>VoiceMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>voice</span>.<span class='ident'>clone</span>()),
-                           <span class='kw-2'>&amp;</span><span class='ident'>GeneralAudioMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>GeneralSound</span>::<span class='ident'>Voice</span>(<span class='ident'>voice</span>.<span class='ident'>clone</span>()))]
+    <span class="kw">fn</span> <span class="ident">handle_voice_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">voice</span>: <span class="ident">Voice</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">VoiceMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">voice</span>.<span class="ident">clone</span>()),
+                           <span class="kw-2">&amp;</span><span class="ident">GeneralAudioMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">GeneralSound</span>::<span class="ident">Voice</span>(<span class="ident">voice</span>.<span class="ident">clone</span>()))]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_contact_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>cont</span>: <span class='ident'>Contact</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>ContactMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>cont</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_contact_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">cont</span>: <span class="ident">Contact</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">ContactMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">cont</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_location_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>f1</span>: <span class='ident'>Float</span>, <span class='ident'>f2</span>: <span class='ident'>Float</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>LocationMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>f1</span>, <span class='ident'>f2</span>)]
+    <span class="kw">fn</span> <span class="ident">handle_location_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">f1</span>: <span class="ident">Float</span>, <span class="ident">f2</span>: <span class="ident">Float</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">LocationMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">f1</span>, <span class="ident">f2</span>)]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_new_chat_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>newp</span>: <span class='ident'>User</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>NewParticipantMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>newp</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_new_chat_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">newp</span>: <span class="ident">User</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">NewParticipantMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">newp</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_left_part_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>user</span>: <span class='ident'>User</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>LeftParticipantMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>user</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_left_part_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">user</span>: <span class="ident">User</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">LeftParticipantMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">user</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_new_title_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>title</span>: <span class='ident'>String</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>NewTitleMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>title</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_new_title_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">title</span>: <span class="ident">String</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">NewTitleMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">title</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_chat_photo_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>photos</span>: <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>NewChatPhotoMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>photos</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_chat_photo_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">photos</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">NewChatPhotoMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">photos</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_delete_photo_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>group</span>: <span class='ident'>GroupChat</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>DeleteChatPhotoMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>group</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_delete_photo_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">group</span>: <span class="ident">Chat</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">DeleteChatPhotoMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">group</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_group_created_msg</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>msg</span>: <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>group</span>: <span class='ident'>GroupChat</span>) {
-        <span class='kw'>use</span> <span class='ident'>Muxer</span>::<span class='op'>*</span>;
-        <span class='macro'>muxer_match</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>msg</span>,
-                          [<span class='kw-2'>&amp;</span><span class='ident'>GroupChatCreatedMux</span>(<span class='kw-2'>ref</span> <span class='ident'>f</span>) <span class='op'>=&gt;</span> <span class='ident'>f</span>(<span class='self'>self</span>, <span class='ident'>msg</span>, <span class='ident'>group</span>.<span class='ident'>clone</span>())]
+    <span class="kw">fn</span> <span class="ident">handle_group_created_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">group</span>: <span class="ident">Chat</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>,
+                          [<span class="kw-2">&amp;</span><span class="ident">GroupChatCreatedMux</span>(<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">group</span>.<span class="ident">clone</span>())]
                           );
     }
 
-    <span class='kw'>fn</span> <span class='ident'>handle_message</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>message</span>: <span class='ident'>Message</span>) {
-        <span class='comment'>// use MessageType::*; // When nightly becomes stable?</span>
-        <span class='kw'>use</span> <span class='ident'>telegram_bot</span>::<span class='ident'>MessageType</span>::<span class='op'>*</span>;
-        <span class='comment'>// // Any message</span>
-        <span class='comment'>// let anybot = bot.clone();</span>
-        <span class='comment'>// let anym = m.clone();</span>
-        <span class='comment'>// thread::spawn(move || {</span>
-        <span class='comment'>//     anybot.handle_any_msg(anym);</span>
-        <span class='comment'>// });</span>
+    <span class="kw">fn</span> <span class="ident">handle_super_group_chat_created_msg</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>,
+        <span class="ident">migration</span>: <span class="ident">GroupToSuperGroupMigration</span>,
+    ) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>, [<span class="kw-2">&amp;</span><span class="ident">SuperGroupChatCreatedMux</span> (<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">migration</span>.<span class="ident">clone</span>())]);
+    }
 
-        <span class='comment'>// Rest of messages :)</span>
-        <span class='kw'>match</span> <span class='ident'>message</span>.<span class='ident'>msg</span>.<span class='ident'>clone</span>() {
-            <span class='ident'>Text</span>(<span class='ident'>text</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_text_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>text</span>),
-            <span class='ident'>Audio</span>(<span class='ident'>audio</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_audio_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>audio</span>),
-            <span class='ident'>Voice</span>(<span class='ident'>voice</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_voice_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>voice</span>),
-            <span class='ident'>Photo</span>(<span class='ident'>photos</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_image_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>photos</span>),
-            <span class='ident'>File</span>(<span class='ident'>document</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_document_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>document</span>),
-            <span class='ident'>Sticker</span>(<span class='ident'>sticker</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_sticker_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>sticker</span>),
-            <span class='ident'>Video</span>(<span class='ident'>video</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_video_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>video</span>),
-            <span class='ident'>Contact</span>(<span class='ident'>contact</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_contact_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>contact</span>),
-            <span class='ident'>Location</span>(<span class='ident'>loc</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_location_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>loc</span>.<span class='ident'>latitude</span>, <span class='ident'>loc</span>.<span class='ident'>longitude</span>),
-            <span class='ident'>NewChatParticipant</span>(<span class='ident'>user</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_new_chat_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>user</span>),
-            <span class='ident'>LeftChatParticipant</span>(<span class='ident'>user</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_left_part_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>user</span>),
-            <span class='ident'>NewChatTitle</span>(<span class='ident'>title</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_new_title_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>title</span>),
-            <span class='ident'>NewChatPhoto</span>(<span class='ident'>photos</span>) <span class='op'>=&gt;</span> <span class='self'>self</span>.<span class='ident'>handle_chat_photo_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>photos</span>),
-            <span class='ident'>DeleteChatPhoto</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Chat</span>::<span class='ident'>Group</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='ident'>message</span>.<span class='ident'>chat</span>.<span class='ident'>clone</span>() {
-                    <span class='self'>self</span>.<span class='ident'>handle_delete_photo_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>group</span>);
-                }
-            },
-            <span class='ident'>GroupChatCreated</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='kw'>let</span> <span class='ident'>Chat</span>::<span class='ident'>Group</span>(<span class='ident'>group</span>) <span class='op'>=</span> <span class='ident'>message</span>.<span class='ident'>chat</span>.<span class='ident'>clone</span>() {
-                    <span class='self'>self</span>.<span class='ident'>handle_group_created_msg</span>(<span class='kw-2'>&amp;</span><span class='ident'>message</span>, <span class='ident'>group</span>);
-                }
-            },
+    <span class="kw">fn</span> <span class="ident">handle_channel_chat_created_msg</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">chat</span>: <span class="ident">Chat</span>) {
+        <span class="kw">use</span> <span class="ident">Muxer</span>::<span class="kw-2">*</span>;
+        <span class="macro">muxer_match</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">msg</span>, [<span class="kw-2">&amp;</span><span class="ident">ChannelChatCreatedMux</span> (<span class="kw-2">ref</span> <span class="ident">f</span>) <span class="op">=&gt;</span> <span class="ident">f</span>(<span class="self">self</span>, <span class="ident">msg</span>, <span class="ident">chat</span>.<span class="ident">clone</span>())]);
+    }
+
+    <span class="kw">fn</span> <span class="ident">handle_message</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">message</span>: <span class="ident">Message</span>) {
+        <span class="comment">// use MessageType::*; // When nightly becomes stable?</span>
+        <span class="kw">use</span> <span class="ident">telegram_bot</span>::<span class="ident">MessageType</span>::<span class="kw-2">*</span>;
+        <span class="comment">// // Any message</span>
+        <span class="comment">// let anybot = bot.clone();</span>
+        <span class="comment">// let anym = m.clone();</span>
+        <span class="comment">// thread::spawn(move || {</span>
+        <span class="comment">//     anybot.handle_any_msg(anym);</span>
+        <span class="comment">// });</span>
+
+        <span class="comment">// Rest of messages :)</span>
+        <span class="kw">match</span> <span class="ident">message</span>.<span class="ident">msg</span>.<span class="ident">clone</span>() {
+            <span class="ident">Text</span>(<span class="ident">text</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_text_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">text</span>),
+            <span class="ident">Audio</span>(<span class="ident">audio</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_audio_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">audio</span>),
+            <span class="ident">Voice</span>(<span class="ident">voice</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_voice_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">voice</span>),
+            <span class="ident">Photo</span>(<span class="ident">photos</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_image_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">photos</span>),
+            <span class="ident">File</span>(<span class="ident">document</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_document_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">document</span>),
+            <span class="ident">Sticker</span>(<span class="ident">sticker</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_sticker_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">sticker</span>),
+            <span class="ident">Video</span>(<span class="ident">video</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_video_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">video</span>),
+            <span class="ident">Contact</span>(<span class="ident">contact</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_contact_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">contact</span>),
+            <span class="ident">Location</span>(<span class="ident">loc</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_location_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">loc</span>.<span class="ident">latitude</span>, <span class="ident">loc</span>.<span class="ident">longitude</span>),
+            <span class="ident">NewChatParticipant</span>(<span class="ident">user</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_new_chat_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">user</span>),
+            <span class="ident">LeftChatParticipant</span>(<span class="ident">user</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_left_part_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">user</span>),
+            <span class="ident">NewChatTitle</span>(<span class="ident">title</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_new_title_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">title</span>),
+            <span class="ident">NewChatPhoto</span>(<span class="ident">photos</span>) <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_chat_photo_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">photos</span>),
+            <span class="ident">DeleteChatPhoto</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_delete_photo_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">message</span>.<span class="ident">chat</span>.<span class="ident">clone</span>()),
+            <span class="ident">GroupChatCreated</span> <span class="op">=&gt;</span> <span class="self">self</span>.<span class="ident">handle_group_created_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">message</span>.<span class="ident">chat</span>.<span class="ident">clone</span>()),
+            <span class="ident">SuperGroupChatCreated</span>(<span class="ident">migration</span>) <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">handle_super_group_chat_created_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">migration</span>)
+            }
+            <span class="ident">ChannelChatCreated</span> <span class="op">=&gt;</span> {
+                <span class="self">self</span>.<span class="ident">handle_channel_chat_created_msg</span>(<span class="kw-2">&amp;</span><span class="ident">message</span>, <span class="ident">message</span>.<span class="ident">chat</span>.<span class="ident">clone</span>())
+            }
         }
     }
 }
 
-
-<span class='comment'>// Add functions implementation</span>
-<span class='doccomment'>/// Methods to add function handlers on different routings.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// The different parameters of the handlers are:</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// - Common:</span>
-<span class='doccomment'>///    - `&amp;AwesomeBot`: First argument of all the handlers, it&#39;s the bot itself, so you can send/answer.</span>
-<span class='doccomment'>///    - `&amp;Message`: Second argument of all the handlers, it&#39;s the message that has triggered the handler, you can grab all the information you want. This struct comes from `telegram-bot` crate.</span>
-<span class='doccomment'>/// - Specific to some handlers:</span>
-<span class='doccomment'>///    - `String`: Refers to the full text if it&#39;s a command or regular expression, or the new title of a group.</span>
-<span class='doccomment'>///    - `Vec&lt;String&gt;`: This are only in `command` and `regex` method, and are a vector of the capture groups.</span>
-<span class='doccomment'>///    - `Vec&lt;PhotoSize&gt;`: Represents an image (it&#39;s received in different sizes) and you get it when a photo arrives or when someone change a group photo.</span>
-<span class='doccomment'>///    - `Video`, `Document`, `Sticker`, `Audio`, `Voice`, `GeneralSound`, `Contact`, `Float`: All this parameters are the media that made the handler trigger, for example, in `video_fn` you will receive a `Video`.</span>
-<span class='doccomment'>///    - `User`: An User is received when a participant left or enter a group.</span>
-<span class='doccomment'>///    - `GroupChat`: Whenever someone delete a chat photo, or create a group (add the bot to the group) you receive this.</span>
-<span class='kw'>impl</span> <span class='ident'>AwesomeBot</span> {
-    <span class='doccomment'>/// Add a complex command routing (With capture groups).</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method will transform the pattern to be exhaustive and include the mention to the bot, for example, the pattern `echo (.+)` will be used inside an the regular expression `^/start(?:@usernamebot)? (.+)$`</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>command</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pattern</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+<span class="comment">// Add functions implementation</span>
+<span class="doccomment">/// Methods to add function handlers to different routes.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The different parameters of the handlers are:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - Common:</span>
+<span class="doccomment">///    - `&amp;AwesomeBot`: First argument of all the handlers is the bot itself, so you can send/answer.</span>
+<span class="doccomment">///    - `&amp;Message`: Second argument of all the handlers is the message that has triggered</span>
+<span class="doccomment">///                  the handler, you can grab all the information you want. This struct comes</span>
+<span class="doccomment">///                  from `telegram-bot` crate.</span>
+<span class="doccomment">/// - Specific to some handlers:</span>
+<span class="doccomment">///    - `String`: Refers to the full text if it&#39;s a command or regular expression,</span>
+<span class="doccomment">///                or the new title of a group.</span>
+<span class="doccomment">///    - `Vec&lt;String&gt;`: These are only in `command` and `regex` methods, and represent a vector</span>
+<span class="doccomment">///                     of the capture groups.</span>
+<span class="doccomment">///    - `Vec&lt;PhotoSize&gt;`: Represents an image (it&#39;s received in different sizes) and you get it</span>
+<span class="doccomment">///                        when a photo arrives or when someone change a group photo.</span>
+<span class="doccomment">///    - `Video`, `Document`, `Sticker`, `Audio`, `Voice`, `GeneralSound`, `Contact`, `Float`:</span>
+<span class="doccomment">///                  All these parameters are the media that made the handler trigger, for example,</span>
+<span class="doccomment">///                  in `video_fn` you will receive a `Video`.</span>
+<span class="doccomment">///    - `User`: An User is received when a participants leave or enter a group.</span>
+<span class="doccomment">///    - `Chat::Group`: Whenever someone delete a chat photo, or create a group (add the bot to</span>
+<span class="doccomment">///                     the group) you receive this.</span>
+<span class="kw">impl</span> <span class="ident">AwesomeBot</span> {
+    <span class="doccomment">/// Add complex command routing (With capture groups).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method will transform the pattern to be exhaustive and include the mention to the bot,</span>
+    <span class="doccomment">/// for example, the pattern `echo (.+)` will be used inside an the regular expression</span>
+    <span class="doccomment">/// `^/start(?:@usernamebot)? (.+)$`</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">command</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='kw'>let</span> <span class='ident'>nr</span> <span class='op'>=</span> <span class='ident'>Self</span>::<span class='ident'>modify_command</span>(<span class='ident'>pattern</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>username</span>);
-        <span class='kw'>match</span> <span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>nr</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>r</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>PatternMux</span>, [<span class='ident'>r</span>])
-            }
-            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>
+        <span class="kw">let</span> <span class="ident">nr</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">modify_command</span>(<span class="ident">pattern</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">username</span>);
+        <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">nr</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">PatternMux</span>, [<span class="ident">r</span>]),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="self">self</span>,
         }
     }
 
-    <span class='doccomment'>/// Add a simple command routing (Without capture groups).</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method will transform the pattern the same as `command` method, but the handler will not get the capture groups.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>simple_command</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pattern</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add simple command routing (Without capture groups).</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method will transform the pattern the same as `command` method, but the handler</span>
+    <span class="doccomment">/// will not receive the capture groups.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">simple_command</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='kw'>let</span> <span class='ident'>nr</span> <span class='op'>=</span> <span class='ident'>Self</span>::<span class='ident'>modify_command</span>(<span class='ident'>pattern</span>, <span class='kw-2'>&amp;</span><span class='self'>self</span>.<span class='ident'>username</span>);
-        <span class='kw'>match</span> <span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>nr</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>r</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>TextMux</span>, [<span class='ident'>r</span>])
-            }
-            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>
+        <span class="kw">let</span> <span class="ident">nr</span> <span class="op">=</span> <span class="self">Self</span>::<span class="ident">modify_command</span>(<span class="ident">pattern</span>, <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">username</span>);
+        <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="kw-2">&amp;</span><span class="kw-2">*</span><span class="ident">nr</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">TextMux</span>, [<span class="ident">r</span>]),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="self">self</span>,
         }
     }
 
-    <span class='doccomment'>/// Add a complex regular expression routing (With capture groups)</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method won&#39;t tranform anything about the regular expression, you are free to write the expression you want and receive the capture groups matched.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>regex</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pattern</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>String</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add complex regular expression routing (With capture groups)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method won&#39;t tranform anything about the regular expression, you are free to write</span>
+    <span class="doccomment">/// the expression you want and receive the capture groups matched.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">regex</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='kw'>match</span> <span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='ident'>pattern</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>r</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>PatternMux</span>, [<span class='ident'>r</span>])
-            }
-            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>
+        <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="ident">pattern</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">PatternMux</span>, [<span class="ident">r</span>]),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="self">self</span>,
         }
     }
 
-    <span class='doccomment'>/// Add a complex simple expression routing (Without capture groups)</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// This method won&#39;t tranform anything about the regular expression, you are free to write the expression. The difference with `regex` is that you won&#39;t receive the capture groups.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>simple_regex</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>pattern</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add complex regular expression routing (Without capture groups)</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// This method won&#39;t tranform anything about the regular expression, you are free to write</span>
+    <span class="doccomment">/// the expression. The difference from `regex` is that you won&#39;t receive any capture groups.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">simple_regex</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pattern</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='kw'>match</span> <span class='ident'>Regex</span>::<span class='ident'>new</span>(<span class='ident'>pattern</span>) {
-            <span class='prelude-val'>Ok</span>(<span class='ident'>r</span>) <span class='op'>=&gt;</span> {
-                <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>TextMux</span>, [<span class='ident'>r</span>])
-            }
-            <span class='prelude-val'>Err</span>(_) <span class='op'>=&gt;</span> <span class='self'>self</span>
+        <span class="kw">match</span> <span class="ident">Regex</span>::<span class="ident">new</span>(<span class="ident">pattern</span>) {
+            <span class="prelude-val">Ok</span>(<span class="ident">r</span>) <span class="op">=&gt;</span> <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">TextMux</span>, [<span class="ident">r</span>]),
+            <span class="prelude-val">Err</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="self">self</span>,
         }
     }
 
-    <span class='comment'>// pub fn multi_regex&lt;H&gt;(&amp;mut self, patterns: Vec&lt;&amp;str&gt;, handler: H) -&gt; &amp;mut AwesomeBot</span>
-    <span class='comment'>//     where H: Fn(&amp;AwesomeBot, &amp;Message, String, Vec&lt;String&gt;) + Send + Sync + &#39;static</span>
-    <span class='comment'>// {</span>
-    <span class='comment'>// }</span>
+    <span class="comment">// pub fn multi_regex&lt;H&gt;(&amp;mut self, patterns: Vec&lt;&amp;str&gt;, handler: H) -&gt; &amp;mut AwesomeBot</span>
+    <span class="comment">//     where H: Fn(&amp;AwesomeBot, &amp;Message, String, Vec&lt;String&gt;) + Send + Sync + &#39;static</span>
+    <span class="comment">// {</span>
+    <span class="comment">// }</span>
 
-    <span class='doccomment'>/// Add a routing handler that will be triggerer in every message, useful to log.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>any_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that will be triggerer on every message, useful for logging.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">any_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>AnyMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">AnyMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a photo media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>photo_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a photo media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">photo_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>PhotoMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">PhotoMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a video media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>video_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Video</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a video media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">video_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Video</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>VideoMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">VideoMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a document media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>document_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Document</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a document media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">document_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Document</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>DocumentMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">DocumentMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a sticker media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>sticker_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Sticker</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a sticker media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sticker_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Sticker</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>StickerMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">StickerMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a audio media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>audio_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Audio</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add an audio media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">audio_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Audio</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>AudioMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">AudioMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a voice media routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>voice_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Voice</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a voice media routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">voice_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Voice</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>VoiceMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">VoiceMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when it is received an `Audio` or a `Voice`</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>all_music_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GeneralSound</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when an `Audio` or a `Voice` is received.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">all_music_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">GeneralSound</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>GeneralAudioMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">GeneralAudioMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a contact routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>contact_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Contact</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a contact routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">contact_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Contact</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>ContactMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">ContactMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a location routing handler.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>location_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Float</span>, <span class='ident'>Float</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a location routing handler.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">location_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Float</span>, <span class="ident">Float</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>LocationMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">LocationMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when a new participant enters in a group.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_participant_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>User</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when a new participant enters a group.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_participant_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">User</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>NewParticipantMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">NewParticipantMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when a participant left a group.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>left_participant_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>User</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when a participant leaves a group.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">left_participant_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">User</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>LeftParticipantMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">LeftParticipantMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when the title of a group chat is changed.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_title_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>String</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when the title of a group chat is changed.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_title_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">String</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>NewTitleMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">NewTitleMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when the photo of a group chat is changed.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>new_chat_photo_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>PhotoSize</span><span class='op'>&gt;</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when the photo of a group chat is changed.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_chat_photo_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PhotoSize</span><span class="op">&gt;</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>NewChatPhotoMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">NewChatPhotoMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when the photo of a group chat is deleted.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>delete_chat_photo_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GroupChat</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when the photo of a group chat is deleted.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">delete_chat_photo_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>DeleteChatPhotoMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">DeleteChatPhotoMux</span>, [])
     }
 
-    <span class='doccomment'>/// Add a routing handler that is triggered when a group chat is created.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>group_chat_created_fn</span><span class='op'>&lt;</span><span class='ident'>H</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>handler</span>: <span class='ident'>H</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>AwesomeBot</span>
-        <span class='kw'>where</span> <span class='ident'>H</span>: <span class='ident'>Fn</span>(<span class='kw-2'>&amp;</span><span class='ident'>AwesomeBot</span>, <span class='kw-2'>&amp;</span><span class='ident'>Message</span>, <span class='ident'>GroupChat</span>) <span class='op'>+</span> <span class='ident'>Send</span> <span class='op'>+</span> <span class='ident'>Sync</span> <span class='op'>+</span> <span class='lifetime'>&#39;static</span>
+    <span class="doccomment">/// Add a routing handler that is triggered when a group chat is created.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">group_chat_created_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
     {
-        <span class='macro'>add_muxer</span><span class='macro'>!</span>(<span class='self'>self</span>, <span class='ident'>handler</span>, <span class='ident'>Muxer</span>::<span class='ident'>GroupChatCreatedMux</span>, [])
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">GroupChatCreatedMux</span>, [])
+    }
+
+    <span class="doccomment">/// Add a routing handler that is triggered when a super group chat is created.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">super_group_chat_created_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">GroupToSuperGroupMigration</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    {
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">SuperGroupChatCreatedMux</span>, [])
+    }
+
+    <span class="doccomment">/// Add a routing handler that is triggered when a channel chat is created.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">channel_chat_created_fn</span><span class="op">&lt;</span><span class="ident">H</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">handler</span>: <span class="ident">H</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">AwesomeBot</span>
+    <span class="kw">where</span>
+        <span class="ident">H</span>: <span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">AwesomeBot</span>, <span class="kw-2">&amp;</span><span class="ident">Message</span>, <span class="ident">Chat</span>) <span class="op">+</span> <span class="ident">Send</span> <span class="op">+</span> <span class="ident">Sync</span> <span class="op">+</span> <span class="lifetime">&#39;static</span>,
+    {
+        <span class="macro">add_muxer</span><span class="macro">!</span>(<span class="self">self</span>, <span class="ident">handler</span>, <span class="ident">Muxer</span>::<span class="ident">ChannelChatCreatedMux</span>, [])
     }
 }
 
-
-
-<span class='comment'>// fn detect_file_or_id(name: &amp;str, path: String) -&gt; SendPath {</span>
-<span class='comment'>//     // When PathExt becomes stable, use Path::new(&amp;path).exists() instead of this!</span>
-<span class='comment'>//     let check = fs::metadata(&amp;path);</span>
-<span class='comment'>//     if path.contains(&quot;.&quot;) &amp;&amp; check.is_ok() &amp;&amp; check.unwrap().is_file() {</span>
-<span class='comment'>//         SendPath::File(name.to_owned(), Path::new(&amp;path).to_path_buf())</span>
-<span class='comment'>//     } else {</span>
-<span class='comment'>//         SendPath::Id(name.to_owned(), path)</span>
-<span class='comment'>//     }</span>
-<span class='comment'>// }</span>
+<span class="comment">// fn detect_file_or_id(name: &amp;str, path: String) -&gt; SendPath {</span>
+<span class="comment">//     // When PathExt becomes stable, use Path::new(&amp;path).exists() instead of this!</span>
+<span class="comment">//     let check = fs::metadata(&amp;path);</span>
+<span class="comment">//     if path.contains(&quot;.&quot;) &amp;&amp; check.is_ok() &amp;&amp; check.unwrap().is_file() {</span>
+<span class="comment">//         SendPath::File(name.to_owned(), Path::new(&amp;path).to_path_buf())</span>
+<span class="comment">//     } else {</span>
+<span class="comment">//         SendPath::Id(name.to_owned(), path)</span>
+<span class="comment">//     }</span>
+<span class="comment">// }</span>
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../";
-        window.currentCrate = "awesome_bot";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../jquery.js"></script>
-    <script src="../../main.js"></script>
-    
-    <script async src="../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "awesome_bot";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>

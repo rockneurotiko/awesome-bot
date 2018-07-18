@@ -1,46 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="Source to the Rust file `/home/travis/.cargo/registry/src/github.com-0a35038f75765ae4/multipart-0.3.1/src/client/mod.rs`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang">
-
-    <title>mod.rs.html -- source</title>
-
-    <link rel="stylesheet" type="text/css" href="../../../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content source"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `/Users/rock/.cargo/registry/src/github.com-1ecc6299db9ec823/multipart-0.5.1/src/client/mod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css"><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script src="../../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -277,295 +235,307 @@
 <span id="235">235</span>
 <span id="236">236</span>
 <span id="237">237</span>
-</pre><pre class='rust '>
-<span class='doccomment'>//! The client-side abstraction for multipart requests. Enabled with the `client` feature (on by</span>
-<span class='doccomment'>//! default).</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! Use this when sending POST requests with files to a server.</span>
-<span class='kw'>use</span> <span class='ident'>mime</span>::<span class='ident'>Mime</span>;
+<span id="238">238</span>
+<span id="239">239</span>
+<span id="240">240</span>
+<span id="241">241</span>
+<span id="242">242</span>
+<span id="243">243</span>
+<span id="244">244</span>
+<span id="245">245</span>
+<span id="246">246</span>
+<span id="247">247</span>
+<span id="248">248</span>
+<span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+</pre><pre class="rust ">
+<span class="comment">// Copyright 2016 `multipart` Crate Developers</span>
+<span class="comment">//</span>
+<span class="comment">// Licensed under the Apache License, Version 2.0, &lt;LICENSE-APACHE or</span>
+<span class="comment">// http://apache.org/licenses/LICENSE-2.0&gt; or the MIT license &lt;LICENSE-MIT or</span>
+<span class="comment">// http://opensource.org/licenses/MIT&gt;, at your option. This file may not be</span>
+<span class="comment">// copied, modified, or distributed except according to those terms.</span>
+<span class="doccomment">//! The client-side abstraction for multipart requests. Enabled with the `client` feature (on by</span>
+<span class="doccomment">//! default).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Use this when sending POST requests with files to a server.</span>
+<span class="kw">use</span> <span class="ident">mime</span>::<span class="ident">Mime</span>;
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fs</span>::<span class='ident'>File</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>;
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>io</span>::<span class='ident'>prelude</span>::<span class='op'>*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">borrow</span>::<span class="ident">Cow</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">io</span>::<span class="ident">prelude</span>::<span class="kw-2">*</span>;
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>path</span>::<span class='ident'>Path</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">path</span>::<span class="ident">Path</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>feature</span> <span class='op'>=</span> <span class='string'>&quot;hyper&quot;</span>)]</span>
-<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>hyper</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;hyper&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">hyper</span>;
 
-<span class='kw'>mod</span> <span class='ident'>sized</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">lazy</span>;
 
-<span class='kw'>pub</span> <span class='kw'>use</span> <span class='self'>self</span>::<span class='ident'>sized</span>::<span class='ident'>SizedRequest</span>;
+<span class="kw">mod</span> <span class="ident">sized</span>;
 
-<span class='kw'>const</span> <span class='ident'>BOUNDARY_LEN</span>: <span class='ident'>usize</span> <span class='op'>=</span> <span class='number'>16</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">sized</span>::<span class="ident">SizedRequest</span>;
 
+<span class="kw">const</span> <span class="ident">BOUNDARY_LEN</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">16</span>;
 
-<span class='doccomment'>/// The entry point of the client-side multipart API.</span>
-<span class='doccomment'>///</span>
-<span class='doccomment'>/// Though they perform I/O, the `.write_*()` methods do not return `io::Result&lt;_&gt;` in order to</span>
-<span class='doccomment'>/// facilitate method chaining. Upon the first error, all subsequent API calls will be no-ops until</span>
-<span class='doccomment'>/// `.send()` is called, at which point the error will be reported.</span>
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Multipart</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>HttpStream</span><span class='op'>&gt;</span> {
-    <span class='ident'>stream</span>: <span class='ident'>S</span>,
-    <span class='ident'>boundary</span>: <span class='ident'>String</span>,
-    <span class='ident'>last_err</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>,
-    <span class='ident'>data_written</span>: <span class='ident'>bool</span>,
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">map_self</span> {
+    (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">selff</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">try</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> (
+        <span class="kw">match</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">try</span> {
+            <span class="prelude-val">Ok</span>(<span class="kw">_</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">selff</span>),
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>.<span class="ident">into</span>()),
+        }
+    )
 }
 
-<span class='kw'>impl</span> <span class='ident'>Multipart</span><span class='op'>&lt;</span><span class='ident'>io</span>::<span class='ident'>Sink</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `Multipart` to wrap a request.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ## Returns Error</span>
-    <span class='doccomment'>/// If `req.open_stream()` returns an error.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_request</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>HttpRequest</span><span class='op'>&gt;</span>(<span class='kw-2'>mut</span> <span class='ident'>req</span>: <span class='ident'>R</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Multipart</span><span class='op'>&lt;</span><span class='ident'>R</span>::<span class='ident'>Stream</span><span class='op'>&gt;</span>, <span class='ident'>R</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>boundary</span> <span class='op'>=</span> ::<span class='ident'>random_alphanumeric</span>(<span class='ident'>BOUNDARY_LEN</span>);
-        <span class='ident'>req</span>.<span class='ident'>apply_headers</span>(<span class='kw-2'>&amp;</span><span class='ident'>boundary</span>, <span class='prelude-val'>None</span>);
+<span class="doccomment">/// The entry point of the client-side multipart API.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Though they perform I/O, the `.write_*()` methods do not return `io::Result&lt;_&gt;` in order to</span>
+<span class="doccomment">/// facilitate method chaining. Upon the first error, all subsequent API calls will be no-ops until</span>
+<span class="doccomment">/// `.send()` is called, at which point the error will be reported.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Multipart</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> {
+    <span class="ident">writer</span>: <span class="ident">MultipartWriter</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">S</span><span class="op">&gt;</span>,
+}
 
-        <span class='kw'>let</span> <span class='ident'>stream</span> <span class='op'>=</span> <span class='macro'>try</span><span class='macro'>!</span>(<span class='ident'>req</span>.<span class='ident'>open_stream</span>());
+<span class="kw">impl</span> <span class="ident">Multipart</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `Multipart` to wrap a request.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ## Returns Error</span>
+    <span class="doccomment">/// If `req.open_stream()` returns an error.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_request</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">HttpRequest</span><span class="op">&gt;</span>(<span class="ident">req</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Multipart</span><span class="op">&lt;</span><span class="ident">R</span>::<span class="ident">Stream</span><span class="op">&gt;</span>, <span class="ident">R</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">boundary</span>, <span class="ident">stream</span>) <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">open_stream</span>(<span class="ident">req</span>, <span class="prelude-val">None</span>));
 
-        <span class='prelude-val'>Ok</span>(<span class='ident'>Multipart</span> {
-            <span class='ident'>stream</span>: <span class='ident'>stream</span>,
-            <span class='ident'>boundary</span>: <span class='ident'>boundary</span>,
-            <span class='ident'>last_err</span>: <span class='prelude-val'>None</span>,
-            <span class='ident'>data_written</span>: <span class='boolval'>false</span>,
+        <span class="prelude-val">Ok</span>(<span class="ident">Multipart</span> {
+            <span class="ident">writer</span>: <span class="ident">MultipartWriter</span>::<span class="ident">new</span>(<span class="ident">stream</span>, <span class="ident">boundary</span>),
         })
     }
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>S</span>: <span class='ident'>HttpStream</span><span class='op'>&gt;</span> <span class='ident'>Multipart</span><span class='op'>&lt;</span><span class='ident'>S</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Get a reference to the last error returned from writing to the HTTP stream, if any.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>last_err</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>last_err</span>.<span class='ident'>as_ref</span>()
-    }
-
-    <span class='doccomment'>/// Remove and return the last error to occur, allowing subsequent API calls to proceed</span>
-    <span class='doccomment'>/// normally.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ##Warning</span>
-    <span class='doccomment'>/// If an error occurred during a write, the request body may be corrupt.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>take_err</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>last_err</span>.<span class='ident'>take</span>()
-    }
-
-    <span class='doccomment'>/// Write a text field to this multipart request.</span>
-    <span class='doccomment'>/// `name` and `val` can be either owned `String` or `&amp;str`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ##Errors</span>
-    <span class='doccomment'>/// If something went wrong with the HTTP stream.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>write_text</span><span class='op'>&lt;</span><span class='ident'>N</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span><span class='ident'>str</span><span class='op'>&gt;</span>, <span class='ident'>V</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span><span class='ident'>str</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>N</span>, <span class='ident'>val</span>: <span class='ident'>V</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>last_err</span>.<span class='ident'>is_none</span>() {
-            <span class='self'>self</span>.<span class='ident'>last_err</span> <span class='op'>=</span> <span class='macro'>chain_result</span><span class='macro'>!</span> {
-                <span class='self'>self</span>.<span class='ident'>write_field_headers</span>(<span class='ident'>name</span>.<span class='ident'>as_ref</span>(), <span class='prelude-val'>None</span>, <span class='prelude-val'>None</span>),
-                <span class='self'>self</span>.<span class='ident'>stream</span>.<span class='ident'>write_all</span>(<span class='ident'>val</span>.<span class='ident'>as_ref</span>().<span class='ident'>as_bytes</span>())
-            }.<span class='ident'>err</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>err</span><span class='op'>|</span> <span class='ident'>err</span>.<span class='ident'>into</span>())
-        }
-
-        <span class='self'>self</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">HttpStream</span><span class="op">&gt;</span> <span class="ident">Multipart</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span> { 
+    <span class="doccomment">/// Write a text field to this multipart request.</span>
+    <span class="doccomment">/// `name` and `val` can be either owned `String` or `&amp;str`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ##Errors</span>
+    <span class="doccomment">/// If something went wrong with the HTTP stream.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_text</span><span class="op">&lt;</span><span class="ident">N</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">V</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">val</span>: <span class="ident">V</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="macro">map_self</span><span class="macro">!</span>(<span class="self">self</span>, <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">write_text</span>(<span class="ident">name</span>.<span class="ident">as_ref</span>(), <span class="ident">val</span>.<span class="ident">as_ref</span>()))
     }
     
-    <span class='doccomment'>/// Open a file pointed to by `path` and write its contents to the multipart request, </span>
-    <span class='doccomment'>/// supplying its filename and guessing its `Content-Type` from its extension.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// If you want to set these values manually, or use another type that implements `Read`, </span>
-    <span class='doccomment'>/// use `.write_stream()`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// `name` can be either `String` or `&amp;str`, and `path` can be `PathBuf` or `&amp;Path`.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ##Errors</span>
-    <span class='doccomment'>/// If there was a problem opening the file (was a directory or didn&#39;t exist),</span>
-    <span class='doccomment'>/// or if something went wrong with the HTTP stream.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>write_file</span><span class='op'>&lt;</span><span class='ident'>N</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span><span class='ident'>str</span><span class='op'>&gt;</span>, <span class='ident'>P</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span><span class='ident'>Path</span><span class='op'>&gt;&gt;</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>N</span>, <span class='ident'>path</span>: <span class='ident'>P</span>) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>last_err</span>.<span class='ident'>is_none</span>() {     
-            <span class='kw'>let</span> <span class='ident'>path</span> <span class='op'>=</span> <span class='ident'>path</span>.<span class='ident'>as_ref</span>();
+    <span class="doccomment">/// Open a file pointed to by `path` and write its contents to the multipart request, </span>
+    <span class="doccomment">/// supplying its filename and guessing its `Content-Type` from its extension.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// If you want to set these values manually, or use another type that implements `Read`, </span>
+    <span class="doccomment">/// use `.write_stream()`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `name` can be either `String` or `&amp;str`, and `path` can be `PathBuf` or `&amp;Path`.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ##Errors</span>
+    <span class="doccomment">/// If there was a problem opening the file (was a directory or didn&#39;t exist),</span>
+    <span class="doccomment">/// or if something went wrong with the HTTP stream.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_file</span><span class="op">&lt;</span><span class="ident">N</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">P</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">Path</span><span class="op">&gt;&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">path</span>: <span class="ident">P</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">as_ref</span>();
+        <span class="kw">let</span> <span class="ident">path</span> <span class="op">=</span> <span class="ident">path</span>.<span class="ident">as_ref</span>();
 
-            <span class='self'>self</span>.<span class='ident'>last_err</span> <span class='op'>=</span> <span class='macro'>chain_result</span><span class='macro'>!</span> {
-                { <span class='comment'>// New borrow scope so we can reborrow `file` after</span>
-                    <span class='kw'>let</span> <span class='ident'>content_type</span> <span class='op'>=</span> ::<span class='ident'>mime_guess</span>::<span class='ident'>guess_mime_type</span>(<span class='ident'>path</span>);
-                    <span class='kw'>let</span> <span class='ident'>filename</span> <span class='op'>=</span> <span class='ident'>path</span>.<span class='ident'>file_name</span>().<span class='ident'>and_then</span>(<span class='op'>|</span><span class='ident'>filename</span><span class='op'>|</span> <span class='ident'>filename</span>.<span class='ident'>to_str</span>());
-                    <span class='self'>self</span>.<span class='ident'>write_field_headers</span>(<span class='ident'>name</span>.<span class='ident'>as_ref</span>(), <span class='ident'>filename</span>, <span class='prelude-val'>Some</span>(<span class='ident'>content_type</span>))
-                },
-                <span class='ident'>File</span>::<span class='ident'>open</span>(<span class='ident'>path</span>).<span class='ident'>and_then</span>(<span class='op'>|</span><span class='kw-2'>ref</span> <span class='kw-2'>mut</span> <span class='ident'>file</span><span class='op'>|</span> <span class='ident'>io</span>::<span class='ident'>copy</span>(<span class='ident'>file</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>stream</span>))
-            }.<span class='ident'>err</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>err</span><span class='op'>|</span> <span class='ident'>err</span>.<span class='ident'>into</span>());
-        }
-
-        <span class='self'>self</span>
+        <span class="macro">map_self</span><span class="macro">!</span>(<span class="self">self</span>, <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">write_file</span>(<span class="ident">name</span>, <span class="ident">path</span>))
     }
 
-    <span class='doccomment'>/// Write a byte stream to the multipart request as a file field, supplying `filename` if given,</span>
-    <span class='doccomment'>/// and `content_type` if given or `&quot;application/octet-stream&quot;` if not.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// `name` can be either `String` or `&amp;str`, and `read` can take the `Read` by-value or</span>
-    <span class='doccomment'>/// with an `&amp;mut` borrow.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ##Warning</span>
-    <span class='doccomment'>/// The given `Read` **must** be able to read to EOF (end of file/no more data), meaning</span>
-    <span class='doccomment'>/// `Read::read()` returns `Ok(0)`. If it never returns EOF it will be read to infinity </span>
-    <span class='doccomment'>/// and the request will never be completed.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// When using `SizedRequest` this also can cause out-of-control memory usage as the</span>
-    <span class='doccomment'>/// multipart data has to be written to an in-memory buffer so its size can be calculated.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// Use `Read::take()` if you wish to send data from a `Read` </span>
-    <span class='doccomment'>/// that will never return EOF otherwise.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ##Errors</span>
-    <span class='doccomment'>/// If the reader returned an error, or if something went wrong with the HTTP stream.</span>
-    <span class='comment'>// RFC: How to format this declaration?</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>write_stream</span><span class='op'>&lt;</span><span class='ident'>N</span>: <span class='ident'>AsRef</span><span class='op'>&lt;</span><span class='ident'>str</span><span class='op'>&gt;</span>, <span class='ident'>St</span>: <span class='ident'>Read</span><span class='op'>&gt;</span>(
-        <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='ident'>N</span>, <span class='ident'>read</span>: <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='ident'>St</span>, <span class='ident'>filename</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>str</span><span class='op'>&gt;</span>, <span class='ident'>content_type</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Mime</span><span class='op'>&gt;</span>
-    ) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='kw'>Self</span> {
-        <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>last_err</span>.<span class='ident'>is_none</span>() {
-            <span class='kw'>let</span> <span class='ident'>content_type</span> <span class='op'>=</span> <span class='ident'>content_type</span>.<span class='ident'>unwrap_or_else</span>(::<span class='ident'>mime_guess</span>::<span class='ident'>octet_stream</span>);
+    <span class="doccomment">/// Write a byte stream to the multipart request as a file field, supplying `filename` if given,</span>
+    <span class="doccomment">/// and `content_type` if given or `&quot;application/octet-stream&quot;` if not.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// `name` can be either `String` or `&amp;str`, and `read` can take the `Read` by-value or</span>
+    <span class="doccomment">/// with an `&amp;mut` borrow.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ##Warning</span>
+    <span class="doccomment">/// The given `Read` **must** be able to read to EOF (end of file/no more data), meaning</span>
+    <span class="doccomment">/// `Read::read()` returns `Ok(0)`. If it never returns EOF it will be read to infinity </span>
+    <span class="doccomment">/// and the request will never be completed.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// When using `SizedRequest` this also can cause out-of-control memory usage as the</span>
+    <span class="doccomment">/// multipart data has to be written to an in-memory buffer so its size can be calculated.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// Use `Read::take()` if you wish to send data from a `Read` </span>
+    <span class="doccomment">/// that will never return EOF otherwise.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// ##Errors</span>
+    <span class="doccomment">/// If the reader returned an error, or if something went wrong with the HTTP stream.</span>
+    <span class="comment">// RFC: How to format this declaration?</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">write_stream</span><span class="op">&lt;</span><span class="ident">N</span>: <span class="ident">AsRef</span><span class="op">&lt;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">St</span>: <span class="ident">Read</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">N</span>, <span class="ident">stream</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">St</span>, <span class="ident">filename</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">content_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mime</span><span class="op">&gt;</span>
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">Self</span>, <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">name</span> <span class="op">=</span> <span class="ident">name</span>.<span class="ident">as_ref</span>();
 
-            <span class='self'>self</span>.<span class='ident'>last_err</span> <span class='op'>=</span> <span class='macro'>chain_result</span><span class='macro'>!</span> {
-                <span class='self'>self</span>.<span class='ident'>write_field_headers</span>(<span class='ident'>name</span>.<span class='ident'>as_ref</span>(), <span class='ident'>filename</span>, <span class='prelude-val'>Some</span>(<span class='ident'>content_type</span>)),
-                <span class='ident'>io</span>::<span class='ident'>copy</span>(<span class='ident'>read</span>, <span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>.<span class='ident'>stream</span>)
-            }.<span class='ident'>err</span>().<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>err</span><span class='op'>|</span> <span class='ident'>err</span>.<span class='ident'>into</span>());
-        }
-
-        <span class='self'>self</span>
+        <span class="macro">map_self</span><span class="macro">!</span>(<span class="self">self</span>, <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">write_stream</span>(<span class="ident">stream</span>, <span class="ident">name</span>, <span class="ident">filename</span>, <span class="ident">content_type</span>))
     } 
 
-    <span class='kw'>fn</span> <span class='ident'>write_field_headers</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>name</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>filename</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>str</span><span class='op'>&gt;</span>, <span class='ident'>content_type</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>Mime</span><span class='op'>&gt;</span>) 
-    <span class='op'>-&gt;</span> <span class='ident'>io</span>::<span class='prelude-ty'>Result</span><span class='op'>&lt;</span>()<span class='op'>&gt;</span> {
-        <span class='self'>self</span>.<span class='ident'>data_written</span> <span class='op'>=</span> <span class='boolval'>true</span>;
-
-        <span class='macro'>chain_result</span><span class='macro'>!</span> {
-            <span class='comment'>// Write the first boundary, or the boundary for the previous field.</span>
-            <span class='macro'>write</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>stream</span>, <span class='string'>&quot;\r\n--{}\r\n&quot;</span>, <span class='self'>self</span>.<span class='ident'>boundary</span>),
-            <span class='macro'>write</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>stream</span>, <span class='string'>&quot;Content-Disposition: form-data; name=\&quot;{}\&quot;&quot;</span>, <span class='ident'>name</span>),
-            <span class='ident'>filename</span>.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>filename</span><span class='op'>|</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>stream</span>, <span class='string'>&quot;; filename=\&quot;{}\&quot;&quot;</span>, <span class='ident'>filename</span>))
-                .<span class='ident'>unwrap_or</span>(<span class='prelude-val'>Ok</span>(())),
-            <span class='ident'>content_type</span>.<span class='ident'>map</span>(<span class='op'>|</span><span class='ident'>content_type</span><span class='op'>|</span> <span class='macro'>write</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>stream</span>, <span class='string'>&quot;\r\nContent-Type: {}&quot;</span>, <span class='ident'>content_type</span>))
-                .<span class='ident'>unwrap_or</span>(<span class='prelude-val'>Ok</span>(())),
-            <span class='self'>self</span>.<span class='ident'>stream</span>.<span class='ident'>write_all</span>(<span class='string'>b&quot;\r\n\r\n&quot;</span>)
-        }
-    }
-
-    <span class='doccomment'>/// Finalize the request and return the response from the server, or the last error if set.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>send</span>(<span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>S</span>::<span class='ident'>Response</span>, <span class='ident'>S</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>last_err</span> {
-            <span class='prelude-val'>None</span> <span class='op'>=&gt;</span> {
-                <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>data_written</span> {
-                    <span class='comment'>// Write two hyphens after the last boundary occurrence.</span>
-                    <span class='macro'>try</span><span class='macro'>!</span>(<span class='macro'>write</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>stream</span>, <span class='string'>&quot;\r\n--{}--&quot;</span>, <span class='self'>self</span>.<span class='ident'>boundary</span>));
-                }
-                
-                <span class='self'>self</span>.<span class='ident'>stream</span>.<span class='ident'>finish</span>()
-            },
-            <span class='prelude-val'>Some</span>(<span class='ident'>err</span>) <span class='op'>=&gt;</span> <span class='prelude-val'>Err</span>(<span class='ident'>err</span>),
-        }
+    <span class="doccomment">/// Finalize the request and return the response from the server, or the last error if set.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">S</span>::<span class="ident">Response</span>, <span class="ident">S</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">writer</span>.<span class="ident">finish</span>().<span class="ident">map_err</span>(<span class="ident">io</span>::<span class="ident">Error</span>::<span class="ident">into</span>).<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">body</span><span class="op">|</span> <span class="ident">body</span>.<span class="ident">finish</span>())
     }    
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>R</span>: <span class='ident'>HttpRequest</span><span class='op'>&gt;</span> <span class='ident'>Multipart</span><span class='op'>&lt;</span><span class='ident'>SizedRequest</span><span class='op'>&lt;</span><span class='ident'>R</span><span class='op'>&gt;&gt;</span>
-<span class='kw'>where</span> <span class='op'>&lt;</span><span class='ident'>R</span>::<span class='ident'>Stream</span> <span class='kw'>as</span> <span class='ident'>HttpStream</span><span class='op'>&gt;</span>::<span class='ident'>Error</span>: <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>R</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-    <span class='doccomment'>/// Create a new `Multipart` using the `SizedRequest` wrapper around `req`.</span>
-    <span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>from_request_sized</span>(<span class='ident'>req</span>: <span class='ident'>R</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='kw'>Self</span>, <span class='ident'>R</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> {
-        <span class='ident'>Multipart</span>::<span class='ident'>from_request</span>(<span class='ident'>SizedRequest</span>::<span class='ident'>from_request</span>(<span class='ident'>req</span>))
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">HttpRequest</span><span class="op">&gt;</span> <span class="ident">Multipart</span><span class="op">&lt;</span><span class="ident">SizedRequest</span><span class="op">&lt;</span><span class="ident">R</span><span class="op">&gt;&gt;</span>
+<span class="kw">where</span> <span class="op">&lt;</span><span class="ident">R</span>::<span class="ident">Stream</span> <span class="kw">as</span> <span class="ident">HttpStream</span><span class="op">&gt;</span>::<span class="ident">Error</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">R</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// Create a new `Multipart` using the `SizedRequest` wrapper around `req`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">from_request_sized</span>(<span class="ident">req</span>: <span class="ident">R</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>, <span class="ident">R</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+        <span class="ident">Multipart</span>::<span class="ident">from_request</span>(<span class="ident">SizedRequest</span>::<span class="ident">from_request</span>(<span class="ident">req</span>))
     }
 }
 
-<span class='doccomment'>/// A trait describing an HTTP request that can be used to send multipart data.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>HttpRequest</span> {
-    <span class='doccomment'>/// The HTTP stream type that can be opend by this request, to which the multipart data will be</span>
-    <span class='doccomment'>/// written.</span>
-    <span class='kw'>type</span> <span class='ident'>Stream</span>: <span class='ident'>HttpStream</span>;
-    <span class='doccomment'>/// The error type for this request. </span>
-    <span class='doccomment'>/// Must be compatible with `io::Error` as well as `Self::HttpStream::Error`</span>
-    <span class='kw'>type</span> <span class='ident'>Error</span>: <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>io</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>Into</span><span class='op'>&lt;&lt;</span><span class='ident'>Self</span>::<span class='ident'>Stream</span> <span class='kw'>as</span> <span class='ident'>HttpStream</span><span class='op'>&gt;</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>;
+<span class="doccomment">/// A trait describing an HTTP request that can be used to send multipart data.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">HttpRequest</span> {
+    <span class="doccomment">/// The HTTP stream type that can be opend by this request, to which the multipart data will be</span>
+    <span class="doccomment">/// written.</span>
+    <span class="kw">type</span> <span class="ident">Stream</span>: <span class="ident">HttpStream</span>;
+    <span class="doccomment">/// The error type for this request. </span>
+    <span class="doccomment">/// Must be compatible with `io::Error` as well as `Self::HttpStream::Error`</span>
+    <span class="kw">type</span> <span class="ident">Error</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">io</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">Into</span><span class="op">&lt;&lt;</span><span class="self">Self</span>::<span class="ident">Stream</span> <span class="kw">as</span> <span class="ident">HttpStream</span><span class="op">&gt;</span>::<span class="ident">Error</span><span class="op">&gt;</span>;
 
-    <span class='doccomment'>/// Set the `Content-Type` header to `multipart/form-data` and supply the `boundary` value.</span>
-    <span class='doccomment'>/// If `content_len` is given, set the `Content-Length` header to its value.</span>
-    <span class='doccomment'>/// </span>
-    <span class='doccomment'>/// Return `true` if any and all sanity checks passed and the stream is ready to be opened, </span>
-    <span class='doccomment'>/// or `false` otherwise.</span>
-    <span class='kw'>fn</span> <span class='ident'>apply_headers</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>boundary</span>: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, <span class='ident'>content_len</span>: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>u64</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span>;
+    <span class="doccomment">/// Set the `Content-Type` header to `multipart/form-data` and supply the `boundary` value.</span>
+    <span class="doccomment">/// If `content_len` is given, set the `Content-Length` header to its value.</span>
+    <span class="doccomment">/// </span>
+    <span class="doccomment">/// Return `true` if any and all sanity checks passed and the stream is ready to be opened, </span>
+    <span class="doccomment">/// or `false` otherwise.</span>
+    <span class="kw">fn</span> <span class="ident">apply_headers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">boundary</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">content_len</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span>;
 
-    <span class='doccomment'>/// Open the request stream and return it or any error otherwise. </span>
-    <span class='kw'>fn</span> <span class='ident'>open_stream</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Self</span>::<span class='ident'>Stream</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>;
+    <span class="doccomment">/// Open the request stream and return it or any error otherwise. </span>
+    <span class="kw">fn</span> <span class="ident">open_stream</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Stream</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>;
 }
 
-<span class='doccomment'>/// A trait describing an open HTTP stream that can be written to.</span>
-<span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>HttpStream</span>: <span class='ident'>Write</span> {
-    <span class='doccomment'>/// The request type that opened this stream.</span>
-    <span class='kw'>type</span> <span class='ident'>Request</span>: <span class='ident'>HttpRequest</span>;
-    <span class='doccomment'>/// The response type that will be returned after the request is completed.</span>
-    <span class='kw'>type</span> <span class='ident'>Response</span>;
-    <span class='doccomment'>/// The error type for this stream.</span>
-    <span class='doccomment'>/// Must be compatible with `io::Error` as well as `Self::Request::Error`.</span>
-    <span class='kw'>type</span> <span class='ident'>Error</span>: <span class='ident'>From</span><span class='op'>&lt;</span><span class='ident'>io</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> <span class='op'>+</span> <span class='ident'>From</span><span class='op'>&lt;&lt;</span><span class='ident'>Self</span>::<span class='ident'>Request</span> <span class='kw'>as</span> <span class='ident'>HttpRequest</span><span class='op'>&gt;</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>; 
+<span class="doccomment">/// A trait describing an open HTTP stream that can be written to.</span>
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">HttpStream</span>: <span class="ident">Write</span> {
+    <span class="doccomment">/// The request type that opened this stream.</span>
+    <span class="kw">type</span> <span class="ident">Request</span>: <span class="ident">HttpRequest</span>;
+    <span class="doccomment">/// The response type that will be returned after the request is completed.</span>
+    <span class="kw">type</span> <span class="ident">Response</span>;
+    <span class="doccomment">/// The error type for this stream.</span>
+    <span class="doccomment">/// Must be compatible with `io::Error` as well as `Self::Request::Error`.</span>
+    <span class="kw">type</span> <span class="ident">Error</span>: <span class="ident">From</span><span class="op">&lt;</span><span class="ident">io</span>::<span class="ident">Error</span><span class="op">&gt;</span> <span class="op">+</span> <span class="ident">From</span><span class="op">&lt;&lt;</span><span class="self">Self</span>::<span class="ident">Request</span> <span class="kw">as</span> <span class="ident">HttpRequest</span><span class="op">&gt;</span>::<span class="ident">Error</span><span class="op">&gt;</span>; 
 
-    <span class='doccomment'>/// Finalize and close the stream and return the response object, or any error otherwise.</span>
-    <span class='kw'>fn</span> <span class='ident'>finish</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Self</span>::<span class='ident'>Response</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span>;
+    <span class="doccomment">/// Finalize and close the stream and return the response object, or any error otherwise.</span>
+    <span class="kw">fn</span> <span class="ident">finish</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Response</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span>;
 }
 
-<span class='kw'>impl</span> <span class='ident'>HttpRequest</span> <span class='kw'>for</span> () {
-    <span class='kw'>type</span> <span class='ident'>Stream</span> <span class='op'>=</span> <span class='ident'>io</span>::<span class='ident'>Sink</span>;
-    <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> <span class='ident'>io</span>::<span class='ident'>Error</span>;
+<span class="kw">impl</span> <span class="ident">HttpRequest</span> <span class="kw">for</span> () {
+    <span class="kw">type</span> <span class="ident">Stream</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">Sink</span>;
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">Error</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>apply_headers</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, _: <span class='kw-2'>&amp;</span><span class='ident'>str</span>, _: <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>u64</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>bool</span> { <span class='boolval'>true</span> }
-    <span class='kw'>fn</span> <span class='ident'>open_stream</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Self</span>::<span class='ident'>Stream</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> { <span class='prelude-val'>Ok</span>(<span class='ident'>io</span>::<span class='ident'>sink</span>()) }
+    <span class="kw">fn</span> <span class="ident">apply_headers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw">_</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="kw">_</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> { <span class="bool-val">true</span> }
+    <span class="kw">fn</span> <span class="ident">open_stream</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Stream</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> { <span class="prelude-val">Ok</span>(<span class="ident">io</span>::<span class="ident">sink</span>()) }
 }
 
-<span class='kw'>impl</span> <span class='ident'>HttpStream</span> <span class='kw'>for</span> <span class='ident'>io</span>::<span class='ident'>Sink</span> {
-    <span class='kw'>type</span> <span class='ident'>Request</span> <span class='op'>=</span> ();
-    <span class='kw'>type</span> <span class='ident'>Response</span> <span class='op'>=</span> ();
-    <span class='kw'>type</span> <span class='ident'>Error</span> <span class='op'>=</span> <span class='ident'>io</span>::<span class='ident'>Error</span>;
+<span class="kw">impl</span> <span class="ident">HttpStream</span> <span class="kw">for</span> <span class="ident">io</span>::<span class="ident">Sink</span> {
+    <span class="kw">type</span> <span class="ident">Request</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Response</span> <span class="op">=</span> ();
+    <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">io</span>::<span class="ident">Error</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>finish</span>(<span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Result</span><span class='op'>&lt;</span><span class='ident'>Self</span>::<span class='ident'>Response</span>, <span class='ident'>Self</span>::<span class='ident'>Error</span><span class='op'>&gt;</span> { <span class='prelude-val'>Ok</span>(()) }
+    <span class="kw">fn</span> <span class="ident">finish</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Response</span>, <span class="self">Self</span>::<span class="ident">Error</span><span class="op">&gt;</span> { <span class="prelude-val">Ok</span>(()) }
+}
+
+<span class="kw">fn</span> <span class="ident">gen_boundary</span>() <span class="op">-&gt;</span> <span class="ident">String</span> {
+    ::<span class="ident">random_alphanumeric</span>(<span class="ident">BOUNDARY_LEN</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">open_stream</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">HttpRequest</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">req</span>: <span class="ident">R</span>, <span class="ident">content_len</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">u64</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(<span class="ident">String</span>, <span class="ident">R</span>::<span class="ident">Stream</span>), <span class="ident">R</span>::<span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="ident">boundary</span> <span class="op">=</span> <span class="ident">gen_boundary</span>();
+    <span class="ident">req</span>.<span class="ident">apply_headers</span>(<span class="kw-2">&amp;</span><span class="ident">boundary</span>, <span class="ident">content_len</span>);
+    <span class="ident">req</span>.<span class="ident">open_stream</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">stream</span><span class="op">|</span> (<span class="ident">boundary</span>, <span class="ident">stream</span>))
+}
+
+<span class="kw">struct</span> <span class="ident">MultipartWriter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="ident">inner</span>: <span class="ident">W</span>,
+    <span class="ident">boundary</span>: <span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">str</span><span class="op">&gt;</span>,
+    <span class="ident">data_written</span>: <span class="ident">bool</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span>: <span class="ident">Write</span><span class="op">&gt;</span> <span class="ident">MultipartWriter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">new</span><span class="op">&lt;</span><span class="ident">B</span>: <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Cow</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">str</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>(<span class="ident">inner</span>: <span class="ident">W</span>, <span class="ident">boundary</span>: <span class="ident">B</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+        <span class="ident">MultipartWriter</span> {
+            <span class="ident">inner</span>: <span class="ident">inner</span>,
+            <span class="ident">boundary</span>: <span class="ident">boundary</span>.<span class="ident">into</span>(),
+            <span class="ident">data_written</span>: <span class="bool-val">false</span>,
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">write_boundary</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">inner</span>, <span class="string">&quot;\r\n--{}\r\n&quot;</span>, <span class="self">self</span>.<span class="ident">boundary</span>)
+    }
+
+    <span class="kw">fn</span> <span class="ident">write_text</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">text</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="macro">chain_result</span><span class="macro">!</span> {
+            <span class="self">self</span>.<span class="ident">write_field_headers</span>(<span class="ident">name</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>),
+            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">write_all</span>(<span class="ident">text</span>.<span class="ident">as_bytes</span>())
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">write_file</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="kw">let</span> (<span class="ident">content_type</span>, <span class="ident">filename</span>) <span class="op">=</span> <span class="ident">mime_filename</span>(<span class="ident">path</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="macro">try</span><span class="macro">!</span>(<span class="ident">File</span>::<span class="ident">open</span>(<span class="ident">path</span>));
+        <span class="self">self</span>.<span class="ident">write_stream</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">file</span>, <span class="ident">name</span>, <span class="ident">filename</span>, <span class="prelude-val">Some</span>(<span class="ident">content_type</span>))
+    }
+
+    <span class="kw">fn</span> <span class="ident">write_stream</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Read</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">stream</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">filename</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">content_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mime</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="comment">// This is necessary to make sure it is interpreted as a file on the server end.</span>
+        <span class="kw">let</span> <span class="ident">content_type</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">content_type</span>.<span class="ident">unwrap_or_else</span>(::<span class="ident">mime_guess</span>::<span class="ident">octet_stream</span>));
+
+        <span class="macro">chain_result</span><span class="macro">!</span> {
+            <span class="self">self</span>.<span class="ident">write_field_headers</span>(<span class="ident">name</span>, <span class="ident">filename</span>, <span class="ident">content_type</span>),
+            <span class="ident">io</span>::<span class="ident">copy</span>(<span class="ident">stream</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">inner</span>),
+            <span class="prelude-val">Ok</span>(()) 
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">write_field_headers</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">filename</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>, <span class="ident">content_type</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Mime</span><span class="op">&gt;</span>) 
+    <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="macro">chain_result</span><span class="macro">!</span> {
+            <span class="comment">// Write the first boundary, or the boundary for the previous field.</span>
+            <span class="self">self</span>.<span class="ident">write_boundary</span>(),
+            { <span class="self">self</span>.<span class="ident">data_written</span> <span class="op">=</span> <span class="bool-val">true</span>; <span class="prelude-val">Ok</span>(()) },
+            <span class="macro">write</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">inner</span>, <span class="string">&quot;Content-Disposition: form-data; name=\&quot;{}\&quot;&quot;</span>, <span class="ident">name</span>),
+            <span class="ident">filename</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">filename</span><span class="op">|</span> <span class="macro">write</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">inner</span>, <span class="string">&quot;; filename=\&quot;{}\&quot;&quot;</span>, <span class="ident">filename</span>))
+                .<span class="ident">unwrap_or</span>(<span class="prelude-val">Ok</span>(())),
+            <span class="ident">content_type</span>.<span class="ident">map</span>(<span class="op">|</span><span class="ident">content_type</span><span class="op">|</span> <span class="macro">write</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">inner</span>, <span class="string">&quot;\r\nContent-Type: {}&quot;</span>, <span class="ident">content_type</span>))
+                .<span class="ident">unwrap_or</span>(<span class="prelude-val">Ok</span>(())),
+            <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">write_all</span>(<span class="string">b&quot;\r\n\r\n&quot;</span>)
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">finish</span>(<span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">io</span>::<span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">data_written</span> {
+            <span class="comment">// Write two hyphens after the last boundary occurrence.</span>
+            <span class="macro">try</span><span class="macro">!</span>(<span class="macro">write</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">inner</span>, <span class="string">&quot;\r\n--{}--&quot;</span>, <span class="self">self</span>.<span class="ident">boundary</span>));
+        }
+
+        <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">inner</span>)
+    }
+}
+
+<span class="kw">fn</span> <span class="ident">mime_filename</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-&gt;</span> (<span class="ident">Mime</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span>) {
+    <span class="kw">let</span> <span class="ident">content_type</span> <span class="op">=</span> ::<span class="ident">mime_guess</span>::<span class="ident">guess_mime_type</span>(<span class="ident">path</span>);
+    <span class="kw">let</span> <span class="ident">filename</span> <span class="op">=</span> <span class="ident">opt_filename</span>(<span class="ident">path</span>);
+    (<span class="ident">content_type</span>, <span class="ident">filename</span>)
+}
+
+<span class="kw">fn</span> <span class="ident">opt_filename</span>(<span class="ident">path</span>: <span class="kw-2">&amp;</span><span class="ident">Path</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">str</span><span class="op">&gt;</span> {
+    <span class="ident">path</span>.<span class="ident">file_name</span>().<span class="ident">and_then</span>(<span class="op">|</span><span class="ident">filename</span><span class="op">|</span> <span class="ident">filename</span>.<span class="ident">to_str</span>())
 }
 </pre>
-</section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../../../";
-        window.currentCrate = "multipart";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../../../jquery.js"></script>
-    <script src="../../../main.js"></script>
-    
-    <script async src="../../../search-index.js"></script>
-</body>
-</html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../../";window.currentCrate = "multipart";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script defer src="../../../search-index.js"></script></body></html>

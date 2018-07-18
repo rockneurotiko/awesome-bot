@@ -1,120 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `SendVoice` struct in crate `awesome_bot`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, SendVoice">
-
-    <title>awesome_bot::SendVoice - Rust</title>
-
-    <link rel="stylesheet" type="text/css" href="../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        <p class='location'><a href='index.html'>awesome_bot</a></p><script>window.sidebarCurrent = {name: 'SendVoice', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>awesome_bot</a>::<wbr><a class='struct' href=''>SendVoice</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-816' class='srclink' href='../src/awesome_bot/send.rs.html#83-88' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct SendVoice {
-    // some fields omitted
-}</pre><div class='docblock'><p>Transparent struct builded by <code>SendBuilder</code> to send
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `SendVoice` struct in crate `awesome_bot`."><meta name="keywords" content="rust, rustlang, rust-lang, SendVoice"><title>awesome_bot::SendVoice - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc struct"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Struct SendVoice</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.duration">duration</a><a href="#method.reply_id">reply_id</a><a href="#method.markup">markup</a><a href="#method.keyboard">keyboard</a><a href="#method.hide">hide</a><a href="#method.force">force</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Finisher%3CMessage%3E">Finisher&lt;Message&gt;</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div></div><p class='location'><a href='index.html'>awesome_bot</a></p><script>window.sidebarCurrent = {name: 'SendVoice', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>awesome_bot</a>::<wbr><a class="struct" href=''>SendVoice</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/awesome_bot/send.rs.html#146-151' title='goto source code'>[src]</a></span></h1><div class="docblock type-decl"><pre class='rust struct'>pub struct SendVoice { /* fields omitted */ }</pre></div><div class='docblock'><p>Transparent struct built by <code>SendBuilder</code> to send
 <code>Voice</code>
 messages.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h3><div class='impl-items'><h4 id='method.duration' class='method'><code>fn <a href='#method.duration' class='fnname'>duration</a>(&amp;mut self, v: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Set the duration of the voice audio.</p>
-</div><h4 id='method.reply_id' class='method'><code>fn <a href='#method.reply_id' class='fnname'>reply_id</a>(&amp;mut self, v: <a class='type' href='../telegram_bot/types/type.Integer.html' title='telegram_bot::types::Integer'>Integer</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Set a message ID to reply with this message.</p>
-</div><h4 id='method.markup' class='method'><code>fn <a href='#method.markup' class='fnname'>markup</a>(&amp;mut self, v: <a class='enum' href='../telegram_bot/types/enum.ReplyMarkup.html' title='telegram_bot::types::ReplyMarkup'>ReplyMarkup</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Set a <code>ReplyMarkup</code> to send, but instead of this, use the <code>keyboard</code>, <code>hide</code> or <code>force</code> methods</p>
-</div></div><h3 class='impl'><code>impl <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h3><div class='docblock'><p>Add keyboard methods to the struct, only one of this will be sended, and will be the last one used.</p>
-</div><div class='impl-items'><h4 id='method.keyboard' class='method'><code>fn <a href='#method.keyboard' class='fnname'>keyboard</a>(&amp;mut self, r: <a class='struct' href='../telegram_bot/types/struct.ReplyKeyboardMarkup.html' title='telegram_bot::types::ReplyKeyboardMarkup'>ReplyKeyboardMarkup</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Add a keyboard to the reply</p>
-</div><h4 id='method.hide' class='method'><code>fn <a href='#method.hide' class='fnname'>hide</a>(&amp;mut self, h: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Hide the keyboard</p>
-</div><h4 id='method.force' class='method'><code>fn <a href='#method.force' class='fnname'>force</a>(&amp;mut self, f: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; &amp;mut <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h4>
-<div class='docblock'><p>Force the reply to this message</p>
-</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../awesome_bot/trait.Ender.html' title='awesome_bot::Ender'>Ender</a>&lt;<a class='struct' href='../telegram_bot/types/struct.Message.html' title='telegram_bot::types::Message'>Message</a>&gt; for <a class='struct' href='../awesome_bot/struct.SendVoice.html' title='awesome_bot::SendVoice'>SendVoice</a></code></h3><div class='impl-items'><h4 id='method.end' class='method'><code>fn <a href='../awesome_bot/trait.Ender.html#method.end' class='fnname'>end</a>(&amp;mut self) -&gt; <a class='type' href='../telegram_bot/error/type.Result.html' title='telegram_bot::error::Result'>Result</a>&lt;<a class='struct' href='../telegram_bot/types/struct.Message.html' title='telegram_bot::types::Message'>Message</a>&gt;</code></h4>
-</div></section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../";
-        window.currentCrate = "awesome_bot";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../jquery.js"></script>
-    <script src="../main.js"></script>
-    
-    <script async src="../search-index.js"></script>
-</body>
-</html>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code><a href='#impl' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#153-161' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='impl-items'><h4 id='method.duration' class="method"><span id='duration.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.duration' class='fnname'>duration</a>(&amp;mut self, v: <a class="type" href="../telegram_bot/types/type.Integer.html" title="type telegram_bot::types::Integer">Integer</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#156-159' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Set the duration of the voice audio.</p>
+</div><h4 id='method.reply_id' class="method"><span id='reply_id.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.reply_id' class='fnname'>reply_id</a>(&amp;mut self, v: <a class="type" href="../telegram_bot/types/type.Integer.html" title="type telegram_bot::types::Integer">Integer</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#156-159' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Set a message ID to reply with this message.</p>
+</div><h4 id='method.markup' class="method"><span id='markup.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.markup' class='fnname'>markup</a>(&amp;mut self, v: <a class="enum" href="../telegram_bot/types/enum.ReplyMarkup.html" title="enum telegram_bot::types::ReplyMarkup">ReplyMarkup</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#156-159' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Set a <code>ReplyMarkup</code> to send, but instead of this, use the <code>keyboard</code>, <code>hide</code> or <code>force</code> methods</p>
+</div></div><h3 id='impl-1' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code><a href='#impl-1' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#169-187' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='docblock'><p>Add keyboard methods to the struct, only one of these will be sent,
+and it will be the last one used.</p>
+</div><div class='impl-items'><h4 id='method.keyboard' class="method"><span id='keyboard.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.keyboard' class='fnname'>keyboard</a>(&amp;mut self, r: <a class="struct" href="../telegram_bot/types/struct.ReplyKeyboardMarkup.html" title="struct telegram_bot::types::ReplyKeyboardMarkup">ReplyKeyboardMarkup</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#171-174' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Add a keyboard to the reply</p>
+</div><h4 id='method.hide' class="method"><span id='hide.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.hide' class='fnname'>hide</a>(&amp;mut self, h: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#177-180' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Hide the keyboard</p>
+</div><h4 id='method.force' class="method"><span id='force.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.force' class='fnname'>force</a>(&amp;mut self, f: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>) -&gt; &amp;mut <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#183-186' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Force the reply to this message</p>
+</div></div>
+                <h2 id='implementations' class='small-section-header'>
+                  Trait Implementations<a href='#implementations' class='anchor'></a>
+                </h2>
+                <div id='implementations-list'><h3 id='impl-Finisher%3CMessage%3E' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="../awesome_bot/trait.Finisher.html" title="trait awesome_bot::Finisher">Finisher</a>&lt;<a class="struct" href="../telegram_bot/types/struct.Message.html" title="struct telegram_bot::types::Message">Message</a>&gt; for <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code><a href='#impl-Finisher%3CMessage%3E' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#269-279' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='impl-items'><h4 id='method.end' class="method"><span id='end.v' class='invisible'><table class='table-display'><tbody><tr><td><code>fn <a href='../awesome_bot/trait.Finisher.html#tymethod.end' class='fnname'>end</a>(&amp;mut self) -&gt; <a class="type" href="../telegram_bot/error/type.Result.html" title="type telegram_bot::error::Result">Result</a>&lt;<a class="struct" href="../telegram_bot/types/struct.Message.html" title="struct telegram_bot::types::Message">Message</a>&gt;</code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/awesome_bot/send.rs.html#270-278' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4></div></div>
+                <h2 id='synthetic-implementations' class='small-section-header'>
+                  Auto Trait Implementations<a href='#synthetic-implementations' class='anchor'></a>
+                </h2>
+                <div id='synthetic-implementations-list'>
+            <h3 id='impl-Send' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code><a href='#impl-Send' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="../awesome_bot/struct.SendVoice.html" title="struct awesome_bot::SendVoice">SendVoice</a></code><a href='#impl-Sync' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div></div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "awesome_bot";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

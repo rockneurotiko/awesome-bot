@@ -1,144 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `Listener` struct in crate `telegram_bot`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, Listener">
-
-    <title>telegram_bot::Listener - Rust</title>
-
-    <link rel="stylesheet" type="text/css" href="../main.css">
-
-    
-    
-</head>
-<body class="rustdoc">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <section class="sidebar">
-        
-        <p class='location'><a href='index.html'>telegram_bot</a></p><script>window.sidebarCurrent = {name: 'Listener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
-    </section>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press 'S' to search, '?' for more options..."
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content struct">
-<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>telegram_bot</a>::<wbr><a class='struct' href=''>Listener</a></span><span class='out-of-band'><span id='render-detail'>
-            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                [<span class='inner'>&#x2212;</span>]
-            </a>
-        </span><a id='src-12465' class='srclink' href='../src/telegram_bot/lib.rs.html#593-598' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Listener {
-    // some fields omitted
-}</pre><div class='docblock'><p>Offers methods to easily receive new updates via the specified method. This
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `Listener` struct in crate `telegram_bot`."><meta name="keywords" content="rust, rustlang, rust-lang, Listener"><title>telegram_bot::Listener - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc struct"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Struct Listener</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.listen">listen</a><a href="#method.channel">channel</a></div><a class="sidebar-title" href="#synthetic-implementations">Auto Trait Implementations</a><div class="sidebar-links"><a href="#impl-Send">Send</a><a href="#impl-Sync">Sync</a></div></div><p class='location'><a href='index.html'>telegram_bot</a></p><script>window.sidebarCurrent = {name: 'Listener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>telegram_bot</a>::<wbr><a class="struct" href=''>Listener</a></span><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/telegram_bot/lib.rs.html#595-600' title='goto source code'>[src]</a></span></h1><div class="docblock type-decl"><pre class='rust struct'>pub struct Listener { /* fields omitted */ }</pre></div><div class='docblock'><p>Offers methods to easily receive new updates via the specified method. This
 should be used instead of calling methods like <code>get_updates</code> yourself.</p>
-
 <p>To create a listener, you first have to create an <code>Api</code> object and call
 <code>listener</code> on it. In order to make listening easier in a concurrent
-environment, the <code>Listener</code> object and the <code>Api</code> object don&#39;t share any
+environment, the <code>Listener</code> object and the <code>Api</code> object don't share any
 internal state. This makes creating a <code>Listener</code> a bit more expensive, but
-it&#39;s usually sufficient for any purpose to create a <code>Listener</code> only once.</p>
-</div><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../telegram_bot/struct.Listener.html' title='telegram_bot::Listener'>Listener</a></code></h3><div class='impl-items'><h4 id='method.listen' class='method'><code>fn <a href='#method.listen' class='fnname'>listen</a>&lt;H&gt;(&amp;mut self, handler: H) -&gt; <a class='type' href='../telegram_bot/type.Result.html' title='telegram_bot::Result'>Result</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>()</a>&gt; <span class='where'>where H: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a class='struct' href='../telegram_bot/types/struct.Update.html' title='telegram_bot::types::Update'>Update</a>) -&gt; <a class='type' href='../telegram_bot/type.Result.html' title='telegram_bot::Result'>Result</a>&lt;<a class='enum' href='../telegram_bot/enum.ListeningAction.html' title='telegram_bot::ListeningAction'>ListeningAction</a>&gt;</span></code></h4>
-<div class='docblock'><p>Receive and handle updates with the given closure.</p>
-
+it's usually sufficient for any purpose to create a <code>Listener</code> only once.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="struct" href="../telegram_bot/struct.Listener.html" title="struct telegram_bot::Listener">Listener</a></code><a href='#impl' class='anchor'></a></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/telegram_bot/lib.rs.html#603-730' title='goto source code'>[src]</a></span></td></tr></tbody></table></h3><div class='impl-items'><h4 id='method.listen' class="method"><span id='listen.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.listen' class='fnname'>listen</a>&lt;H&gt;(&amp;mut self, handler: H) -&gt; <a class="type" href="../telegram_bot/type.Result.html" title="type telegram_bot::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;H: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.FnMut.html" title="trait core::ops::function::FnMut">FnMut</a>(<a class="struct" href="../telegram_bot/types/struct.Update.html" title="struct telegram_bot::types::Update">Update</a>) -&gt; <a class="type" href="../telegram_bot/type.Result.html" title="type telegram_bot::Result">Result</a>&lt;<a class="enum" href="../telegram_bot/enum.ListeningAction.html" title="enum telegram_bot::ListeningAction">ListeningAction</a>&gt;,&nbsp;</span></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/telegram_bot/lib.rs.html#633-693' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Receive and handle updates with the given closure.</p>
 <p>This method will use the specified listening method to receive new
 updates and will then call the given handler for every update. Normally
-the handler won&#39;t ever be called for the same update twice (see Note
+the handler won't ever be called for the same update twice (see Note
 below).
 When the handler returns an <code>Err</code> value, this function will stop
 listening and return the same <code>Err</code>. If you want to stop listening you
 can return <code>Ok(ListeningAction::Stop)</code> instead of an <code>Err</code> value.</p>
-
 <p>When returning an <code>Ok</code> value, the update that was passed to the handler
-is considered handled and won&#39;t be passed to a handler again. On the
+is considered handled and won't be passed to a handler again. On the
 other hand if an <code>Err</code> is returned, the update is not considered handled
 so it will be passed to a handler the next time again.</p>
-
 <p><strong>Note:</strong>
 If you are listening via <code>LongPoll</code> method and your handler panics or
 the program is aborted in an abnormal way (e.g. <code>SIGKILL</code>), the handler
 might receive some already handled updates a second time.</p>
-</div><h4 id='method.channel' class='method'><code>fn <a href='#method.channel' class='fnname'>channel</a>(self) -&gt; <a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a class='struct' href='http://doc.rust-lang.org/nightly/std/sync/mpsc/struct.Sender.html' title='std::sync::mpsc::Sender'>Sender</a>&lt;<a class='type' href='../telegram_bot/type.Result.html' title='telegram_bot::Result'>Result</a>&lt;<a class='enum' href='../telegram_bot/enum.ListeningAction.html' title='telegram_bot::ListeningAction'>ListeningAction</a>&gt;&gt;, <a class='struct' href='http://doc.rust-lang.org/nightly/std/sync/mpsc/struct.Receiver.html' title='std::sync::mpsc::Receiver'>Receiver</a>&lt;<a class='struct' href='../telegram_bot/types/struct.Update.html' title='telegram_bot::types::Update'>Update</a>&gt;)</a></code></h4>
-<div class='docblock'><p>Consumes <code>self</code> and returns a sender-receiver pair. You can receive
+</div><h4 id='method.channel' class="method"><span id='channel.v' class='invisible'><table class='table-display'><tbody><tr><td><code>pub fn <a href='#method.channel' class='fnname'>channel</a>(self) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="struct" href="https://doc.rust-lang.org/nightly/std/sync/mpsc/struct.Sender.html" title="struct std::sync::mpsc::Sender">Sender</a>&lt;<a class="type" href="../telegram_bot/type.Result.html" title="type telegram_bot::Result">Result</a>&lt;<a class="enum" href="../telegram_bot/enum.ListeningAction.html" title="enum telegram_bot::ListeningAction">ListeningAction</a>&gt;&gt;, <a class="struct" href="https://doc.rust-lang.org/nightly/std/sync/mpsc/struct.Receiver.html" title="struct std::sync::mpsc::Receiver">Receiver</a>&lt;<a class="struct" href="../telegram_bot/types/struct.Update.html" title="struct telegram_bot::types::Update">Update</a>&gt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span></td><td><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/telegram_bot/lib.rs.html#707-729' title='goto source code'>[src]</a></td></tr></tbody></table></span></h4><div class='docblock'><p>Consumes <code>self</code> and returns a sender-receiver pair. You can receive
 new updates through the Receiver. Each update needs to be confirmed
 with a <code>Result&lt;ListeningAction&gt;</code> before the next update can be handled.</p>
-
-<p>This means that handling updates isn&#39;t done in parallel. The only
+<p>This means that handling updates isn't done in parallel. The only
 advantage of this function over the <code>listen</code> function is that you can
 ask the receiver, if a new update has arrived. This is useful if you
 want to handle different events in one thread. E.g. a remainder bot
 gets active on every received message AND on timed events.</p>
-
 <p><strong>Note:</strong> Remember to send a result through the <code>Sender</code> after each
 update!</p>
-</div></div></section>
-    <section id='search' class="content hidden"></section>
-
-    <section class="footer"></section>
-
-    <div id="help" class="hidden">
-        <div class="shortcuts">
-            <h1>Keyboard shortcuts</h1>
-            <dl>
-                <dt>?</dt>
-                <dd>Show this help dialog</dd>
-                <dt>S</dt>
-                <dd>Focus the search field</dd>
-                <dt>&larrb;</dt>
-                <dd>Move up in search results</dd>
-                <dt>&rarrb;</dt>
-                <dd>Move down in search results</dd>
-                <dt>&#9166;</dt>
-                <dd>Go to active search result</dd>
-            </dl>
-        </div>
-        <div class="infos">
-            <h1>Search tricks</h1>
-            <p>
-                Prefix searches with a type followed by a colon (e.g.
-                <code>fn:</code>) to restrict the search to a given type.
-            </p>
-            <p>
-                Accepted types are: <code>fn</code>, <code>mod</code>,
-                <code>struct</code>, <code>enum</code>,
-                <code>trait</code>, <code>typedef</code> (or
-                <code>tdef</code>).
-            </p>
-            <p>
-                Search functions by type signature (e.g.
-                <code>vec -> usize</code>)
-            </p>
-        </div>
-    </div>
-
-    
-
-    <script>
-        window.rootPath = "../";
-        window.currentCrate = "telegram_bot";
-        window.playgroundUrl = "";
-    </script>
-    <script src="../jquery.js"></script>
-    <script src="../main.js"></script>
-    
-    <script async src="../search-index.js"></script>
-</body>
-</html>
+</div></div>
+                <h2 id='synthetic-implementations' class='small-section-header'>
+                  Auto Trait Implementations<a href='#synthetic-implementations' class='anchor'></a>
+                </h2>
+                <div id='synthetic-implementations-list'>
+            <h3 id='impl-Send' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Send.html" title="trait core::marker::Send">Send</a> for <a class="struct" href="../telegram_bot/struct.Listener.html" title="struct telegram_bot::Listener">Listener</a></code><a href='#impl-Send' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div><h3 id='impl-Sync' class='impl'><span class='in-band'><table class='table-display'><tbody><tr><td><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Sync.html" title="trait core::marker::Sync">Sync</a> for <a class="struct" href="../telegram_bot/struct.Listener.html" title="struct telegram_bot::Listener">Listener</a></code><a href='#impl-Sync' class='anchor'></a></span></td><td><span class='out-of-band'></span></td></tr></tbody></table></h3><div class='impl-items'></div></div></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "telegram_bot";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
