@@ -2,7 +2,7 @@
 name = "awesome-bot"
 version = "0.2.0"
 authors = ["Rock Neurotiko <miguelglafuente@gmail.com>"]
-license = "MIT or Apache-2.0"
+license = "MIT OR Apache-2.0 OR Beerware"
 
 description = "An awesome framework to build Telegram bots up to telegram-bot library."
 readme = "README.md"
